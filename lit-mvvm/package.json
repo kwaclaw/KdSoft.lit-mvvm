@@ -1,0 +1,20 @@
+{
+  "name": "lit-mvvm",
+  "main": "lit-mvvm.js",
+  "module": "lit-mvvm.js",
+  "typings": "lit-mvvm.d.ts",
+  "private": true,
+  "version": "0.9.1",
+  "description": "",
+  "files": [
+    "/lit-mvvm.js",
+    "/lit-mvvm.d.ts",
+    "/src/**/*.js"
+  ],
+  "author": "Karl Waclawek",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@nx-js/observer-util": "^4.2.2",
+    "lit-html": "^1.0.0"
+  }
+}
