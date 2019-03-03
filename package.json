@@ -1,10 +1,10 @@
 {
   "name": "@kdsoft/lit-mvvm",
-  "private": true,
   "version": "0.9.0",
   "description": "MVVM based alternative to LitElement",
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
+  "repository": "kwaclaw/KdSoft.lit-mvvm",
   "dependencies": {
     "@nx-js/observer-util": "^4.2.2",
     "@nx-js/queue-util": "^1.1.1",
