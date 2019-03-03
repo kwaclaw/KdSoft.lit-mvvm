@@ -1,7 +1,9 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-underscore-dangle */
 import { html, render, TemplateResult } from 'lit-html';
-import { supportsAdoptingStyleSheets } from './css-tag';
+
+const supportsAdoptingStyleSheets = ('adoptedStyleSheets' in Document.prototype)
+  && ('replace' in CSSStyleSheet.prototype);
 
 /**
  * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
