@@ -1,6 +1,6 @@
 
 import { html } from 'lit-html';
-import { LitMvvmElement } from '../../../lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement } from '../../../lit-mvvm.js';
 
 import { TriangleModel } from './triangle-model';
 

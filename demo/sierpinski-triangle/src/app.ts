@@ -2,7 +2,7 @@
 import { html } from 'lit-html';
 import { styleMap } from 'lit-html/directives/style-map';
 import { Queue, priorities } from '@nx-js/queue-util';
-import { LitMvvmElement, BatchScheduler } from '../../../lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement, BatchScheduler } from '../../../lit-mvvm.js';
 
 import { AppModel } from './app-model';
 

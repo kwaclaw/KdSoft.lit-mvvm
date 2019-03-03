@@ -1,7 +1,7 @@
 
 import { html } from 'lit-html';
 import { styleMap } from 'lit-html/directives/style-map';
-import { LitMvvmElement } from '../../../lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement } from '../../../lit-mvvm.js';
 
 import { DotModel } from './dot-model';
 
