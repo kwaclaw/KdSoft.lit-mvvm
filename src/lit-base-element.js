@@ -1,5 +1,7 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-underscore-dangle */
 import { html, render, TemplateResult } from 'lit-html';
-//import { CSSResult, unsafeCSS, css } from './css-tag';
+import { supportsAdoptingStyleSheets } from './css-tag';
 
 /**
  * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
@@ -10,13 +12,8 @@ import { html, render, TemplateResult } from 'lit-html';
 // eslint-disable-next-line no-unused-vars
 window.JSCompiler_renameProperty = (prop, _obj) => prop;
 
-/**
- * Minimal implementation of Array.prototype.flat
- * @param arr the array to flatten
- * @param result the accumlated result
- */
 function arrayFlat(styles, result = []) {
-  for (let i = 0, length = styles.length; i < length; i += 1) {
+  for (let i = 0, { length } = styles; i < length; i += 1) {
     const value = styles[i];
     if (Array.isArray(value)) {
       arrayFlat(value, result);
@@ -27,17 +24,16 @@ function arrayFlat(styles, result = []) {
   return result;
 }
 
-/** Deeply flattens styles array. Uses native flat if available. */
 const flattenStyles = styles => (styles.flat ? styles.flat(Infinity) : arrayFlat(styles));
 
 export default class LitBaseElement extends HTMLElement {
-  // piggy back on this to run finalize(), also requires a defined attributeChangedCallback() 
+  // only called if there is an attributeChangedCallback() defined;
+  // we piggy back on this getter to run finalize() to ensure finalize() is run
   static get observedAttributes() {
     this.finalize();
     return [];
   }
 
-  /** @nocollapse */
   static finalize() {
     // eslint-disable-next-line no-prototype-builtins
     if (this.hasOwnProperty(window.JSCompiler_renameProperty('finalized', this)) && this.finalized) {
@@ -50,15 +46,14 @@ export default class LitBaseElement extends HTMLElement {
     }
     this.finalized = true;
 
-    // Prepare styling that is stamped at first render time. Styling is built from user provided `styles`
-    // or is inherited from the superclass.
+    // Prepare styling that is stamped at first render time.
+    // Styling is built from user provided `styles` or is inherited from the superclass.
     // eslint-disable-next-line no-prototype-builtins
     this._styles = this.hasOwnProperty(window.JSCompiler_renameProperty('styles', this))
       ? this._getUniqueStyles()
       : this._styles || [];
   }
 
-  /** @nocollapse */
   static _getUniqueStyles() {
     // Take care not to call `this.styles` multiple times since this generates new CSSResults each time.
     // TODO(sorvell): Since we do not cache CSSResults by input, any shared styles will generate
@@ -104,29 +99,29 @@ export default class LitBaseElement extends HTMLElement {
     }
   }
 
-  /**
-   * Returns the node into which the element should render and by default creates and returns an open shadowRoot.
-   * Implement to customize where the element's DOM is rendered. For example, to render into the element's
-   * childNodes, return `this`.
-   * @returns {Element|DocumentFragment} Returns a node into which to render.
-   */
   createRenderRoot() {
     return this.attachShadow({ mode: 'open' });
   }
 
   /**
-     * Applies styling to the element shadowRoot using the `static get styles` property.
-     * Styling will apply using `shadowRoot.adoptedStyleSheets` where available and will fallback otherwise.
-     * When Shadow DOM is polyfilled, ShadyCSS scopes styles and adds them to the document. When Shadow DOM
-     * is available but `adoptedStyleSheets` is not, styles are appended to the end of the `shadowRoot` to
-     * [mimic spec behavior](https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
-     */
+   * Applies styling to the element shadowRoot using the `static get styles` property.
+   * Styling will apply using `shadowRoot.adoptedStyleSheets` where available and will fallback
+   * otherwise. When Shadow DOM is available but `adoptedStyleSheets` is not, styles are
+   * appended to the end of the `shadowRoot` to [mimic spec behavior]
+   * (https://wicg.github.io/construct-stylesheets/#using-constructed-stylesheets).
+   */
   adoptStyles() {
     const styles = this.constructor._styles;
     if (styles.length === 0) {
       return;
     }
-    this.renderRoot.adoptedStyleSheets = styles.map(s => s.styleSheet);
+
+    if (supportsAdoptingStyleSheets) {
+      this.renderRoot.adoptedStyleSheets = styles.map(s => s.styleSheet);
+    } else {
+      // This must be done after rendering so the actual style insertion is done in `update`.
+      this._needsShimAdoptedStyleSheets = true;
+    }
   }
 
   // this handler must be defined to trigger the call to get observedAttributes() !!!
@@ -142,11 +137,26 @@ export default class LitBaseElement extends HTMLElement {
     return true;
   }
 
+  /**
+   * Calls `render` to render DOM via lit-html.
+   * This is what should be called by 'observable' implementations.
+   */
   _doRender() {
     if (this.shouldRender()) {
       const templateResult = this.render();
       if (templateResult instanceof TemplateResult) {
         render(templateResult, this.shadowRoot, { scopeName: this.localName, eventContext: this });
+      }
+
+      // When native Shadow DOM is used but adoptedStyles are not supported,
+      // insert styling after rendering to ensure adoptedStyles have highest priority.
+      if (this._needsShimAdoptedStyleSheets) {
+        this._needsShimAdoptedStyleSheets = false;
+        this.constructor._styles.forEach((s) => {
+          const style = document.createElement('style');
+          style.textContent = s.cssText;
+          this.renderRoot.appendChild(style);
+        });
       }
 
       if (!this._firstRendered) {
@@ -171,3 +181,5 @@ export default class LitBaseElement extends HTMLElement {
 
   rendered() { }
 }
+
+LitBaseElement.finalized = true;

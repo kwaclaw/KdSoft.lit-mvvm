@@ -1,3 +1,5 @@
+/* eslint-disable lines-between-class-members */
+/* eslint-disable no-underscore-dangle */
 import { observe, unobserve } from '@nx-js/observer-util';
 
 import LitBaseElement from './lit-base-element';
@@ -26,7 +28,7 @@ export default class LitMvvmElement extends LitBaseElement {
       // as it is run as part of rendering anyway.
       // Note: the observed model/properties must be defined at the time of first render.
       lazy: true,
-      scheduler: this.scheduler ? this.scheduler : (r => r())
+      scheduler: this.scheduler ? this.scheduler : (r => r()),
       /* debugger: console.log */
     });
 
