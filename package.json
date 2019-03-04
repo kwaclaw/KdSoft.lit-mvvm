@@ -1,9 +1,18 @@
 {
   "name": "@kdsoft/lit-mvvm",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "MVVM based alternative to LitElement",
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
+  "keywords": [
+    "lit-html",
+    "mvvm",
+    "lit-element",
+    "nx-js",
+    "observable",
+    "observe",
+    "viewmodel"
+  ],
   "main": "lit-mvvm.js",
   "module": "lit-mvvm.js",
   "typings": "lit-mvvm.d.ts",
