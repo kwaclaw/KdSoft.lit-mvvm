@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "MVVM based alternative to LitElement",
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
@@ -16,18 +16,5 @@
   "dependencies": {
     "@nx-js/observer-util": "^4.2.2",
     "lit-html": "^1.0.0"
-  },
-  "devDependencies": {
-    "typescript": "^3.3.3",
-    "@nx-js/queue-util": "^1.1.1",
-    "owc-dev-server": "^0.1.6"
-  },
-  "browserslist": [
-    "last 1 chrome versions"
-  ],
-  "scripts": {
-    "start-demo": "owc-dev-server --open demo/sierpinski-triangle",
-    "build-demo": "tsc --build demo/sierpinski-triangle/",
-    "build-demo:watch": "tsc --watch demo/sierpinski-triangle"
   }
 }

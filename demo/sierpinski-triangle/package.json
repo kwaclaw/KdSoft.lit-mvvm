@@ -1,0 +1,24 @@
+{
+  "name": "sierpinski-triangle",
+  "version": "0.9.4",
+  "description": "",
+  "author": "Karl Waclawek",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@nx-js/queue-util": "^1.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^3.3.3",
+    "owc-dev-server": "^0.1.6"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 1 Safari versions"
+  ],
+  "scripts": {
+    "start-demo": "owc-dev-server --root-dir ../../ --open demo/sierpinski-triangle/",
+    "build-demo": "tsc --build",
+    "build-demo:watch": "tsc --watch"
+  }
+}
