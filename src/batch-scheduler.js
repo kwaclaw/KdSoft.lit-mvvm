@@ -1,4 +1,3 @@
-
 const _interval = new WeakMap();
 const _lastRendered = new WeakMap();
 const _timerID = new WeakMap();
@@ -12,16 +11,27 @@ export default class BatchScheduler {
     _reactions.set(this, new Set());
   }
 
-  get interval() { return _interval.get(this); }
-  get lastRendered() { return _lastRendered.get(this); }
-  get reactions() { return _reactions.get(this); }
+  get interval() {
+    return _interval.get(this);
+  }
+  get lastRendered() {
+    return _lastRendered.get(this);
+  }
+  get reactions() {
+    return _reactions.get(this);
+  }
 
   // pseudo private, should not normally be called directly;
   // returns number of reactions run
   _runReactions() {
     const reactions = this.reactions;
     reactions.forEach((reaction) => {
-      try { reaction(); } catch (e) { }
+      try {
+        reaction();
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        (console.error || console.log).call(console, e.stack || e);
+      }
     });
     const count = reactions.size;
     reactions.clear();
@@ -41,7 +51,8 @@ export default class BatchScheduler {
     const delta = performance.now() - this.lastRendered;
     if (delta < this.interval) {
       _timerID.set(this, window.setTimeout(() => this._runReactions(), this.interval - delta));
-    } else { // queue to be run when idle
+    } else {
+      // queue to be run when idle
       _timerID.set(this, window.setTimeout(() => this._runReactions(), 0));
     }
   }

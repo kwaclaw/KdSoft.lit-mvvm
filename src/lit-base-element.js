@@ -2,8 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import { html, render, TemplateResult } from 'lit-html';
 
-const supportsAdoptingStyleSheets = ('adoptedStyleSheets' in Document.prototype)
-  && ('replace' in CSSStyleSheet.prototype);
+const supportsAdoptingStyleSheets = 'adoptedStyleSheets' in Document.prototype && 'replace' in CSSStyleSheet.prototype;
 
 /**
  * When using Closure Compiler, JSCompiler_renameProperty(property, object) is
@@ -126,7 +125,7 @@ export default class LitBaseElement extends HTMLElement {
     }
   }
 
-  // this handler must be defined to trigger the call to get observedAttributes() !!!
+  // this handler must be defined to trigger the necessary call to get observedAttributes() !!!
   attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
   }
@@ -147,7 +146,10 @@ export default class LitBaseElement extends HTMLElement {
     if (this.shouldRender()) {
       const templateResult = this.render();
       if (templateResult instanceof TemplateResult) {
-        render(templateResult, this.shadowRoot, { scopeName: this.localName, eventContext: this });
+        render(templateResult, this.shadowRoot, {
+          scopeName: this.localName,
+          eventContext: this,
+        });
       }
 
       // When native Shadow DOM is used but adoptedStyles are not supported,
@@ -179,9 +181,9 @@ export default class LitBaseElement extends HTMLElement {
     //
   }
 
-  firstRendered() { }
+  firstRendered() {}
 
-  rendered() { }
+  rendered() {}
 }
 
 LitBaseElement.finalized = true;

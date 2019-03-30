@@ -7,27 +7,20 @@
     "browser": true,
     "serviceworker": true
   },
-  "globals": {
-  },
+  "globals": {},
   "plugins": [],
-  "extends": [
-    "airbnb-base"
-  ],
+  "extends": ["airbnb-base"],
   "rules": {
-    "indent": [ "error", 2 ],
-    "linebreak-style": [ "error", "windows" ],
+    "indent": ["error", 2],
+    "linebreak-style": ["error", "windows"],
     "space-before-function-paren": "off",
     "function-paren-newline": "off",
-    "quotes": [
-      "error",
-      "single",
-      { "allowTemplateLiterals": true }
-    ],
+    "quotes": ["error", "single", { "allowTemplateLiterals": true }],
     "unicode-bom": "off",
     "import/no-mutable-exports": "off",
     "import/extensions": "off",
     "prefer-destructuring": "off",
-    "comma-dangle": [ "error", "only-multiline" ],
+    "comma-dangle": ["error", "only-multiline"],
     "no-underscore-dangle": "off",
     "spaced-comment": "off",
     "max-len": [
@@ -38,10 +31,10 @@
       }
     ],
     "no-continue": "off",
-    "eqeqeq": [ "error", "smart" ],
+    "eqeqeq": ["error", "smart"],
     "no-param-reassign": "off",
     "no-nested-ternary": "off",
-	"class-methods-use-this": "off",
-	"lines-between-class-members": "off"
+    "class-methods-use-this": "off",
+    "lines-between-class-members": "off"
   }
 }

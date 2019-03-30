@@ -1,4 +1,3 @@
-
 import { TemplateResult } from 'lit-html';
 
 export declare class LitBaseElement extends HTMLElement {
@@ -31,4 +30,3 @@ export declare class BatchScheduler {
   add(reaction: Function): void;
   delete(reaction: Function): boolean;
 }
-
