@@ -36,17 +36,6 @@ export default class LitBaseElement extends HTMLElement {
   }
 
   static finalize() {
-    // eslint-disable-next-line no-prototype-builtins
-    if (this.hasOwnProperty(window.JSCompiler_renameProperty('finalized', this)) && this.finalized) {
-      return;
-    }
-    // finalize any superclasses
-    const superCtor = Object.getPrototypeOf(this);
-    if (typeof superCtor.finalize === 'function') {
-      superCtor.finalize();
-    }
-    this.finalized = true;
-
     // Prepare styling that is stamped at first render time.
     // Styling is built from user provided `styles` or is inherited from the superclass.
     // eslint-disable-next-line no-prototype-builtins
@@ -127,7 +116,7 @@ export default class LitBaseElement extends HTMLElement {
 
   // this handler must be defined to trigger the necessary call to get observedAttributes() !!!
   attributeChangedCallback(name, oldval, newval) {
-    super.attributeChangedCallback(name, oldval, newval);
+    //
   }
 
   render() {
@@ -185,5 +174,3 @@ export default class LitBaseElement extends HTMLElement {
 
   rendered() {}
 }
-
-LitBaseElement.finalized = true;
