@@ -19,7 +19,13 @@ export default class LitMvvmElement extends LitBaseElement {
     return _scheduler.get(this);
   }
   set scheduler(value) {
-    _scheduler.set(this, value);
+    if (value) _scheduler.set(this, value);
+    else _scheduler.set(this, r => r());
+  }
+
+  constructor() {
+    super();
+    _scheduler.set(this, r => r());
   }
 
   // Setting up observer of view model changes.
@@ -38,7 +44,7 @@ export default class LitMvvmElement extends LitBaseElement {
         // as it is run as part of rendering anyway.
         // Note: the observed model/properties must be defined at the time of first render.
         lazy: true,
-        scheduler: this.scheduler ? this.scheduler : r => r(),
+        scheduler: this.scheduler,
         /* debugger: console.log */
       }
     );
@@ -56,5 +62,17 @@ export default class LitMvvmElement extends LitBaseElement {
 
   disconnectedCallback() {
     unobserve(this._observer);
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+    // queue the reaction for later execution or run it immediately
+    if (typeof this.scheduler === 'function') {
+      this.scheduler(this._doRender.bind(this));
+    } else if (typeof this.scheduler === 'object') {
+      this.scheduler.add(this._doRender.bind(this));
+    } else {
+      this._doRender();
+    }
   }
 }
