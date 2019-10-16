@@ -12,7 +12,12 @@ export default class LitMvvmElement extends LitBaseElement {
     return _model.get(this);
   }
   set model(value) {
+    const oldModel = _model.get(this);
     _model.set(this, value);
+    if (oldModel !== value) {
+      // queue the reaction for later execution or run it immediately
+      this._scheduleRender();
+    }
   }
 
   get scheduler() {
@@ -60,13 +65,7 @@ export default class LitMvvmElement extends LitBaseElement {
     this._observer();
   }
 
-  disconnectedCallback() {
-    unobserve(this._observer);
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-    // queue the reaction for later execution or run it immediately
+  _scheduleRender() {
     if (typeof this.scheduler === 'function') {
       this.scheduler(this._doRender.bind(this));
     } else if (typeof this.scheduler === 'object') {
@@ -74,5 +73,15 @@ export default class LitMvvmElement extends LitBaseElement {
     } else {
       this._doRender();
     }
+  }
+
+  disconnectedCallback() {
+    unobserve(this._observer);
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+    // queue the reaction for later execution or run it immediately
+    this._scheduleRender();
   }
 }
