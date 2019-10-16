@@ -60,11 +60,12 @@ export default class LitMvvmElement extends LitBaseElement {
     super.connectedCallback();
   }
 
-  // our super._doRender() is wrapped by the observer, thus observing property access
+  // we call super._doRender() through the observer, thus observing property access
   _doRender() {
     this._observer();
   }
 
+  // intended for internal use
   _scheduleRender() {
     if (typeof this.scheduler === 'function') {
       this.scheduler(this._doRender.bind(this));
