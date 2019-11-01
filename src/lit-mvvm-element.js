@@ -70,7 +70,7 @@ export default class LitMvvmElement extends LitBaseElement {
     unobserve(this._observer);
   }
 
-  // we want to guarantee that we don't call render() when the model is undefined
+  // we don't call render() when the model is undefined
   shouldRender() {
     return !!this.model;
   }

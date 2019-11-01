@@ -166,12 +166,10 @@ export default class LitBaseElement extends HTMLElement {
     return true;
   }
 
-  // will only be called when model is defined
   render() {
     return html``;
   }
 
-  // will only be called when model is defined
   firstRendered() {}
 
   rendered() {}
