@@ -119,14 +119,6 @@ export default class LitBaseElement extends HTMLElement {
     //
   }
 
-  render() {
-    return html``;
-  }
-
-  shouldRender() {
-    return true;
-  }
-
   /**
    * Calls `render` to render DOM via lit-html.
    * This is what should be called by 'observable' implementations.
@@ -145,7 +137,7 @@ export default class LitBaseElement extends HTMLElement {
       // insert styling after rendering to ensure adoptedStyles have highest priority.
       if (this._needsShimAdoptedStyleSheets) {
         this._needsShimAdoptedStyleSheets = false;
-        this.constructor._styles.forEach((s) => {
+        this.constructor._styles.forEach(s => {
           const style = document.createElement('style');
           style.textContent = s.cssText;
           this.renderRoot.appendChild(style);
@@ -170,6 +162,16 @@ export default class LitBaseElement extends HTMLElement {
     //
   }
 
+  shouldRender() {
+    return true;
+  }
+
+  // will only be called when model is defined
+  render() {
+    return html``;
+  }
+
+  // will only be called when model is defined
   firstRendered() {}
 
   rendered() {}

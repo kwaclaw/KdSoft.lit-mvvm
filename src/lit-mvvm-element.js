@@ -33,6 +33,12 @@ export default class LitMvvmElement extends LitBaseElement {
     _scheduler.set(this, r => r());
   }
 
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+    // queue the reaction for later execution or run it immediately
+    this._scheduleRender();
+  }
+
   // Setting up observer of view model changes.
   // NOTE: the observer will not get re-triggered until the observed properties are read!!!
   //       that is, until the "get" traps of the proxy are used!!!
@@ -60,6 +66,15 @@ export default class LitMvvmElement extends LitBaseElement {
     super.connectedCallback();
   }
 
+  disconnectedCallback() {
+    unobserve(this._observer);
+  }
+
+  // we want to guarantee that we don't call render() when the model is undefined
+  shouldRender() {
+    return !!this.model;
+  }
+
   // we call super._doRender() through the observer, thus observing property access
   _doRender() {
     this._observer();
@@ -74,15 +89,5 @@ export default class LitMvvmElement extends LitBaseElement {
     } else {
       this._doRender();
     }
-  }
-
-  disconnectedCallback() {
-    unobserve(this._observer);
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-    // queue the reaction for later execution or run it immediately
-    this._scheduleRender();
   }
 }
