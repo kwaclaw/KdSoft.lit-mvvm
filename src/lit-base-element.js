@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-underscore-dangle */
+
 import { html, render, TemplateResult } from 'lit-html';
 
 const supportsAdoptingStyleSheets = 'adoptedStyleSheets' in Document.prototype && 'replace' in CSSStyleSheet.prototype;
@@ -114,11 +115,6 @@ export default class LitBaseElement extends HTMLElement {
     }
   }
 
-  // this handler must be defined to trigger the necessary call to get observedAttributes() !!!
-  attributeChangedCallback(name, oldval, newval) {
-    //
-  }
-
   /**
    * Calls `render` to render DOM via lit-html.
    * This is what should be called by 'observable' implementations.
@@ -153,9 +149,18 @@ export default class LitBaseElement extends HTMLElement {
     }
   }
 
-  connectedCallback() {
+  _initialRender() {
     this._firstRendered = false;
     this._doRender();
+  }
+
+  // this handler must be defined to trigger the necessary call to get observedAttributes() !!!
+  attributeChangedCallback(name, oldval, newval) {
+    //
+  }
+
+  connectedCallback() {
+    this._initialRender();
   }
 
   disconnectedCallback() {
