@@ -75,7 +75,7 @@ export default class LitMvvmElement extends LitBaseElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     super.attributeChangedCallback(name, oldValue, newValue);
-    this._doRender();
+    if (this._observer) this._doRender();
   }
 
   // connectedCallback() {
@@ -99,7 +99,7 @@ export default class LitMvvmElement extends LitBaseElement {
     } else if (typeof this.scheduler === 'object') {
       this.scheduler.add(callback);
     } else {
-      callback();
+      setTimeout(callback, 0);
     }
   }
 }
