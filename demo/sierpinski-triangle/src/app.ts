@@ -69,7 +69,6 @@ class NodeBatchScheduler extends BatchScheduler {
 export class TriangleApplication extends LitMvvmElement<AppModel> {
   constructor() {
     super();
-    this.model = new AppModel(1000);
 
     // for animation we dont need to observe a view model, we just render periodically
     this.animationScheduler = new AnimationScheduler(() => this._doRender());
@@ -80,7 +79,10 @@ export class TriangleApplication extends LitMvvmElement<AppModel> {
 
     // here we are using a low priority queue to schedule rendering
     //this.nodeScheduler = new Queue(priorities.LOW);
-  }
+
+    // this will trigger a render() call, if we are already connected
+    this.model = new AppModel(1000);
+}
 
   private animationScheduler: AnimationScheduler;
   private nodeScheduler: Object;
