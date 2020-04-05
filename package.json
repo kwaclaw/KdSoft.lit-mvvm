@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm",
-  "version": "0.9.94",
+  "version": "0.9.95",
   "description": "MVVM based alternative to LitElement",
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
