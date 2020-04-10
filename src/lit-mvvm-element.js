@@ -9,21 +9,13 @@ const _model = new WeakMap();
 const _scheduler = new WeakMap();
 
 export default class LitMvvmElement extends LitBaseElement {
-  get model() {
-    let result = _model.get(this);
-    if (!result) {
-      result = {};
-      _model.set(this, result);
-    }
-    return result;
-  }
+  get model() { return _model.get(this); }
   set model(value) {
-    const newValue = value || {};
     const oldModel = this.model;
-    _model.set(this, newValue);
+    _model.set(this, value);
     // need to re-initialize rendering for a new model when we are already connected;
     // old observers are now useless, and connectedCallback might not get called anymore
-    if (oldModel !== newValue && this.isConnected) {
+    if (oldModel !== value && this.isConnected) {
       this._initialRender();
     }
   }
@@ -93,9 +85,8 @@ export default class LitMvvmElement extends LitBaseElement {
     unobserve(this._observer);
   }
 
-  // we don't call render() when the model is undefined
   shouldRender() {
-    return !!this.model;
+    return true;
   }
 
   // schedule an operation, useful when performing it after layout has happened;

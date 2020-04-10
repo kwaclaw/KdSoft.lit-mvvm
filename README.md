@@ -10,7 +10,7 @@ An example for a simple check list that would be used like
  `<my-checklist .model=${myModel} show-checkboxes></my-checklist>`:
 
 ```javascript
-import { html } from '../lib/lit-html.js';
+import { html, nothing } from '../lib/lit-html.js';
 import { repeat } from '../lib/lit-html/directives/repeat.js';
 import { LitMvvmElement } from '../lib/@kdsoft/lit-mvvm.js';
 import { observe, unobserve } from '../lib/@nx-js/observer-util.js';
@@ -44,9 +44,9 @@ class MyCheckList extends LitMvvmElement {
     super.disconnectedCallback();
   }
 
-  // first time model is defined for certain, here we can safely
-  // define observers for our model (i.e. track property changes)
   firstRendered() {
+    if (!this.model)
+      return;
     this._selectObserver = observe(() => {
       for (const entry of this.model.selectedEntries) {
         console.log(`Selected: ${entry.item.name}`);
@@ -108,12 +108,17 @@ class MyCheckList extends LitMvvmElement {
         }
       </style>
       <div id="container">
-        <ul id="item-list">
-          ${repeat(this.model.filteredItems,
-            entry => this.model.getItemId(entry.item),
-            entry => this._itemTemplate(entry.item, entry.index, this.showCheckboxes)
-          )}
-        </ul>
+        ${!this.model
+          ? nothing
+          : html`
+            <ul id="item-list">
+              ${repeat(this.model.filteredItems,
+                entry => this.model.getItemId(entry.item),
+                entry => this._itemTemplate(entry.item, entry.index, this.showCheckboxes)
+              )}
+            </ul>
+          `
+        }
       </div>
     `;
   }
