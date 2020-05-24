@@ -8,8 +8,8 @@
     "@nx-js/queue-util": "^1.1.1"
   },
   "devDependencies": {
-    "owc-dev-server": "^0.2.3",
-    "typescript": "^3.4.1"
+    "es-dev-server": "^1.50.8",
+    "typescript": "^3.9.3"
   },
   "browserslist": [
     "last 2 Chrome versions",
@@ -17,7 +17,7 @@
     "last 1 Safari versions"
   ],
   "scripts": {
-    "start-demo": "owc-dev-server --root-dir ../../ --open demo/sierpinski-triangle/",
+    "start-demo": "es-dev-server --node-resolve --root-dir ../../ --open demo/sierpinski-triangle/",
     "build-demo": "tsc --build",
     "build-demo:watch": "tsc --watch"
   }
