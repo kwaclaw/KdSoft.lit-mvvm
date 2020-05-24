@@ -121,6 +121,10 @@ export default class LitBaseElement extends HTMLElement {
    */
   _doRender() {
     if (this.shouldRender()) {
+      if (!this._firstRendered) {
+        this.beforeFirstRender();
+      }
+
       const templateResult = this.render();
       if (templateResult instanceof TemplateResult) {
         render(templateResult, this.shadowRoot, {
@@ -171,10 +175,12 @@ export default class LitBaseElement extends HTMLElement {
     return true;
   }
 
+  beforeFirstRender() {}
+
   render() {
     return html``;
   }
-
+  
   firstRendered() {}
 
   rendered() {}

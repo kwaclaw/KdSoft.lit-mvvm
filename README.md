@@ -44,14 +44,21 @@ class MyCheckList extends LitMvvmElement {
     super.disconnectedCallback();
   }
 
-  firstRendered() {
-    if (!this.model)
-      return;
+  shouldRender() {
+    return !!this.model;
+  }
+
+  // only called when model is defined, due to the shouldRender() override
+  beforeFirstRender() {
     this._selectObserver = observe(() => {
       for (const entry of this.model.selectedEntries) {
         console.log(`Selected: ${entry.item.name}`);
       }
     });
+  }
+
+  firstRendered() {
+    //
   }
 
   rendered() {
