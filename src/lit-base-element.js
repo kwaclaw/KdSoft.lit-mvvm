@@ -198,13 +198,13 @@ export default class LitBaseElement extends HTMLElement {
     return true;
   }
 
-  beforeFirstRender() {}
+  beforeFirstRender() { }
 
   render() {
     return renderNotImplemented;
   }
 
-  firstRendered() {}
+  firstRendered() { }
 
-  rendered() {}
+  rendered() { }
 }
