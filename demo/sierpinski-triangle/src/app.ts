@@ -2,7 +2,7 @@
 import { html } from 'lit-html';
 import { styleMap } from 'lit-html/directives/style-map';
 import { Queue, priorities } from '@nx-js/queue-util';
-import { LitMvvmElement, BatchScheduler } from '../../../lit-mvvm.js';
+import { LitMvvmElement, css, BatchScheduler } from '../../../lit-mvvm';
 
 import { AppModel } from './app-model';
 
@@ -99,6 +99,22 @@ export class TriangleApplication extends LitMvvmElement<AppModel> {
     super.disconnectedCallback();
   }
 
+  static get styles() {
+    return [
+      css`
+        #container {
+          position: absolute;
+          transform-origin: 0 0;
+          left: 50%;
+          top: 50%;
+          width: 10px;
+          height: 10px;
+          background: #eee;
+        }
+      `,
+    ];
+  }
+
   render() {
     let elapsed = this.animationScheduler.elapsed;
     let triangleModel = this.model.triangleModel;
@@ -108,7 +124,7 @@ export class TriangleApplication extends LitMvvmElement<AppModel> {
     const t = (elapsed! / 1000) % 10;
     const scale = 1 + (t > 5 ? 10 - t : t) / 10;
     const transform = 'scaleX(' + (scale / 2.1) + ') scaleY(0.7) translateZ(0.1px)';
-    const style = styleMap({ ...containerStyle, transform });
+    const style = styleMap({ transform });
 
     const animationsPerSecond = this.animationScheduler.renderCount * 1000 / elapsed;
     let rendersPerSecond: any = 'not implemented';
@@ -121,7 +137,7 @@ export class TriangleApplication extends LitMvvmElement<AppModel> {
     return html`<div><span>Animation render events per second: ${animationsPerSecond.toFixed(2)}</span></div>
 <div><span>Node render events per second: ${rendersPerSecond}</span></div>
 <div><span>Node render requests per event: ${renderRequestsPerEvent}</span></div>
-<div style="${style}">
+<div id="container" style="${style}">
   <div>
     <s-triangle .model="${triangleModel}" .scheduler="${this.nodeScheduler}"></s-triangle>
   </div>
