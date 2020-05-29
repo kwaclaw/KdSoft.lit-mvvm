@@ -24,7 +24,7 @@
   "repository": "kwaclaw/KdSoft.lit-mvvm",
   "dependencies": {
     "@nx-js/observer-util": "^4.2.2",
-    "lit-html": "^1.2.0"
+    "lit-html": "^1.2.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
