@@ -1,4 +1,4 @@
-import { observable } from '@nx-js/observer-util';
+import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { TriangleModel } from './triangle-model';
 
 export class AppModel {

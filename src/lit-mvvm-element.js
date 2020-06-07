@@ -1,7 +1,7 @@
 /* eslint-disable lines-between-class-members */
 /* eslint-disable no-underscore-dangle */
 
-import { observe, unobserve } from '@nx-js/observer-util';
+import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
 
 import LitBaseElement from './lit-base-element';
 
