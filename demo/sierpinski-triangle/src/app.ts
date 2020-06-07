@@ -1,22 +1,11 @@
-
 import { html } from 'lit-html';
 import { styleMap } from 'lit-html/directives/style-map';
 import { Queue, priorities } from '@nx-js/queue-util';
-import { LitMvvmElement, css, BatchScheduler } from '../../../lit-mvvm';
+import { LitMvvmElement, css, BatchScheduler } from '../../../lit-mvvm.js';
 
 import { AppModel } from './app-model';
 
 import './triangle';
-
-const containerStyle = {
-  position: 'absolute',
-  transformOrigin: '0 0',
-  left: '50%',
-  top: '50%',
-  width: '10px',
-  height: '10px',
-  background: '#eee',
-};
 
 class AnimationScheduler {
   constructor(render: () => void) {
@@ -82,7 +71,7 @@ export class TriangleApplication extends LitMvvmElement<AppModel> {
 
     // this will trigger a render() call, if we are already connected
     this.model = new AppModel(1000);
-}
+  }
 
   private animationScheduler: AnimationScheduler;
   private nodeScheduler: Object;
@@ -111,7 +100,7 @@ export class TriangleApplication extends LitMvvmElement<AppModel> {
           height: 10px;
           background: #eee;
         }
-      `,
+      `
     ];
   }
 
@@ -134,14 +123,16 @@ export class TriangleApplication extends LitMvvmElement<AppModel> {
       renderRequestsPerEvent = this.nodeScheduler['renderRequestCount'];
     }
 
-    return html`<div><span>Animation render events per second: ${animationsPerSecond.toFixed(2)}</span></div>
-<div><span>Node render events per second: ${rendersPerSecond}</span></div>
-<div><span>Node render requests per event: ${renderRequestsPerEvent}</span></div>
-<div id="container" style="${style}">
-  <div>
-    <s-triangle .model="${triangleModel}" .scheduler="${this.nodeScheduler}"></s-triangle>
-  </div>
-</div>`;
+    return html`
+      <div><span>Animation render events per second: ${animationsPerSecond.toFixed(2)}</span></div>
+      <div><span>Node render events per second: ${rendersPerSecond}</span></div>
+      <div><span>Node render requests per event: ${renderRequestsPerEvent}</span></div>
+      <div id="container" style="${style}">
+        <div>
+          <s-triangle .model="${triangleModel}" .scheduler="${this.nodeScheduler}"></s-triangle>
+        </div>
+      </div>
+    `;
   }
 }
 

@@ -17,9 +17,11 @@ export class SierpinskiTriangle extends LitMvvmElement<TriangleModel> {
   render() {
     let m = this.model;
     if (m.dot) {
-      return html`<s-dot .model="${m.dot}" .scheduler="${this.scheduler}">
-  ${m.sharedModel.seconds}
-</s-dot>`;
+      return html`
+        <s-dot .model="${m.dot}" .scheduler="${this.scheduler}">
+          ${m.sharedModel.seconds}
+        </s-dot>
+      `;
     }
 
     const slowDown = false;
@@ -30,9 +32,11 @@ export class SierpinskiTriangle extends LitMvvmElement<TriangleModel> {
       }
     }
 
-    return html`<s-triangle .model="${m.middle}" .scheduler="${this.scheduler}"></s-triangle>
-<s-triangle .model="${m.left}" .scheduler="${this.scheduler}"></s-triangle>
-<s-triangle .model="${m.right}" .scheduler="${this.scheduler}"></s-triangle>`;
+    return html`
+      <s-triangle .model="${m.middle}" .scheduler="${this.scheduler}"></s-triangle>
+      <s-triangle .model="${m.left}" .scheduler="${this.scheduler}"></s-triangle>
+      <s-triangle .model="${m.right}" .scheduler="${this.scheduler}"></s-triangle>
+    `;
   }
 }
 

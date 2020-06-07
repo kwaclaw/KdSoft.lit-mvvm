@@ -1,14 +1,38 @@
-
 import { html } from 'lit-html';
 import { styleMap } from 'lit-html/directives/style-map';
-import { LitMvvmElement } from '../../../lit-mvvm.js';
+import { LitMvvmElement, css } from '../../../lit-mvvm.js';
 
 import { DotModel } from './dot-model';
-
 
 export class Dot extends LitMvvmElement<DotModel> {
   constructor() {
     super();
+  }
+
+  static get styles() {
+    return [
+      css`
+        :host {
+          position: absolute;
+          background: #61dafb;
+          font: normal 15px sans-serif;
+          text-align: center;
+          cursor: pointer;
+        }
+
+        div {
+          position: absolute;
+          background: #61dafb;
+          font: normal 15px sans-serif;
+          text-align: center;
+          cursor: pointer;
+        }
+
+        div:hover {
+          background: #ff0;
+        }
+      `
+    ];
   }
 
   render() {
@@ -21,8 +45,7 @@ export class Dot extends LitMvvmElement<DotModel> {
       left: (x) + 'px',
       top: (y) + 'px',
       borderRadius: (s / 2) + 'px',
-      lineHeight: (s) + 'px',
-      background: hover ? '#ff0' : '#61dafb',
+      lineHeight: (s) + 'px'
     });
 
     const slowDown = false;
@@ -33,26 +56,11 @@ export class Dot extends LitMvvmElement<DotModel> {
       }
     }
 
-    return html`<style>
-  :host {
-    position: absolute;
-    background: #61dafb;
-    font: normal 15px sans-serif;
-    text-align: center;
-    cursor: pointer;
-  }
-
-  div {
-    position: absolute;
-    background: #61dafb;
-    font: normal 15px sans-serif;
-    text-align: center;
-    cursor: pointer;
-  }
-</style>
-<div style="${style}" @mouseover="${() => m.enter()}" @mouseout="${() => m.leave()}">
-  ${hover ? '*' : ''}<slot></slot>${hover ? '*' : ''}
-</div>`;
+    return html`
+      <div style="${style}" @mouseover="${() => m.enter()}" @mouseout="${() => m.leave()}">
+        ${hover ? '*' : ''}<slot></slot>${hover ? '*' : ''}
+      </div>
+    `;
   }
 }
 
