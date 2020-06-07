@@ -7,18 +7,9 @@
   "dependencies": {
     "@nx-js/queue-util": "^1.1.1"
   },
-  "devDependencies": {
-    "es-dev-server": "^1.53.0",
-    "typescript": "^3.9.3"
-  },
   "browserslist": [
     "last 2 Chrome versions",
     "last 2 Firefox versions",
     "last 1 Safari versions"
-  ],
-  "scripts": {
-    "start-demo": "es-dev-server --node-resolve --root-dir ../../ --open demo/sierpinski-triangle/",
-    "build-demo": "tsc --build",
-    "build-demo:watch": "tsc --watch"
-  }
+  ]
 }

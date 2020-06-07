@@ -1,9 +1,9 @@
 
-To build the sierpinski-triangle demo:
+To install the sierpinski-triangle demo:
   - run npm install in the root directory
-  - switch to the sierpinski-triangle directory
+  - switch to the demo/sierpinski-triangle directory
   - run "npm install" 
-  - run "npm run build-demo"
 
 To run the demo:
-  - use "npm run start-demo", this starts the dev server and opens a browser
+  - switch to the root directory
+  - use "npm run sierpinski-demo", this starts the dev server and opens a browser
