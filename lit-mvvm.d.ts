@@ -1,4 +1,6 @@
 
+import { CSSResult } from './src/css-tag.js';
+
 export declare type CSSResultOrNative = CSSResult | CSSStyleSheet;
 export interface CSSResultArray extends Array<CSSResultOrNative | CSSResultArray> { }
 
