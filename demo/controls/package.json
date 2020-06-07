@@ -1,0 +1,15 @@
+{
+  "name": "controls-demo",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Karl Waclawek",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@nx-js/queue-util": "^1.1.1"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 1 Safari versions"
+  ]
+}

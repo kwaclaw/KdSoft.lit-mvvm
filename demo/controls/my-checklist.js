@@ -1,14 +1,3 @@
-Based on lit-element. An alternative that replaces observable properties with an observable
-and shareable view model. It also separates out render scheduling to be pluggable.
-
-Package available from https://www.npmjs.com/package/@kdsoft/lit-mvvm.
-
-There are two demo projects in the GitHub repository, they work best from VS Code (for instructions, see their README files).
-
-An example for a simple check list that would be used like
- `<my-checklist .model=${myModel} show-checkboxes></my-checklist>` where myModel needs to be an instance of `MyChecklistModel` (see the controls-demo for details):
-
-```javascript
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import { html, nothing } from 'lit-html';
 import { repeat } from 'lit-html/directives/repeat';
@@ -156,4 +145,3 @@ class MyCheckList extends LitMvvmElement {
 }
 
 window.customElements.define('my-checklist', MyCheckList);
-```

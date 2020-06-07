@@ -34,6 +34,7 @@
     "typescript": "^3.9.5"
   },
   "scripts": {
+    "controls-demo": "es-dev-server --node-resolve --open ./demo/controls/",
     "sierpinski-demo": "tsc --build ./demo/sierpinski-triangle/ && es-dev-server --node-resolve --open ./demo/sierpinski-triangle/"
   }
 }
