@@ -16,7 +16,7 @@ export default class LitMvvmElement extends LitBaseElement {
     // need to re-initialize rendering for a new model when we are already connected;
     // old observers are now useless, and connectedCallback might not get called anymore
     if (oldModel !== value && this.isConnected) {
-      this._initialRender();
+      this.schedule(this._initialRender.bind(this));
     }
   }
 
@@ -74,15 +74,17 @@ export default class LitMvvmElement extends LitBaseElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     super.attributeChangedCallback(name, oldValue, newValue);
-    if (this._observer) this._doRender();
+    if (this._observer) this.schedule(this._doRender.bind(this));
   }
 
-  // connectedCallback() {
-  //   super.connectedCallback();
-  // }
+  connectedCallback() {
+    super.connectedCallback();
+    this.schedule(this._initialRender.bind(this));
+  }
 
   disconnectedCallback() {
     unobserve(this._observer);
+    super.disconnectedCallback();
   }
 
   shouldRender() {

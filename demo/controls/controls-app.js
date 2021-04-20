@@ -1,5 +1,5 @@
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { html } from 'lit-html';
+import { html } from 'lit';
 import { LitMvvmElement, css } from '../../lit-mvvm.js';
 
 import './my-checklist.js';

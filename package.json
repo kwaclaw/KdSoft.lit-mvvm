@@ -23,15 +23,16 @@
   ],
   "repository": "kwaclaw/KdSoft.lit-mvvm",
   "dependencies": {
+    "@lit/reactive-element": "^1.0.0-pre.3",
     "@nx-js/observer-util": "^4.2.2",
-    "lit-html": "^1.2.1"
+    "lit": "^2.0.0-pre.2"
   },
   "devDependencies": {
-    "es-dev-server": "^1.54.1",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.0",
-    "typescript": "^3.9.5"
+    "es-dev-server": "^2.1.0",
+    "eslint": "^7.24.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "typescript": "^4.2.4"
   },
   "scripts": {
     "controls-demo": "es-dev-server --node-resolve --open ./demo/controls/",

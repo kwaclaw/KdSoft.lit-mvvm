@@ -1,6 +1,6 @@
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { html, nothing } from 'lit-html';
-import { repeat } from 'lit-html/directives/repeat';
+import { html, nothing } from 'lit';
+import { repeat } from 'lit/directives/repeat.js';
 import { LitMvvmElement, css } from '../../lit-mvvm.js';
 
 class MyCheckList extends LitMvvmElement {
@@ -47,7 +47,7 @@ class MyCheckList extends LitMvvmElement {
       <input type="checkbox" id=${chkid}
         tabindex="-1"
         class="my-checkbox"
-        @click=${this._checkboxClicked}
+        @click=${e => this._checkboxClicked(e)}
         .checked=${model.isItemSelected(item)}
         ?disabled=${item.disabled} />
     `;
@@ -60,7 +60,7 @@ class MyCheckList extends LitMvvmElement {
       <li data-item-index="${indx}"
         tabindex="${tabindex}"
         class="list-item ${disabledString}"
-        @click=${this._itemClicked}>
+        @click=${e => this._itemClicked(e)}>
         <div>
           ${showCheckboxes ? this._checkBoxTemplate(this.model, item, indx) : nothing}
           ${this.getItemTemplate(item)}
