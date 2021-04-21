@@ -15,7 +15,7 @@ export default class LitMvvmElement extends LitBaseElement {
     _model.set(this, value);
     // need to re-initialize rendering for a new model when we are already connected;
     // old observers are now useless, and connectedCallback might not get called anymore
-    if (oldModel !== value && this.isConnected) {
+    if (oldModel !== value && this.isConnected && this.renderRoot) {
       this.schedule(this._initialRender.bind(this));
     }
   }
