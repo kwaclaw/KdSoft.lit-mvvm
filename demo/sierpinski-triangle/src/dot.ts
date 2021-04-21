@@ -1,5 +1,5 @@
-import { html } from 'lit-html';
-import { styleMap } from 'lit-html/directives/style-map';
+import { html } from 'lit';
+import { styleMap } from 'lit/directives/style-map.js';
 import { LitMvvmElement, css } from '../../../lit-mvvm.js';
 
 import { DotModel } from './dot-model';

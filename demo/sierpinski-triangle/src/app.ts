@@ -1,5 +1,5 @@
 import { html } from 'lit-html';
-import { styleMap } from 'lit-html/directives/style-map';
+import { styleMap } from 'lit/directives/style-map.js';
 import { Queue, priorities } from '@nx-js/queue-util';
 import { LitMvvmElement, css, BatchScheduler } from '../../../lit-mvvm.js';
 
