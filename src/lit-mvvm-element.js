@@ -74,7 +74,7 @@ export default class LitMvvmElement extends LitBaseElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     super.attributeChangedCallback(name, oldValue, newValue);
-    if (this._observer) this.schedule(this._doRender.bind(this));
+    if (this._observer) this.schedule();
   }
 
   connectedCallback() {
@@ -94,6 +94,8 @@ export default class LitMvvmElement extends LitBaseElement {
   // schedule an operation, useful when performing it after layout has happened;
   // typically called from an override of rendered()
   schedule(callback) {
+    if (!callback) callback = this._doRender.bind(this);
+
     if (typeof this.scheduler === 'function') {
       this.scheduler(callback);
     } else if (typeof this.scheduler === 'object') {
