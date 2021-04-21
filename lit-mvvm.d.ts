@@ -3,7 +3,7 @@ import { CSSResultGroup, CSSResultFlatArray } from '@lit/reactive-element/css-ta
 export * from '@lit/reactive-element/css-tag.js';
 
 declare const finalized = 'finalized';
-export declare type Initializer = (element: ReactiveElement) => void;
+export declare type Initializer = (element: LitBaseElement) => void;
 
 export declare class LitBaseElement extends HTMLElement {
   static addInitializer(initializer: Initializer): void;
