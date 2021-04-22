@@ -1,17 +1,17 @@
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import { html } from 'lit';
-import { LitMvvmElement, css } from '../../lit-mvvm.js';
+import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
 
-import './my-checklist.js';
-import MyChecklistModel from './my-checklist-model';
+import { KdSoftChecklistModel } from '@kdsoft/lit-mvvm-components';
 
 class ControlsApp extends LitMvvmElement {
   constructor() {
     super();
     this.scheduler = new Queue(priorities.HIGH);
-    this.checklistModel = new MyChecklistModel(
-      [{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }, { id: 3, name: 'Gamma' }, { id: 4, name: 'Delta' }, { id: 4, name: 'Epsilon' }],
+    this.checklistModel = new KdSoftChecklistModel(
+      [{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }, { id: 3, name: 'Gamma' }, { id: 4, name: 'Delta' }, { id: 5, name: 'Epsilon' }],
       [1],
+      true,
       item => item.name
     );
   }
@@ -69,7 +69,7 @@ class ControlsApp extends LitMvvmElement {
           overflow: initial;
           text-overflow: initial;
         }
-        my-checklist {
+        kdsoft-checklist {
           width: 100%;
           border: 1px solid grey;
           display: block;
@@ -93,10 +93,10 @@ class ControlsApp extends LitMvvmElement {
             <label for="selected-items">Selected:</label>
             <span id="selected-items">${selectedItemsText}</span>
           </p>
-          <my-checklist
-          .model=${this.checklistModel}
-          .getItemTemplate=${item => this.getChecklistItemTemplate(item)}
-          show-checkboxes></my-checklist>
+          <kdsoft-checklist
+            .model=${this.checklistModel}
+            .getItemTemplate=${item => this.getChecklistItemTemplate(item)}
+            show-checkboxes></kdsoft-checklist>
         </div>
       </div>
     `;

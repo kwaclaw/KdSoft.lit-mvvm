@@ -4,12 +4,30 @@
   "description": "",
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
+  "scripts": {
+    "start": "snowpack dev",
+    "build": "snowpack build"
+  },
   "dependencies": {
+    "@kdsoft/lit-mvvm": "file:../..",
+    "@kdsoft/lit-mvvm-components": "file:../../components",
     "@nx-js/queue-util": "^1.1.1"
   },
   "browserslist": [
     "last 2 Chrome versions",
     "last 2 Firefox versions",
     "last 1 Safari versions"
-  ]
+  ],
+  "devDependencies": {
+    "autoprefixer": "^10.2.5",
+    "postcss": "^8.2.10",
+    "snowpack": "^3.3.5",
+    "tailwindcss": "^2.1.1"
+  },
+  "snowpack": {
+    "workspaceRoot": "../..",
+    "exclude": [
+      "**/node_modules/**/*"
+    ]
+  }
 }
