@@ -1,0 +1,42 @@
+{
+  "name": "@kdsoft/lit-mvvm-components",
+  "version": "1.0.0",
+  "description": "Webcomponents based on @kdsoft-lit-mvvm",
+  "author": "Karl Waclawek",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "lit-html",
+    "mvvm",
+    "lit",
+    "nx-js",
+    "observable",
+    "observe",
+    "viewmodel",
+    "webcomponent"
+  ],
+  "main": "lit-mvvm-components.js",
+  "module": "lit-mvvm-components.js",
+  "typings": "lit-mvvm-components.d.ts",
+  "files": [
+    "*.js",
+    "./src/*.js",
+    "./css/**/*.css",
+    "./css/assets/**/*.*"
+  ],
+  "repository": "kwaclaw/KdSoft.lit-mvvm-components",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
+    "@kdsoft/lit-mvvm": "file:../..",
+    "@nx-js/queue-util": "^1.1.1"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 1 Safari versions"
+  ],
+  "devDependencies": {
+    "autoprefixer": "^10.2.5",
+    "postcss": "^8.2.10",
+    "tailwindcss": "^2.1.1"
+  }
+}
