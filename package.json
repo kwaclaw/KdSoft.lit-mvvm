@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "MVVM based alternative to LitElement",
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
@@ -23,9 +23,9 @@
   ],
   "repository": "kwaclaw/KdSoft.lit-mvvm",
   "dependencies": {
-    "@lit/reactive-element": "^1.0.0-pre.3",
+    "@lit/reactive-element": "^1.0.0-rc.1",
     "@nx-js/observer-util": "^4.2.2",
-    "lit": "^2.0.0-pre.2"
+    "lit": "^2.0.0-rc.1"
   },
   "devDependencies": {
     "es-dev-server": "^2.1.0",
