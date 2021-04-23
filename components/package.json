@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Webcomponents based on @kdsoft-lit-mvvm",
   "author": "Karl Waclawek",
+  "email": "karl@waclawek.net",
   "license": "BSD-3-Clause",
+  "type": "module",
   "keywords": [
     "lit-html",
     "mvvm",
@@ -19,11 +21,13 @@
   "typings": "lit-mvvm-components.d.ts",
   "files": [
     "*.js",
-    "./src/*.js",
-    "./css/**/*.css",
-    "./css/assets/**/*.*"
+    "/styles/*.js",
+    "/css/assets/**/*.*"
   ],
-  "repository": "kwaclaw/KdSoft.lit-mvvm-components",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kwaclaw/KdSoft.lit-mvvm-components.git"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@kdsoft/lit-mvvm": "file:../..",
@@ -36,7 +40,12 @@
   ],
   "devDependencies": {
     "autoprefixer": "^10.2.5",
+    "glob": "^7.1.6",
     "postcss": "^8.2.10",
     "tailwindcss": "^2.1.1"
+  },
+  "scripts": {
+    "build": "node wrap-css.js css/**/*.css styles css",
+    "prepare": "npm run build"
   }
 }

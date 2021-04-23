@@ -4,9 +4,12 @@ import { classMap } from 'lit/directives/class-map.js';
 import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
 import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import sharedStyles from './styles/kdsoft-shared-styles.js';
-import styleLinks from './styles/kdsoft-style-links.js';
 import KdSoftDragDropProvider from './kdsoft-drag-drop-provider.js';
+
+import tailwindStyles from './styles/tailwind-styles.js';
+import checkboxStyles from './styles/kdsoft-checkbox-styles.js';
+import appStyles from './styles/etw-app-styles.js';
+import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
 const arrowBase = { far: true, 'fa-lg': true, 'text-gray-500': true, 'align-text-bottom': true };
 
@@ -255,6 +258,10 @@ class KdSoftChecklist extends LitMvvmElement {
 
   static get styles() {
     return [
+      tailwindStyles,
+      fontAwesomeStyles,
+      checkboxStyles,
+      appStyles,
       css`
         :host {
           display: block;
@@ -309,8 +316,6 @@ class KdSoftChecklist extends LitMvvmElement {
     const hasArrows = this.arrows;
 
     const result = html`
-      ${sharedStyles}
-      <link rel="stylesheet" type="text/css" href=${styleLinks.checkbox} />
       <style>
         ${this._getItemSelectedClass(showCheckboxes)}
       </style>

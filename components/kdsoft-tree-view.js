@@ -5,7 +5,11 @@ import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import './kdsoft-expander.js';
 import './kdsoft-drop-target.js';
 import KdSoftDragDropProvider from './kdsoft-drag-drop-provider.js';
-import sharedStyles from './styles/kdsoft-shared-styles.js';
+
+import tailwindStyles from './styles/tailwind-styles.js';
+import checkboxStyles from './styles/kdsoft-checkbox-styles.js';
+import appStyles from './styles/etw-app-styles.js';
+import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
 class KdSoftTreeView extends LitMvvmElement {
   constructor() {
@@ -37,6 +41,10 @@ class KdSoftTreeView extends LitMvvmElement {
   /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
   static get styles() {
     return [
+      tailwindStyles,
+      fontAwesomeStyles,
+      checkboxStyles,
+      appStyles,
       css`
         .expander-icon {
           transition: transform var(--trans-time, 300ms) ease;
@@ -89,7 +97,6 @@ class KdSoftTreeView extends LitMvvmElement {
 
   render() {
     return html`
-      ${sharedStyles}
       ${this.createTreeView(this.model, true, true)}
     `;
   }

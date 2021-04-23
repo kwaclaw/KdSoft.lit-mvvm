@@ -1,4 +1,3 @@
-
 import { observable, raw } from '@nx-js/observer-util/dist/es.es6.js';
 
 function iterateSelectedItems(items, selectedItems) {

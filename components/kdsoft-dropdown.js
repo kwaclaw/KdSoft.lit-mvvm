@@ -1,7 +1,11 @@
 import { html } from 'lit';
 import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import sharedStyles from './styles/kdsoft-shared-styles.js';
+
+import tailwindStyles from './styles/tailwind-styles.js';
+import checkboxStyles from './styles/kdsoft-checkbox-styles.js';
+import appStyles from './styles/etw-app-styles.js';
+import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
 function isChildOf(parent, child) {
   if (!child) {
@@ -104,6 +108,10 @@ class KdSoftDropdown extends LitMvvmElement {
 
   static get styles() {
     return [
+      tailwindStyles,
+      fontAwesomeStyles,
+      checkboxStyles,
+      appStyles,
       css`
         #container {
           display: flex;
@@ -130,7 +138,6 @@ class KdSoftDropdown extends LitMvvmElement {
   render() {
     const selText = this.model.selectedText;
     const result = html`
-      ${sharedStyles}
       <style>
         :host {
           display: inline-block;

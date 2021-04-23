@@ -1,7 +1,11 @@
 import { html } from 'lit';
 import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import sharedStyles from './styles/kdsoft-shared-styles.js';
+
+import tailwindStyles from './styles/tailwind-styles.js';
+import checkboxStyles from './styles/kdsoft-checkbox-styles.js';
+import appStyles from './styles/etw-app-styles.js';
+import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
 function updateExpansion(element, doExpand) {
   // get the height of the element's inner content, regardless of its actual size
@@ -71,6 +75,10 @@ class KdSoftExpander extends LitMvvmElement {
 
   static get styles() {
     return [
+      tailwindStyles,
+      fontAwesomeStyles,
+      checkboxStyles,
+      appStyles,
       css`
         :host {
           display: block;
@@ -117,7 +125,6 @@ class KdSoftExpander extends LitMvvmElement {
 
   render() {
     const result = html`
-      ${sharedStyles}
       <div id="container">
         <slot name="expander" id="expander" tabindex="1" @click=${this._expanderClicked}>
           <i id="expander-icon" class="fas fa-lg fa-caret-right text-blue"></i>
