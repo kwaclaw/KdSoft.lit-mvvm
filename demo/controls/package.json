@@ -28,6 +28,15 @@
     "workspaceRoot": "../..",
     "exclude": [
       "**/node_modules/**/*"
-    ]
+    ],
+    "packageOptions": {
+      "knownEntrypoints": [
+        "@lit/reactive-element/css-tag.js",
+        "@nx-js/observer-util/dist/es.es6.js",
+        "lit/directives/repeat.js",
+        "lit/directives/class-map.js",
+        "lit/html.js"
+      ]
+    }
   }
 }
