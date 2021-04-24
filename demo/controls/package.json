@@ -19,10 +19,7 @@
     "last 1 Safari versions"
   ],
   "devDependencies": {
-    "autoprefixer": "^10.2.5",
-    "postcss": "^8.2.10",
-    "snowpack": "^3.3.5",
-    "tailwindcss": "^2.1.1"
+    "snowpack": "^3.3.5"
   },
   "snowpack": {
     "workspaceRoot": "../..",
