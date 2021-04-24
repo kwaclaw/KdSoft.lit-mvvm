@@ -17,9 +17,7 @@ function wrap(source) {
 export default css\`
 
 ${source.replace(/(`|\\|\${)/g, '\\$1')}\n\`;
-
-`
-  ;
+`;
 }
 
 function writeWrappedFile(inFile, outFile) {
