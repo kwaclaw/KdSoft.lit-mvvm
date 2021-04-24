@@ -5,7 +5,6 @@
   "author": "Karl Waclawek",
   "email": "karl@waclawek.net",
   "license": "BSD-3-Clause",
-  "type": "module",
   "keywords": [
     "lit-html",
     "mvvm",
@@ -52,10 +51,10 @@
     "tailwindcss": "^2.1.1"
   },
   "scripts": {
-    "postcss-fontawesome": "postcss node_modules/@fortawesome/fontawesome-free/css/all.css -o tmp/fontawesome/css/all.css",
-    "postcss-css": "postcss css/**/*.css --dir tmp",
-    "wrap-css": "node wrap-css.js tmp/**/*.css styles tmp",
-    "prebuild": "rimraf tmp/**/*",
+    "postcss-fontawesome": "postcss node_modules/@fortawesome/fontawesome-free/css/all.css -o _tmp/fontawesome/css/all.css",
+    "postcss-css": "postcss css/**/*.css --dir _tmp",
+    "wrap-css": "node scripts/wrap-css.mjs _tmp/**/*.css styles _tmp",
+    "prebuild": "rimraf _tmp/**/*",
     "build": "npm run postcss-fontawesome && npm run postcss-css && npm run wrap-css",
     "prepare": "npm run build"
   },
