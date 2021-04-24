@@ -8,7 +8,6 @@ import KdSoftDragDropProvider from './kdsoft-drag-drop-provider.js';
 
 import tailwindStyles from './styles/tailwind-styles.js';
 import checkboxStyles from './styles/kdsoft-checkbox-styles.js';
-import appStyles from './styles/etw-app-styles.js';
 import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
 class KdSoftTreeView extends LitMvvmElement {
@@ -44,7 +43,6 @@ class KdSoftTreeView extends LitMvvmElement {
       tailwindStyles,
       fontAwesomeStyles,
       checkboxStyles,
-      appStyles,
       css`
         .expander-icon {
           transition: transform var(--trans-time, 300ms) ease;

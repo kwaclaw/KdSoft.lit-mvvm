@@ -8,7 +8,6 @@ import KdSoftDragDropProvider from './kdsoft-drag-drop-provider.js';
 
 import tailwindStyles from './styles/tailwind-styles.js';
 import checkboxStyles from './styles/kdsoft-checkbox-styles.js';
-import appStyles from './styles/etw-app-styles.js';
 import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
 const arrowBase = { far: true, 'fa-lg': true, 'text-gray-500': true, 'align-text-bottom': true };
@@ -261,7 +260,6 @@ class KdSoftChecklist extends LitMvvmElement {
       tailwindStyles,
       fontAwesomeStyles,
       checkboxStyles,
-      appStyles,
       css`
         :host {
           display: block;

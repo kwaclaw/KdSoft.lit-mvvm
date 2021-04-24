@@ -4,7 +4,6 @@ import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 
 import tailwindStyles from './styles/tailwind-styles.js';
 import checkboxStyles from './styles/kdsoft-checkbox-styles.js';
-import appStyles from './styles/etw-app-styles.js';
 import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
 function isChildOf(parent, child) {
@@ -111,7 +110,6 @@ class KdSoftDropdown extends LitMvvmElement {
       tailwindStyles,
       fontAwesomeStyles,
       checkboxStyles,
-      appStyles,
       css`
         #container {
           display: flex;
