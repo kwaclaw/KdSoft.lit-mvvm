@@ -20,7 +20,8 @@
   "typings": "lit-mvvm-components.d.ts",
   "files": [
     "*.js",
-    "/styles/**/*"
+    "/styles/**/*",
+    "/scripts/**/*"
   ],
   "repository": {
     "type": "git",
