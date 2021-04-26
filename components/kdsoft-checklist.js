@@ -171,7 +171,7 @@ class KdSoftChecklist extends LitMvvmElement {
       <input type="checkbox" id=${chkid}
         tabindex="-1"
         class="kdsoft-checkbox mr-2 my-auto"
-        @click=${e => this._checkboxClicked(e)}
+        @click=${this._checkboxClicked}
         .checked=${model.isItemSelected(item)}
         ?disabled=${item.disabled} />
     `;
@@ -190,8 +190,8 @@ class KdSoftChecklist extends LitMvvmElement {
       <div part="item" class="w-full inline-flex items-baseline">
         ${hasArrows
           ? html`
-              <span class="leading-none cursor-pointer my-auto mr-1" @click=${e => this._upClick(e)}><i class=${classMap(upArrowClasses)}></i></span>
-              <span class="leading-none cursor-pointer my-auto mr-2" @click=${e => this._downClick(e)}><i class=${classMap(downArrowClasses)}></i></span>
+              <span class="leading-none cursor-pointer my-auto mr-1" @click=${this._upClick}><i class=${classMap(upArrowClasses)}></i></span>
+              <span class="leading-none cursor-pointer my-auto mr-2" @click=${this._downClick}><i class=${classMap(downArrowClasses)}></i></span>
             `
           : nothing
         }
@@ -204,7 +204,7 @@ class KdSoftChecklist extends LitMvvmElement {
       <li data-item-index="${indx}"
           tabindex="${tabindex}"
           class="list-item whitespace-nowrap ${selectedClass} ${disabledClass}"
-          @click=${e => this._itemClicked(e)}
+          @click=${this._itemClicked}
       >
         ${listItemContent}
       </li>
@@ -320,7 +320,7 @@ class KdSoftChecklist extends LitMvvmElement {
       <div id="container">
         <ul id="item-list"
           class="bg-white border-solid border border-gray-400 overflow-y-auto"
-          @keydown=${e => this._itemListKeydown(e)}
+          @keydown=${this._itemListKeydown}
         >
           ${repeat(this.model.filteredItems,
             entry => this.model.getItemId(entry.item),
