@@ -2,12 +2,12 @@
 /* eslint-disable no-underscore-dangle */
 
 import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
-import LitBaseElement from './lit-base-element';
+import { LitBaseElement } from './lit-base-element';
 
 const _model = new WeakMap();
 const _scheduler = new WeakMap();
 
-export default class LitMvvmElement extends LitBaseElement {
+export class LitMvvmElement extends LitBaseElement {
   get model() { return _model.get(this); }
   set model(value) {
     const oldModel = this.model;

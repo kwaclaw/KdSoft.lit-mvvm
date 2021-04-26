@@ -20,7 +20,7 @@ const finalized = 'finalized';
  */
 const renderNotImplemented = {};
 
-export default class LitBaseElement extends HTMLElement {
+export class LitBaseElement extends HTMLElement {
   constructor() {
     super();
     this._initialize();
