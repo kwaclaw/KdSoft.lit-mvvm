@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 
 import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
+import { render as litRender, noChange } from 'lit/html.js';
 import { LitBaseElement } from './lit-base-element';
 
 const _model = new WeakMap();
@@ -29,7 +30,20 @@ export class LitMvvmElement extends LitBaseElement {
 
   constructor() {
     super();
+    this.renderOptions = {
+      host: this
+    },
+    this.__childPart = void 0;
     _scheduler.set(this, r => r());
+  }
+
+  createRenderRoot() {
+    const rr = super.createRenderRoot();
+    const rb = this.renderOptions.renderBefore;
+    if (rb === null || rb === void 0) {
+      this.renderOptions.renderBefore = rr.firstChild;
+    }
+    return rr;
   }
 
   // Setting up observer of view model changes.
@@ -44,8 +58,8 @@ export class LitMvvmElement extends LitBaseElement {
 
     this._observer = observe(
       () => {
-        // super._doRender() reads the relevant view model properties synchronously.
-        super._doRender();
+        // super._render() reads the relevant view model properties synchronously.
+        super._render();
       },
       {
         // We dont' want to run the observer right away (to start the observation process),
@@ -60,15 +74,26 @@ export class LitMvvmElement extends LitBaseElement {
 
   _initialRender() {
     this._setupObserver();
-    // Triggering the initial call to this._doRender(), thus reading observable properties for the first time.
+    // Triggering the initial call to this._render(), thus reading observable properties for the first time.
     // NOTE: this is also necessary because the observer will not get re-triggered until the observed
     //       properties are read!!!, that is, until the "get" traps of the proxy are used!!!
     super._initialRender();
   }
 
-  // we call super._doRender() through the observer, thus observing property access
-  _doRender() {
+  // this is how lit-html gets involved
+  _finalRender() {
+    const value = this.render();
+    this.__childPart = litRender(value, this.renderRoot, this.renderOptions);
+  }
+
+  // we call super._render() through the observer, thus observing property access
+  _render() {
     this._observer();
+  }
+
+  // override in derived class
+  render() {
+    return noChange;
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -78,12 +103,20 @@ export class LitMvvmElement extends LitBaseElement {
 
   connectedCallback() {
     super.connectedCallback();
+    const cp = this.__childPart;
+    if (cp !== null && cp !== void 0) {
+      cp.setConnected(true);
+    }
     this.schedule(this._initialRender.bind(this));
   }
 
   disconnectedCallback() {
     unobserve(this._observer);
     super.disconnectedCallback();
+    const cp = this.__childPart;
+    if (cp !== null && cp !== void 0) {
+      cp.setConnected(false);
+    }
   }
 
   shouldRender() {
@@ -93,7 +126,9 @@ export class LitMvvmElement extends LitBaseElement {
   // schedule an operation, useful when performing it after layout has happened;
   // typically called from an override of rendered()
   schedule(callback) {
-    if (!callback) callback = this._doRender.bind(this);
+    if (!callback) {
+      callback = this._render.bind(this);
+    }
 
     if (typeof this.scheduler === 'function') {
       this.scheduler(callback);
@@ -104,3 +139,5 @@ export class LitMvvmElement extends LitBaseElement {
     }
   }
 }
+
+LitMvvmElement.finalized = true;

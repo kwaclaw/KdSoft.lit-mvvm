@@ -3,7 +3,6 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-underscore-dangle */
 
-import { render as litRender } from 'lit/html.js';
 import { getCompatibleStyle, adoptStyles } from '@lit/reactive-element/css-tag.js';
 
 /**
@@ -12,13 +11,7 @@ import { getCompatibleStyle, adoptStyles } from '@lit/reactive-element/css-tag.j
  * https://github.com/google/closure-compiler/issues/3177 and others) so we use
  * this hack to bypass any rewriting by the compiler.
  */
-const finalized = 'finalized';
-
-/**
- * Sentinel value used to avoid calling lit-html's render function when
- * subclasses do not implement `render`
- */
-const renderNotImplemented = {};
+export const finalized = 'finalized';
 
 export class LitBaseElement extends HTMLElement {
   constructor() {
@@ -28,8 +21,8 @@ export class LitBaseElement extends HTMLElement {
 
   /** @nocollapse */
   static addInitializer(initializer) {
-    const _a = this._initializers;
-    if (_a === null || _a === void 0) this._initializers = [];
+    const ins = this._initializers;
+    if (ins === null || ins === void 0) this._initializers = [];
     this._initializers.push(initializer);
   }
 
@@ -94,8 +87,8 @@ export class LitBaseElement extends HTMLElement {
  * @internal
  */
   _initialize() {
-    const _a = this.constructor._initializers;
-    if (_a !== null && _a !== void 0) _a.forEach(i => i(this));
+    const ins = this.constructor._initializers;
+    if (ins !== null && ins !== void 0) ins.forEach(i => i(this));
   }
 
   /**
@@ -106,8 +99,8 @@ export class LitBaseElement extends HTMLElement {
    * @return Returns a node into which to render.
    */
   createRenderRoot() {
-    const _a = this.shadowRoot;
-    const renderRoot = _a !== null && _a !== void 0 ? _a : this.attachShadow(this.constructor.shadowRootOptions);
+    const sr = this.shadowRoot;
+    const renderRoot = sr !== null && sr !== void 0 ? sr : this.attachShadow(this.constructor.shadowRootOptions);
     adoptStyles(renderRoot, this.constructor.elementStyles);
     return renderRoot;
   }
@@ -140,22 +133,16 @@ export class LitBaseElement extends HTMLElement {
   }
 
   /**
-   * Calls `render` to render DOM via lit-html.
    * This is what should be called by 'observable' implementations.
    */
-  _doRender() {
+  _render() {
     if (this.shouldRender()) {
       if (!this._firstRendered) {
         this.beforeFirstRender();
       }
 
-      const templateResult = this.render();
-      if (templateResult !== renderNotImplemented) {
-        litRender(templateResult, this.renderRoot, {
-          scopeName: this.localName,
-          eventContext: this,
-        });
-      }
+      // 
+      this._finalRender();
 
       if (!this._firstRendered) {
         this._firstRendered = true;
@@ -166,9 +153,14 @@ export class LitBaseElement extends HTMLElement {
     }
   }
 
+  // override in derived class
+  _finalRender() {
+    // implement actual rendering 
+  }
+
   _initialRender() {
     this._firstRendered = false;
-    this._doRender();
+    this._render();
   }
 
   shouldRender() {
@@ -176,10 +168,6 @@ export class LitBaseElement extends HTMLElement {
   }
 
   beforeFirstRender() { }
-
-  render() {
-    return renderNotImplemented;
-  }
 
   firstRendered() { }
 
