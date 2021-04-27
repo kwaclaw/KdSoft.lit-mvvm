@@ -4,12 +4,29 @@
   "description": "",
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
+  "scripts": {
+    "start": "tsc && snowpack dev",
+    "build": "tsc && snowpack build"
+  },
   "dependencies": {
+    "@kdsoft/lit-mvvm": "file:../..",
     "@nx-js/queue-util": "^1.1.1"
   },
   "browserslist": [
     "last 2 Chrome versions",
     "last 2 Firefox versions",
     "last 1 Safari versions"
-  ]
+  ],
+  "devDependencies": {
+    "snowpack": "^3.3.5"
+  },
+  "snowpack": {
+    "workspaceRoot": "../..",
+    "packageOptions": {
+      "knownEntrypoints": [
+        "@lit/reactive-element/css-tag.js",
+        "lit/html.js"
+      ]
+    }
+  }
 }
