@@ -23,9 +23,6 @@
   },
   "snowpack": {
     "workspaceRoot": "../..",
-    "exclude": [
-      "**/node_modules/**/*"
-    ],
     "packageOptions": {
       "knownEntrypoints": [
         "@lit/reactive-element/css-tag.js",
