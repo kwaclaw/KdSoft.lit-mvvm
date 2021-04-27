@@ -91,11 +91,6 @@ export class LitMvvmElement extends LitBaseElement {
     this._observer();
   }
 
-  // override in derived class
-  render() {
-    return noChange;
-  }
-
   attributeChangedCallback(name, oldValue, newValue) {
     super.attributeChangedCallback(name, oldValue, newValue);
     if (this._observer) this.schedule();
@@ -121,6 +116,11 @@ export class LitMvvmElement extends LitBaseElement {
 
   shouldRender() {
     return true;
+  }
+
+  // override in derived class
+  render() {
+    return noChange;
   }
 
   // schedule an operation, useful when performing it after layout has happened;

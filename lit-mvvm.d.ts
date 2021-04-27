@@ -93,8 +93,10 @@ export declare class LitBaseElement extends HTMLElement {
   // this handler must be defined to trigger the necessary call to get observedAttributes() !!!
   attributeChangedCallback(name: string, _old: string | null, value: string | null): void;
 
-  protected _doRender(): void;
-  protected render(): unknown;
+  protected _render(): void;
+  protected _initialRender();
+  protected _finalRender();
+
   protected shouldRender(): boolean;
   protected beforeFirstRender(): void;
   protected firstRendered(): void;
@@ -106,6 +108,8 @@ export declare class LitMvvmElement<Observable extends object> extends LitBaseEl
 
   model: Observable;
   scheduler: any;
+
+  render(): unknown;
 
   schedule(callback: () => void): void;
 }
