@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm-components",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "description": "Webcomponents based on @kdsoft-lit-mvvm",
   "author": "Karl Waclawek",
   "email": "karl@waclawek.net",

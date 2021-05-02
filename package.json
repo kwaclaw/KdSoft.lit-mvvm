@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm",
-  "version": "2.0.0",
+  "version": "2.0.0-beta.1",
   "description": "MVVM based alternative to LitElement",
   "author": "Karl Waclawek",
   "email": "karl@waclawek.net",

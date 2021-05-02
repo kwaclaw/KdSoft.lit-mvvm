@@ -4,7 +4,7 @@ export default css`
 
 /*! tailwindcss v2.1.2 | MIT License | https://tailwindcss.com */
 
-/*! modern-normalize v1.0.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
+/*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
 
 /*
 Document
@@ -16,8 +16,8 @@ Use a better box model (opinionated).
 */
 
 *,
-*::before,
-*::after {
+::before,
+::after {
   box-sizing: border-box;
 }
 
@@ -25,7 +25,7 @@ Use a better box model (opinionated).
 Use a more readable tab size (opinionated).
 */
 
-:root {
+html {
   -moz-tab-size: 4;
   tab-size: 4;
 }
