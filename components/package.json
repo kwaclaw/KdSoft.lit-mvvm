@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm-components",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "Webcomponents based on @kdsoft-lit-mvvm",
   "author": "Karl Waclawek",
   "email": "karl@waclawek.net",
@@ -28,7 +28,7 @@
     "url": "https://github.com/kwaclaw/KdSoft.lit-mvvm-components.git"
   },
   "dependencies": {
-    "@kdsoft/lit-mvvm": "^2.0.0-beta.1",
+    "@kdsoft/lit-mvvm": "^2.0.0-beta.2",
     "@nx-js/queue-util": "^1.1.1",
     "glob": "^7.1.6"
   },
