@@ -5,8 +5,7 @@
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
   "scripts": {
-    "start": "snowpack dev",
-    "build": "snowpack build"
+    "start": "vite"
   },
   "dependencies": {
     "@kdsoft/lit-mvvm": "file:../..",
@@ -19,18 +18,6 @@
     "last 1 Safari versions"
   ],
   "devDependencies": {
-    "snowpack": "^3.3.5"
-  },
-  "snowpack": {
-    "workspaceRoot": "../..",
-    "packageOptions": {
-      "knownEntrypoints": [
-        "@lit/reactive-element/css-tag.js",
-        "@nx-js/observer-util/dist/es.es6.js",
-        "lit/directives/repeat.js",
-        "lit/directives/class-map.js",
-        "lit/html.js"
-      ]
-    }
+    "vite": "^2.2.3"
   }
 }

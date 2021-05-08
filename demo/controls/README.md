@@ -6,4 +6,4 @@ To install the controls demo:
 
 To run the demo:
   - switch to the demo/controls directory
-  - use "npm run start", this starts the snowpack dev server and opens a browser
+  - use "npm run start", this starts the vite dev server and opens a browser

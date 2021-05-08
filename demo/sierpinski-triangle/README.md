@@ -6,4 +6,4 @@ To install the sierpinski-triangle demo:
 
 To run the demo:
   - switch to the demo/sierpinski-triangle directory
-  - use "npm run start", this starts the snowpack dev server and opens a browser
+  - use "npm run start", this starts the vite dev server and opens a browser

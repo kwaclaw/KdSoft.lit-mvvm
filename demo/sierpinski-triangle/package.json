@@ -5,8 +5,7 @@
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
   "scripts": {
-    "start": "tsc && snowpack dev",
-    "build": "tsc && snowpack build"
+    "start": "tsc && vite"
   },
   "dependencies": {
     "@kdsoft/lit-mvvm": "file:../..",
@@ -18,15 +17,6 @@
     "last 1 Safari versions"
   ],
   "devDependencies": {
-    "snowpack": "^3.3.5"
-  },
-  "snowpack": {
-    "workspaceRoot": "../..",
-    "packageOptions": {
-      "knownEntrypoints": [
-        "@lit/reactive-element/css-tag.js",
-        "lit/html.js"
-      ]
-    }
+    "vite": "^2.2.3"
   }
 }
