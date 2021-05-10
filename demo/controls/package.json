@@ -8,7 +8,7 @@
     "start": "vite"
   },
   "dependencies": {
-    "@kdsoft/lit-mvvm": "file:../..",
+    "@kdsoft/lit-mvvm": "^2.0.0-beta.2",
     "@kdsoft/lit-mvvm-components": "file:../../components",
     "@nx-js/queue-util": "^1.1.1"
   },
