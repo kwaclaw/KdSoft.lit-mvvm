@@ -1,6 +1,6 @@
 import { html, nothing } from 'lit/html.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
+import { LitMvvmElement, BatchScheduler, css } from '@kdsoft/lit-mvvm';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import './kdsoft-expander.js';
 import './kdsoft-drop-target.js';
@@ -14,6 +14,7 @@ class KdSoftTreeView extends LitMvvmElement {
   constructor() {
     super();
     this.scheduler = new Queue(priorities.HIGH);
+    //this.scheduler = new BatchScheduler(0);
     this._dragdropChanged = true;
     this.getContentTemplate = nodeModel => html`${nodeModel}`;
   }
@@ -87,7 +88,7 @@ class KdSoftTreeView extends LitMvvmElement {
           margin: -0.5em 0 -0.5em 0;
           padding: 0;
           position: relative;
-          z-index:10;
+          z-index: 10;
         }
       `,
     ];
@@ -121,8 +122,9 @@ class KdSoftTreeView extends LitMvvmElement {
   }
 
   rendered() {
-    if (!this._dragdropChanged) return;
-    this._dragdropChanged = false;
+    // moved nodes lose their draggable attribute, so we have to check every time
+    // if (!this._dragdropChanged) return;
+    // this._dragdropChanged = false;
 
     const draggables = this.renderRoot.querySelectorAll('kdsoft-expander');
     if (this.allowDragDrop) {
