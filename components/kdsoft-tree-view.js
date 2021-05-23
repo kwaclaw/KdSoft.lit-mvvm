@@ -14,10 +14,31 @@ class KdSoftTreeView extends LitMvvmElement {
   constructor() {
     super();
     this.scheduler = new Queue(priorities.HIGH);
+    this._dragdropChanged = true;
+    this.getContentTemplate = nodeModel => html`${nodeModel}`;
   }
 
-  get contentTemplateCallback() { return this._getContentTemplate; }
-  set contentTemplateCallback(value) { this._getContentTemplate = value; }
+  get getContentTemplate() { return this._getContentTemplate; }
+  set getContentTemplate(value) { this._getContentTemplate = value; }
+
+  get allowDragDrop() { return this.hasAttribute('allow-drag-drop'); }
+  set allowDragDrop(val) {
+    if (val) this.setAttribute('allow-drag-drop', '');
+    else this.removeAttribute('allow-drag-drop');
+  }
+
+  // Observed attributes will trigger an attributeChangedCallback, which in turn will cause a re-render to be scheduled!
+  static get observedAttributes() {
+    return [...super.observedAttributes, 'allow-drag-drop'];
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'allow-drag-drop') {
+      this._dragdropChanged = true;
+    }
+    // trigger re-render
+    super.attributeChangedCallback(name, oldValue, newValue);
+  }
 
   _moveNode(e) {
     const eventNode = e.composedPath()[0];
@@ -74,10 +95,10 @@ class KdSoftTreeView extends LitMvvmElement {
 
   createTreeView(nodeModel, isLast, isRoot) {
     return html`
-      ${isRoot ? nothing : html`<div is="kdsoft-drop-target" id=${nodeModel.id} data-drop-mode="before"></div>`}
-      <kdsoft-expander id=${nodeModel.id} draggable="true" data-drop-mode="inside">
+      ${isRoot || !this.allowDragDrop ? nothing : html`<div is="kdsoft-drop-target" id=${nodeModel.id} data-drop-mode="before"></div>`}
+      <kdsoft-expander id=${nodeModel.id} data-drop-mode="inside">
         <div slot="expander">
-          <i class="expander-grip fas fa-xs fa-ellipsis-v text-gray-400"></i>
+          ${this.allowDragDrop ? html`<i class="expander-grip fas fa-xs fa-ellipsis-v text-gray-400"></i>` : nothing}
           <i class="expander-icon fas fa-lg fa-caret-right text-blue"></i>
         </div>
         <div slot="header">${this._getContentTemplate(nodeModel)}</div>
@@ -89,7 +110,7 @@ class KdSoftTreeView extends LitMvvmElement {
           }
         </div>
       </kdsoft-expander>
-      ${isLast && !isRoot ? html`<div is="kdsoft-drop-target" id=${nodeModel.id} data-drop-mode="after"></div>` : nothing}
+      ${isLast && !isRoot && this.allowDragDrop ? html`<div is="kdsoft-drop-target" id=${nodeModel.id} data-drop-mode="after"></div>` : nothing}
     `;
   }
 
@@ -100,10 +121,24 @@ class KdSoftTreeView extends LitMvvmElement {
   }
 
   rendered() {
+    if (!this._dragdropChanged) return;
+    this._dragdropChanged = false;
+
     const draggables = this.renderRoot.querySelectorAll('kdsoft-expander');
-    for (const dr of draggables) {
-      if (!dr.dargdrop) {
-        dr.dragdrop = new KdSoftDragDropProvider(item => item.id).connect(dr);
+    if (this.allowDragDrop) {
+      for (const dr of draggables) {
+        dr.setAttribute('draggable', true);
+        if (!dr._dragdrop) {
+          dr._dragdrop = new KdSoftDragDropProvider(item => item.id).connect(dr);
+        }
+      }
+    } else {
+      for (const dr of draggables) {
+        dr.removeAttribute('draggable');
+        if (dr._dragdrop) {
+          dr._dragdrop.disconnect();
+          dr._dragdrop = null;
+        }
       }
     }
   }

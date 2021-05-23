@@ -5,9 +5,13 @@ import tailwindStyles from '@kdsoft/lit-mvvm-components/styles/tailwind-styles.j
 import checkboxStyles from '@kdsoft/lit-mvvm-components/styles/kdsoft-checkbox-styles.js';
 import fontAwesomeStyles from '@kdsoft/lit-mvvm-components/styles/fontawesome/css/all-styles.js';
 
-import { KdSoftChecklistModel } from '@kdsoft/lit-mvvm-components';
-import KdSoftDropdownModel from '@kdsoft/lit-mvvm-components/kdsoft-dropdown-model.js';
-import KdSoftDropdownChecklistConnector from '@kdsoft/lit-mvvm-components/kdsoft-dropdown-checklist-connector.js';
+import '@kdsoft/lit-mvvm-components';
+import {
+  KdSoftDropdownModel,
+  KdSoftChecklistModel,
+  KdSoftDropdownChecklistConnector,
+  KdSoftTreeNodeModel
+} from '@kdsoft/lit-mvvm-components';
 
 class ControlsApp extends LitMvvmElement {
   constructor() {
@@ -19,12 +23,27 @@ class ControlsApp extends LitMvvmElement {
       true,
       item => item.name
     );
+
     this.dropDownModel = new KdSoftDropdownModel();
     this.checklistConnector = new KdSoftDropdownChecklistConnector(
       () => this.renderRoot.getElementById('ddown'),
       () => this.renderRoot.getElementById('clist'),
       () => this.getChecklistText()
     );
+
+    const tvGrandChildren = [];
+    for (let indx = 0; indx < 15; indx += 1) {
+      const grandChild = new KdSoftTreeNodeModel(`3-${indx}`, [], { type: 'gc', text: `Grand child blah blah ${indx}` });
+      tvGrandChildren.push(grandChild);
+    }
+    const tvChildren = [];
+    for (let indx = 0; indx < 5; indx += 1) {
+      const gci = indx * 3;
+      const grandChildren = tvGrandChildren.slice(gci, gci + 3);
+      const child = new KdSoftTreeNodeModel(`2-${indx}`, grandChildren , { type: 'c', text: `Child blah blah ${indx}` });
+      tvChildren.push(child);
+    }
+    this.tvRoot = new KdSoftTreeNodeModel('0-0', tvChildren, { type: 'r', text: `Root Node` });
   }
 
   getChecklistText() {
@@ -38,6 +57,24 @@ class ControlsApp extends LitMvvmElement {
 
   getChecklistItemTemplate(item) {
     return html`${item.name}`;
+  }
+
+  getTreeViewContentTemplate(nodeModel) {
+    let cls = '';
+    switch (nodeModel.type) {
+      case 'gc':
+        cls = 'text-red-600';
+        break;
+      case 'c':
+        cls = 'text-blue-600';
+        break;
+      case 'r':
+        cls = 'text-black-600';
+        break;
+      default:
+        break;
+    }
+    return html`<span class=${cls}>${nodeModel.text}</span>`;
   }
 
   // model may still be undefined
@@ -113,7 +150,6 @@ class ControlsApp extends LitMvvmElement {
 
   render() {
     const entries = Array.from(this.checklistModel.selectedEntries, entry => entry.item.name);
-    const selectedItemsText = entries.join(', ') || '<none>';
     return html`
       <style>
         :host {
@@ -130,7 +166,7 @@ class ControlsApp extends LitMvvmElement {
             allow-drag-drop show-checkboxes></kdsoft-checklist>
         </div>
         <div id="drop-down">
-        <h1 class="font-bold text-xl mb-2 text-center">Checklist in Dropdown</h1>
+          <h1 class="font-bold text-xl mb-2 text-center">Checklist in Dropdown</h1>
           <kdsoft-dropdown id="ddown" class="py-0"
             .model=${this.dropDownModel} .connector=${this.checklistConnector}>
             <kdsoft-checklist
@@ -140,6 +176,14 @@ class ControlsApp extends LitMvvmElement {
               .getItemTemplate=${item => html`${item.name}`}>
             </kdsoft-checklist>
           </kdsoft-dropdown>
+        </div>
+        <div id="tree-view">
+          <h1 class="font-bold text-xl mb-2 text-center">Treeview with drag and drop</h1>
+          <kdsoft-tree-view id="tv" class="py-0"
+            allow-drag-drop
+            .model=${this.tvRoot}
+            .getContentTemplate=${this.getTreeViewContentTemplate}>
+          </kdsoft-tree-view>
         </div>
       </div>
     `;
