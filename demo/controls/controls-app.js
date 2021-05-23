@@ -1,3 +1,4 @@
+import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import { html } from 'lit';
 import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
@@ -44,6 +45,10 @@ class ControlsApp extends LitMvvmElement {
       tvChildren.push(child);
     }
     this.tvRoot = new KdSoftTreeNodeModel('0-0', tvChildren, { type: 'r', text: `Root Node` });
+
+    this.model = observable({
+      dragDropEnabled: false
+    })
   }
 
   getChecklistText() {
@@ -75,6 +80,11 @@ class ControlsApp extends LitMvvmElement {
         break;
     }
     return html`<span class=${cls}>${nodeModel.text}</span>`;
+  }
+
+  tvDragDropChanged(e) {
+    const checked = e.currentTarget.checked;
+    this.model.dragDropEnabled = checked;
   }
 
   // model may still be undefined
@@ -114,12 +124,17 @@ class ControlsApp extends LitMvvmElement {
       css`
         #container {
           display: grid;
-          grid-template-columns: auto auto;
-          grid-gap: .5em;
+          grid-template-columns: 1fr 1fr;
+          grid-gap: 1em;
+          justify-items: center;
+        }
+        #container>div {
+          background-color: lightsalmon;
+          padding: 0.5em;
         }
         #check-list {
           position: relative;
-          width: 30ch;
+          width: 100%;
         }
         #check-list > p {
           width: 100%;
@@ -132,6 +147,9 @@ class ControlsApp extends LitMvvmElement {
           overflow: initial;
           text-overflow: initial;
         }
+        #drop-down {
+          width: 100%;
+        }
         /* kdsoft-checklist {
           width: 100%;
           border: 1px solid grey;
@@ -139,17 +157,18 @@ class ControlsApp extends LitMvvmElement {
         } */
         kdsoft-dropdown {
           min-width: 200px;
+          width: auto;
         }
 
         kdsoft-checklist {
           min-width: 200px;
+          width: auto;
         }
       `
     ];
   }
 
   render() {
-    const entries = Array.from(this.checklistModel.selectedEntries, entry => entry.item.name);
     return html`
       <style>
         :host {
@@ -158,7 +177,7 @@ class ControlsApp extends LitMvvmElement {
       </style>
       <div id="container">
         <div id="check-list">
-          <h1 class="font-bold text-xl mb-2 text-center">Plain Checklist</h1>
+          <h1 class="font-bold text-xl mb-2 text-left">Plain Checklist</h1>
           <kdsoft-checklist
             id="just-clist"
             .model=${this.checklistModel}
@@ -166,7 +185,7 @@ class ControlsApp extends LitMvvmElement {
             allow-drag-drop show-checkboxes></kdsoft-checklist>
         </div>
         <div id="drop-down">
-          <h1 class="font-bold text-xl mb-2 text-center">Checklist in Dropdown</h1>
+          <h1 class="font-bold text-xl mb-2 text-left">Checklist in Dropdown</h1>
           <kdsoft-dropdown id="ddown" class="py-0"
             .model=${this.dropDownModel} .connector=${this.checklistConnector}>
             <kdsoft-checklist
@@ -178,9 +197,12 @@ class ControlsApp extends LitMvvmElement {
           </kdsoft-dropdown>
         </div>
         <div id="tree-view">
-          <h1 class="font-bold text-xl mb-2 text-center">Treeview with drag and drop</h1>
+          <h1 class="font-bold text-xl mb-2 text-left">Treeview
+            <input type="checkbox" class="kdsoft-checkbox align-text-bottom" @change=${this.tvDragDropChanged}/>
+            ${this.model.dragDropEnabled ? 'with' : 'without'} drag and drop
+          </h1>
           <kdsoft-tree-view id="tv" class="py-0"
-            allow-drag-drop
+            ?allow-drag-drop=${this.model.dragDropEnabled}
             .model=${this.tvRoot}
             .getContentTemplate=${this.getTreeViewContentTemplate}>
           </kdsoft-tree-view>
