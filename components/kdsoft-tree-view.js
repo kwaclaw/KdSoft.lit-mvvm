@@ -95,12 +95,14 @@ class KdSoftTreeView extends LitMvvmElement {
   }
 
   createTreeView(nodeModel, isLast, isRoot) {
+    const draggable = this.allowDragDrop ? 'true' : 'false';
+
     return html`
       ${isRoot || !this.allowDragDrop ? nothing : html`<div is="kdsoft-drop-target" id=${nodeModel.id} data-drop-mode="before"></div>`}
-      <kdsoft-expander id=${nodeModel.id} data-drop-mode="inside">
+      <kdsoft-expander id=${nodeModel.id} draggable=${draggable} data-drop-mode="inside">
         <div slot="expander">
           ${this.allowDragDrop ? html`<i class="expander-grip fas fa-xs fa-ellipsis-v text-gray-400"></i>` : nothing}
-          <i class="expander-icon fas fa-lg fa-caret-right text-blue"></i>
+          <i class="expander-icon fas fa-lg fa-caret-right ${nodeModel.children.length ? 'text-blue-600': 'text-blue-200'}"></i>
         </div>
         <div slot="header">${this._getContentTemplate(nodeModel)}</div>
         <div slot="content">
@@ -122,21 +124,19 @@ class KdSoftTreeView extends LitMvvmElement {
   }
 
   rendered() {
-    // moved nodes lose their draggable attribute, so we have to check every time
+    // nodes could have been moved so we need to refresh drag-drop providers every time
     // if (!this._dragdropChanged) return;
     // this._dragdropChanged = false;
 
     const draggables = this.renderRoot.querySelectorAll('kdsoft-expander');
     if (this.allowDragDrop) {
       for (const dr of draggables) {
-        dr.setAttribute('draggable', true);
         if (!dr._dragdrop) {
           dr._dragdrop = new KdSoftDragDropProvider(item => item.id).connect(dr);
         }
       }
     } else {
       for (const dr of draggables) {
-        dr.removeAttribute('draggable');
         if (dr._dragdrop) {
           dr._dragdrop.disconnect();
           dr._dragdrop = null;
