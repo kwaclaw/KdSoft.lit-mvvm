@@ -37,7 +37,6 @@ class KdSoftChecklist extends LitMvvmElement {
     this.scheduler = new Queue(priorities.HIGH);
     //this.scheduler = new BatchScheduler(0);
     this.getItemTemplate = item => html`${item}`;
-    this._dragdropChanged = true;
 
     this._onNodeMove = e => {
       const fromIndex = Number(e.detail.fromId);
@@ -89,9 +88,6 @@ class KdSoftChecklist extends LitMvvmElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'allow-drag-drop') {
-      this._dragdropChanged = true;
-    }
     // trigger re-render
     super.attributeChangedCallback(name, oldValue, newValue);
   }
@@ -179,7 +175,7 @@ class KdSoftChecklist extends LitMvvmElement {
 
   /* eslint-disable indent, no-else-return */
 
-  _itemTemplate(item, indx, showCheckboxes, hasArrows) {
+  _itemTemplate(item, indx, showCheckboxes, hasArrows, draggable) {
     const tabindex = indx === 0 ? '0' : '-1';
     const upArrowClasses = indx === 0 ? classList.upArrowHidden : classList.upArrowVisible;
     const downArrowClasses = indx >= (this.model.items.length - 1) ? classList.downArrowHidden : classList.downArrowVisible;
@@ -204,6 +200,7 @@ class KdSoftChecklist extends LitMvvmElement {
       <li data-item-index="${indx}"
           tabindex="${tabindex}"
           class="list-item whitespace-nowrap ${selectedClass} ${disabledClass}"
+          draggable=${draggable}
           @click=${this._itemClicked}
       >
         ${listItemContent}
@@ -310,8 +307,12 @@ class KdSoftChecklist extends LitMvvmElement {
 
   // using the repeat directive
   render() {
+    // need to observe this property for changes not triggering standard reactions
+    const stateChanges = this.model.stateChanges;
+
     const showCheckboxes = this.showCheckboxes;
     const hasArrows = this.arrows;
+    const draggable = this.allowDragDrop ? 'true' : 'false';
 
     const result = html`
       <style>
@@ -324,7 +325,7 @@ class KdSoftChecklist extends LitMvvmElement {
         >
           ${repeat(this.model.filteredItems,
             entry => this.model.getItemId(entry.item),
-            entry => this._itemTemplate(entry.item, entry.index, showCheckboxes, hasArrows)
+            entry => this._itemTemplate(entry.item, entry.index, showCheckboxes, hasArrows, draggable)
           )}
         </ul>
       </div>
@@ -333,20 +334,16 @@ class KdSoftChecklist extends LitMvvmElement {
   }
 
   rendered() {
-    if (!this._dragdropChanged) return;
-    this._dragdropChanged = false;
-
+    // DOM nodes may have been added/replaced so we need to refresh drag-drop providers
     const listItems = this.renderRoot.querySelectorAll('li.list-item');
     if (this.allowDragDrop) {
       for (const li of listItems) {
-        li.setAttribute('draggable', true);
         if (!li._dragdrop) {
           li._dragdrop = new KdSoftDragDropProvider(getListItemIndex).connect(li);
         }
       }
     } else {
       for (const li of listItems) {
-        li.removeAttribute('draggable');
         if (li._dragdrop) {
           li._dragdrop.disconnect();
           li._dragdrop = null;
