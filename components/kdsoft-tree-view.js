@@ -15,7 +15,6 @@ class KdSoftTreeView extends LitMvvmElement {
     super();
     this.scheduler = new Queue(priorities.HIGH);
     //this.scheduler = new BatchScheduler(0);
-    this._dragdropChanged = true;
     this.getContentTemplate = nodeModel => html`${nodeModel}`;
   }
 
@@ -34,9 +33,6 @@ class KdSoftTreeView extends LitMvvmElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'allow-drag-drop') {
-      this._dragdropChanged = true;
-    }
     // trigger re-render
     super.attributeChangedCallback(name, oldValue, newValue);
   }
@@ -57,6 +53,10 @@ class KdSoftTreeView extends LitMvvmElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('kdsoft-node-move', this._moveNode);
+  }
+
+  shouldRender() {
+    return !!this.model;
   }
 
   /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
@@ -96,7 +96,6 @@ class KdSoftTreeView extends LitMvvmElement {
 
   createTreeView(nodeModel, isLast, isRoot) {
     const draggable = this.allowDragDrop ? 'true' : 'false';
-
     return html`
       ${isRoot || !this.allowDragDrop ? nothing : html`<div is="kdsoft-drop-target" id=${nodeModel.id} data-drop-mode="before"></div>`}
       <kdsoft-expander id=${nodeModel.id} draggable=${draggable} data-drop-mode="inside">
@@ -118,16 +117,15 @@ class KdSoftTreeView extends LitMvvmElement {
   }
 
   render() {
+    // need to observe this property for changes not triggering standard reactions
+    const stateChanges = this.model.stateChanges;
     return html`
       ${this.createTreeView(this.model, true, true)}
     `;
   }
 
   rendered() {
-    // nodes could have been moved so we need to refresh drag-drop providers every time
-    // if (!this._dragdropChanged) return;
-    // this._dragdropChanged = false;
-
+    // DOM nodes may have been added/replaced so we need to refresh drag-drop providers
     const draggables = this.renderRoot.querySelectorAll('kdsoft-expander');
     if (this.allowDragDrop) {
       for (const dr of draggables) {
