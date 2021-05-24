@@ -10,9 +10,9 @@ An example for a simple check list that would be used like
 
 ```javascript
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { html, nothing } from 'lit-html';
-import { repeat } from 'lit-html/directives/repeat';
-import { LitMvvmElement, css } from '../../lit-mvvm.js';
+import { html, nothing } from 'lit';
+import { repeat } from 'lit/directives/repeat.js';
+import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
 
 class MyCheckList extends LitMvvmElement {
   constructor() {

@@ -32,7 +32,7 @@ export class LitMvvmElement extends LitBaseElement {
     super();
     this.renderOptions = {
       host: this
-    },
+    };
     this.__childPart = void 0;
     _scheduler.set(this, r => r());
   }
@@ -58,6 +58,14 @@ export class LitMvvmElement extends LitBaseElement {
 
     this._observer = observe(
       () => {
+        // We observe a model property called "__changeCount" that may or may not be present
+        // on the model. This allows the model to trigger a reaction (and a call to render())
+        // even when a regular observer would not work.
+        // Example: certain updates to arrays are best done on the raw array,
+        //    which would not trigger observed reactions, so at the end of the
+        //    array modifications one can call "this.__changeCount++;" from within the model
+        //    and thus trigger a call to "render()". 
+        const changeCount = this.model ? this.model.__changeCount : -1;
         // super._render() reads the relevant view model properties synchronously.
         super._render();
       },
