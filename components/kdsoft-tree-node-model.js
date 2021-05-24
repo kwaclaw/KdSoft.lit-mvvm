@@ -19,6 +19,8 @@ class KdSoftTreeNodeModel {
   constructor(id, children = [], properties = {}) {
     this.id = id;
     this.children = children;
+    // a dummy property we can use to trigger reactions when we update raw objects
+    this.stateChanges = 0;
     Object.assign(this, properties);
     return observable(this);
   }
@@ -37,11 +39,7 @@ class KdSoftTreeNodeModel {
     NOTE for moveNode():
     we make changes on the raw arrays, because slice() with insertions of proxies
     strip the copied/assigned array elements of any proxies that might wrap them.
-    So we need to trigger a reaction explicity on node.children by cloning the children
-    array and re-assigning the property.
-    Simply re-assigning will not trigger a reaction, as the raw itmes object would not have changed.
-    Clearing and re-assigning will trigger a reaction, but will break code that relies on the children
-    property not changing in size and array elements, but only in their order.
+    So we need to trigger a reaction explicity by incrementing this.stateChanges.
   */
   moveNode(fromId, toId, dropMode) {
     let fromEntry; let toEntry;
@@ -69,17 +67,16 @@ class KdSoftTreeNodeModel {
 
     if (fromNode.isAncestorOf(toNode)) return;
 
-    // its more reliable to compare ids
+    // it is more reliable to compare ids
     const fromIndx = fromParent.children.findIndex(c => raw(c).id == fromNode.id);
     fromParent.children.splice(fromIndx, 1);
-    fromEntry.parent.children = fromParent.children.slice();
 
     if (!toParent) {
       if (dropMode === 'inside') {
-        toParent.children.push(fromEntry.node);
-        // see note above
-        toEntry.parent.children = toParent.children.slice();
+        toNode.children.push(fromEntry.node);
       }
+      // see note above
+      this.stateChanges += 1;
       return;
     }
 
@@ -87,22 +84,18 @@ class KdSoftTreeNodeModel {
     switch (dropMode) {
       case 'before':
         toParent.children.splice(toIndx, 0, fromEntry.node);
-        // see note above
-        toEntry.parent.children = toParent.children.slice();
         break;
       case 'after':
         toParent.children.splice(toIndx + 1, 0, fromEntry.node);
-        // see note above
-        toEntry.parent.children = toParent.children.slice();
         break;
       case 'inside':
         toNode.children.push(fromEntry.node);
-        // see note above
-        toEntry.node.children = toNode.children.slice();
         break;
       default:
         break;
     }
+    // see note above
+    this.stateChanges += 1;
   }
 }
 
