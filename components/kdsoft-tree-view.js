@@ -117,8 +117,6 @@ class KdSoftTreeView extends LitMvvmElement {
   }
 
   render() {
-    // need to observe this property for changes not triggering standard reactions
-    const stateChanges = this.model.stateChanges;
     return html`
       ${this.createTreeView(this.model, true, true)}
     `;

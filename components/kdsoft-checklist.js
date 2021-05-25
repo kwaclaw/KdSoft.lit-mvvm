@@ -45,7 +45,7 @@ class KdSoftChecklist extends LitMvvmElement {
 
       // setting the focus on the dropped item should be done when when the data-item-index
       // attributes are set, so we schedule it at the end of the next render cycle
-      this.scheduler.add(() => {
+      this.schedule(() => {
         const dropped = this.renderRoot.querySelector(`[data-item-index="${toIndex}"]`);
         if (dropped) dropped.focus();
       });
@@ -307,9 +307,6 @@ class KdSoftChecklist extends LitMvvmElement {
 
   // using the repeat directive
   render() {
-    // need to observe this property for changes not triggering standard reactions
-    const stateChanges = this.model.stateChanges;
-
     const showCheckboxes = this.showCheckboxes;
     const hasArrows = this.arrows;
     const draggable = this.allowDragDrop ? 'true' : 'false';
