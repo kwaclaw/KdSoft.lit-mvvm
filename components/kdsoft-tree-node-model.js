@@ -19,8 +19,6 @@ class KdSoftTreeNodeModel {
   constructor(id, children = [], properties = {}) {
     this.id = id;
     this.children = children;
-    // a dummy property we can use to trigger reactions when we update raw objects
-    this.stateChanges = 0;
     Object.assign(this, properties);
     return observable(this);
   }
@@ -37,9 +35,10 @@ class KdSoftTreeNodeModel {
 
   /*
     NOTE for moveNode():
-    we make changes on the raw arrays, because slice() with insertions of proxies
+    We make changes on the raw arrays, because slice() with insertions of proxies
     strip the copied/assigned array elements of any proxies that might wrap them.
-    So we need to trigger a reaction explicity by incrementing this.stateChanges.
+    So we need to trigger a reaction explicity by incrementing this.__changeCount
+    which is a property that an instance of LitMvvmElement will always observe.
   */
   moveNode(fromId, toId, dropMode) {
     let fromEntry; let toEntry;
@@ -76,7 +75,7 @@ class KdSoftTreeNodeModel {
         toNode.children.push(fromEntry.node);
       }
       // see note above
-      this.stateChanges += 1;
+      this.__changeCount++;
       return;
     }
 
@@ -95,7 +94,8 @@ class KdSoftTreeNodeModel {
         break;
     }
     // see note above
-    this.stateChanges += 1;
+    this.__changeCount++;
+
   }
 }
 

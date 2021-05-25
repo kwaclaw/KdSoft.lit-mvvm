@@ -67,9 +67,6 @@ class KdSoftChecklistModel {
     const selItems = (selectedIndexes || []).map(i => raw(items[i]));
     this._selectedItems = new WeakSet(selItems);
 
-    // a dummy property we can use to trigger reactions when we update raw objects
-    this.stateChanges = 0;
-
     const result = observable(this);
 
     // so that we can use this in the property getters/setters
@@ -191,13 +188,15 @@ class KdSoftChecklistModel {
     }
     items[to] = itemToMove;
 
-    // we made changes on the raw array, because copyWithin and assignments applied to the proxy
-    // 'this.items' strip the copied/assigned array elements of any proxies that might wrap them.
-    // So we need to trigger a reaction explicity by incrementing this.stateChanges.
-    // Simply re-assigning will not trigger a reaction, as the raw itmes object would not have changed.
-    // Clearing and re-assigning will trigger a reaction, but will break code that relies on the items
-    // property not changing in size and array elements, but only in their order.
-    this.stateChanges += 1;
+    /* We made changes on the raw array, because copyWithin and assignments applied to the proxy
+      'this.items' strip the copied/assigned array elements of any proxies that might wrap them.
+      So we need to trigger a reaction explicitly by incrementing this.__changeCount, which
+      is a property that an instance of LitMvvmElement will always observe.
+      Simply re-assigning will not trigger a reaction, as the raw itmes object would not have changed.
+      Clearing and re-assigning will trigger a reaction, but will break code that relies on the items
+      property not changing in size and array elements, but only in their order.
+    */
+    this.__changeCount++;
   }
 
   unselectAll() {
