@@ -17,6 +17,6 @@
     "last 1 Safari versions"
   ],
   "devDependencies": {
-    "vite": "^2.3.3"
+    "vite": "^2.3.4"
   }
 }
