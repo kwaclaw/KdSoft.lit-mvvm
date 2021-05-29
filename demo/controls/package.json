@@ -4,12 +4,20 @@
   "description": "",
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
+  "scripts": {
+    "start": "vite"
+  },
   "dependencies": {
+    "@kdsoft/lit-mvvm": "^2.0.0-beta.3",
+    "@kdsoft/lit-mvvm-components": "file:../../components",
     "@nx-js/queue-util": "^1.1.1"
   },
   "browserslist": [
     "last 2 Chrome versions",
     "last 2 Firefox versions",
     "last 1 Safari versions"
-  ]
+  ],
+  "devDependencies": {
+    "vite": "^2.3.3"
+  }
 }

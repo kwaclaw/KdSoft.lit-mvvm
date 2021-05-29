@@ -1,7 +1,7 @@
 import { html } from 'lit-html';
-import { styleMap } from 'lit-html/directives/style-map';
+import { styleMap } from 'lit/directives/style-map.js';
 import { Queue, priorities } from '@nx-js/queue-util';
-import { LitMvvmElement, css, BatchScheduler } from '../../../lit-mvvm.js';
+import { LitMvvmElement, css, BatchScheduler } from '@kdsoft/lit-mvvm';
 
 import { AppModel } from './app-model';
 
@@ -60,7 +60,7 @@ export class TriangleApplication extends LitMvvmElement<AppModel> {
     super();
 
     // for animation we dont need to observe a view model, we just render periodically
-    this.animationScheduler = new AnimationScheduler(() => this._doRender());
+    this.animationScheduler = new AnimationScheduler(() => this._render());
 
     // here we batch up render requests for child nodes to run at most every 100 milliseconds;
     // highest frequency depends on mimimum delay for window.setTimeout()

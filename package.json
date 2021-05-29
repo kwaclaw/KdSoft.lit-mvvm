@@ -1,8 +1,9 @@
 {
   "name": "@kdsoft/lit-mvvm",
-  "version": "1.0.0",
+  "version": "2.0.0-beta.3",
   "description": "MVVM based alternative to LitElement",
   "author": "Karl Waclawek",
+  "email": "karl@waclawek.net",
   "license": "BSD-3-Clause",
   "keywords": [
     "lit-html",
@@ -21,20 +22,19 @@
     "/lit-mvvm.d.ts",
     "/src/**/*.js"
   ],
-  "repository": "kwaclaw/KdSoft.lit-mvvm",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kwaclaw/KdSoft.lit-mvvm.git"
+  },
   "dependencies": {
+    "@lit/reactive-element": "^1.0.0-rc.2",
     "@nx-js/observer-util": "^4.2.2",
-    "lit-html": "^1.2.1"
+    "lit": "^2.0.0-rc.2"
   },
   "devDependencies": {
-    "es-dev-server": "^1.54.1",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.0",
-    "typescript": "^3.9.5"
-  },
-  "scripts": {
-    "controls-demo": "es-dev-server --node-resolve --open ./demo/controls/",
-    "sierpinski-demo": "tsc --build ./demo/sierpinski-triangle/ && es-dev-server --node-resolve --open ./demo/sierpinski-triangle/"
+    "eslint": "^7.25.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "typescript": "^4.2.4"
   }
 }

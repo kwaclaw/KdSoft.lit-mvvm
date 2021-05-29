@@ -25,7 +25,7 @@ export default class BatchScheduler {
   // returns number of reactions run
   _runReactions() {
     const reactions = this.reactions;
-    reactions.forEach((reaction) => {
+    reactions.forEach(reaction => {
       try {
         reaction();
       } catch (e) {

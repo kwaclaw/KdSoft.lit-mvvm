@@ -5,5 +5,5 @@ To install the sierpinski-triangle demo:
   - run "npm install" 
 
 To run the demo:
-  - switch to the root directory
-  - use "npm run sierpinski-demo", this starts the dev server and opens a browser
+  - switch to the demo/sierpinski-triangle directory
+  - use "npm run start", this starts the vite dev server and opens a browser

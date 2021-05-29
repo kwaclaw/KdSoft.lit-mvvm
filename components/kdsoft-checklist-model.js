@@ -1,4 +1,3 @@
-
 import { observable, raw } from '@nx-js/observer-util/dist/es.es6.js';
 
 function iterateSelectedItems(items, selectedItems) {
@@ -25,6 +24,7 @@ function iterateSelectedItems(items, selectedItems) {
   };
 }
 
+// selected items are always included
 function iterateFilter(items, selectedItems, filter) {
   let current;
 
@@ -39,8 +39,9 @@ function iterateFilter(items, selectedItems, filter) {
         const item = items[current];
         const index = current;
         current += 1;
-        const itemSelected = selectedItems.has(raw(item));
-        if (itemSelected || (!filter || filter(item))) return { done: false, value: { item, index } };
+        if (selectedItems.has(raw(item)) || (!filter || filter(item))) {
+          return { done: false, value: { item, index } };
+        }
         continue;
       }
       return { done: true };
@@ -48,10 +49,9 @@ function iterateFilter(items, selectedItems, filter) {
   };
 }
 
-
 const _multiSelect = new WeakMap();
 
-class MyChecklistModel {
+class KdSoftChecklistModel {
   constructor(
     items = [],
     selectedIndexes = [],
@@ -81,8 +81,16 @@ class MyChecklistModel {
 
   get selectedEntries() { return iterateSelectedItems(this.items, this._selectedItems); }
 
+  get firstSelectedEntry() {
+    return this.selectedEntries[Symbol.iterator]().next().value;
+  }
+
   get selectedIndexes() {
     return Array.from(this.selectedEntries, entry => entry.index);
+  }
+
+  get selectedItems() {
+    return Array.from(this.selectedEntries, entry => entry.item);
   }
 
   get filteredItems() { return iterateFilter(this.items, this._selectedItems, this.filter); }
@@ -99,23 +107,52 @@ class MyChecklistModel {
   }
 
   selectId(id, select) {
-    let item = null;
+    let selItem = null;
     for (let indx = 0; indx < this.items.length; indx += 1) {
       const tempItem = this.items[indx];
-      if (this.getItemId(item) === id) {
-        item = tempItem;
+      if (this.getItemId(tempItem) === id) {
+        selItem = tempItem;
         break;
       }
     }
-    if (item === null) return;
+    if (selItem === null) return;
 
     if (this.multiSelect) {
-      if (select) this._selectedItems.add(raw(item));
-      else this._selectedItems.delete(raw(item));
+      if (select) this._selectedItems.add(raw(selItem));
+      else this._selectedItems.delete(raw(selItem));
     } else if (select) {
-      this._selectedItems = new WeakSet([raw(item)]);
+      this._selectedItems = new WeakSet([raw(selItem)]);
     } else {
       this._selectedItems = new WeakSet();
+    }
+  }
+
+  selectIds(ids, select) {
+    if (!this.multiSelect && (ids || []).length > 1) {
+      throw new Error('Must not select multiple items');
+    }
+
+    const selItems = [];
+    for (let indx = 0; indx < this.items.length; indx += 1) {
+      const tempItem = this.items[indx];
+      for (const id of ids) {
+        if (this.getItemId(tempItem) === id) {
+          selItems.push(tempItem);
+          break;
+        }
+      }
+    }
+
+    for (let indx = 0; indx < selItems.length; indx += 1) {
+      const selItem = raw(selItems[indx]);
+      if (this.multiSelect) {
+        if (select) this._selectedItems.add(selItem);
+        else this._selectedItems.delete(selItem);
+      } else if (select) {
+        this._selectedItems = new WeakSet([selItem]);
+      } else {
+        this._selectedItems = new WeakSet();
+      }
     }
   }
 
@@ -140,14 +177,26 @@ class MyChecklistModel {
   moveItem(from, to) {
     if (from === to) return;
 
+    const items = raw(this.items);
+
     // this algorithm keeps the array length constant
-    const itemToMove = this.items[from];
+    const itemToMove = items[from];
     if (to > from) {
-      this.items.copyWithin(from, from + 1, to + 1);
+      items.copyWithin(from, from + 1, to + 1);
     } else if (to < from) {
-      this.items.copyWithin(to + 1, to, from);
+      items.copyWithin(to + 1, to, from);
     }
-    this.items[to] = itemToMove;
+    items[to] = itemToMove;
+
+    /* We made changes on the raw array, because copyWithin and assignments applied to the proxy
+      'this.items' strip the copied/assigned array elements of any proxies that might wrap them.
+      So we need to trigger a reaction explicitly by incrementing this.__changeCount, which
+      is a property that an instance of LitMvvmElement will always observe.
+      Simply re-assigning will not trigger a reaction, as the raw itmes object would not have changed.
+      Clearing and re-assigning will trigger a reaction, but will break code that relies on the items
+      property not changing in size and array elements, but only in their order.
+    */
+    this.__changeCount++;
   }
 
   unselectAll() {
@@ -155,4 +204,4 @@ class MyChecklistModel {
   }
 }
 
-export default MyChecklistModel;
+export default KdSoftChecklistModel;
