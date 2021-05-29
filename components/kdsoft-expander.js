@@ -125,7 +125,7 @@ class KdSoftExpander extends LitMvvmElement {
     const result = html`
       <div id="container">
         <slot name="expander" id="expander" tabindex="1" @click=${this._expanderClicked}>
-          <i id="expander-icon" class="fas fa-lg fa-caret-right text-blue"></i>
+          <i id="expander-icon" class="fas fa-lg fa-caret-right text-blue-600"></i>
         </slot>
         <div id="header-slot">
           <slot name="header" tabindex="2">No header provided.</slot>

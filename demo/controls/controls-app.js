@@ -122,6 +122,16 @@ class ControlsApp extends LitMvvmElement {
       checkboxStyles,
       fontAwesomeStyles,
       css`
+        kdsoft-dropdown {
+          min-width: 200px;
+          width: auto;
+        }
+
+        kdsoft-checklist {
+          min-width: 200px;
+          width: auto;
+        }
+
         #container {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -150,19 +160,8 @@ class ControlsApp extends LitMvvmElement {
         #drop-down {
           width: 100%;
         }
-        /* kdsoft-checklist {
+        #ddown {
           width: 100%;
-          border: 1px solid grey;
-          display: block;
-        } */
-        kdsoft-dropdown {
-          min-width: 200px;
-          width: auto;
-        }
-
-        kdsoft-checklist {
-          min-width: 200px;
-          width: auto;
         }
       `
     ];
