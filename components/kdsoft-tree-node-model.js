@@ -1,17 +1,16 @@
-
 import { observable, raw } from '@nx-js/observer-util/dist/es.es6.js';
 
 // Pre-order traversal of tree
-function* treeNodeEntries(node, parent) {
+function* treeNodeEntries(node, parent, nodeIndex) {
   if (!node) return;
 
-  yield { node, parent };
+  yield { node, parent, nodeIndex };
 
   const children = node.children;
   if (!children) return;
 
   for (let i = 0; i <= children.length; i += 1) {
-    yield* treeNodeEntries(children[i], node);
+    yield* treeNodeEntries(children[i], node, i);
   }
 }
 
@@ -23,11 +22,11 @@ class KdSoftTreeNodeModel {
     return observable(this);
   }
 
-  get treeNodeEntries() { return treeNodeEntries(this, null); }
+  get treeNodeEntries() { return treeNodeEntries(this, null, -1); }
 
   // returns true if this node is an ancestor of the other node, or if it is the same node
   isAncestorOf(otherNode) {
-    for (const entry of treeNodeEntries(this, null)) {
+    for (const entry of treeNodeEntries(this, null, -1)) {
       if (raw(entry.node) == raw(otherNode)) return true;
     }
     return false;
@@ -36,7 +35,7 @@ class KdSoftTreeNodeModel {
   /*
     NOTE for moveNode():
     We make changes on the raw arrays, because slice() with insertions of proxies
-    strip the copied/assigned array elements of any proxies that might wrap them.
+    strips the copied/assigned array elements of any proxies that might wrap them.
     So we need to trigger a reaction explicity by incrementing this.__changeCount
     which is a property that an instance of LitMvvmElement will always observe.
   */
@@ -67,7 +66,7 @@ class KdSoftTreeNodeModel {
     if (fromNode.isAncestorOf(toNode)) return;
 
     // it is more reliable to compare ids
-    const fromIndx = fromParent.children.findIndex(c => raw(c).id == fromNode.id);
+    const fromIndx = fromEntry.nodeIndex;
     fromParent.children.splice(fromIndx, 1);
 
     if (!toParent) {
@@ -79,7 +78,9 @@ class KdSoftTreeNodeModel {
       return;
     }
 
-    const toIndx = toParent.children.findIndex(c => raw(c).id == toNode.id);
+    const moveDownSameParent = (fromParent.id == toParent.id) && (fromEntry.nodeIndex < toEntry.nodeIndex);
+    // if we move down the same parent, then the target index has changed by -1
+    const toIndx = moveDownSameParent ? toEntry.nodeIndex - 1: toEntry.nodeIndex;
     switch (dropMode) {
       case 'before':
         toParent.children.splice(toIndx, 0, fromEntry.node);
