@@ -18,14 +18,14 @@ class ControlsApp extends LitMvvmElement {
   constructor() {
     super();
     this.scheduler = new Queue(priorities.HIGH);
-    this.checklistModel = new KdSoftChecklistModel(
+    this.checklistModel = observable(new KdSoftChecklistModel(
       [{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }, { id: 3, name: 'Gamma' }, { id: 4, name: 'Delta' }, { id: 5, name: 'Epsilon' }],
       [1],
       true,
       item => item.name
-    );
+    ));
 
-    this.dropDownModel = new KdSoftDropdownModel();
+    this.dropDownModel = observable(new KdSoftDropdownModel());
     this.checklistConnector = new KdSoftDropdownChecklistConnector(
       () => this.renderRoot.getElementById('ddown'),
       () => this.renderRoot.getElementById('clist'),
@@ -44,7 +44,7 @@ class ControlsApp extends LitMvvmElement {
       const child = new KdSoftTreeNodeModel(`2-${indx}`, grandChildren , { type: 'c', text: `Child blah blah ${indx}` });
       tvChildren.push(child);
     }
-    this.tvRoot = new KdSoftTreeNodeModel('0-0', tvChildren, { type: 'r', text: `Root Node` });
+    this.tvRoot = observable(new KdSoftTreeNodeModel('0-0', tvChildren, { type: 'r', text: `Root Node` }));
 
     this.model = observable({
       dragDropEnabled: false

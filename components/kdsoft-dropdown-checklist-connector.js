@@ -1,4 +1,4 @@
-import { observable, observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
+import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
 import KdSoftDropdownConnector from './kdsoft-dropdown-connector.js';
 
 function _getSelectedText(clm) {
@@ -15,7 +15,6 @@ class KdSoftDropdownChecklistConnector extends KdSoftDropdownConnector {
     super(getDropdown);
     this.getChecklist = getChecklist;
     this.getSelectedText = getSelectedText || _getSelectedText;
-    return observable(this);
   }
 
   // override

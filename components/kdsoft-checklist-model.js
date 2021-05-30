@@ -1,4 +1,4 @@
-import { observable, raw } from '@nx-js/observer-util/dist/es.es6.js';
+import { raw } from '@nx-js/observer-util/dist/es.es6.js';
 
 function iterateSelectedItems(items, selectedItems) {
   let current;
@@ -67,17 +67,16 @@ class KdSoftChecklistModel {
     const selItems = (selectedIndexes || []).map(i => raw(items[i]));
     this._selectedItems = new WeakSet(selItems);
 
-    const result = observable(this);
-
     // so that we can use this in the property getters/setters
-    _multiSelect.set(result, multiSelect);
+    _multiSelect.set(this, multiSelect);
 
     this.getItemId = getItemId;
-
-    return result;
   }
 
-  get multiSelect() { return _multiSelect.get(this); }
+  get multiSelect() {
+    // need to use raw() as the initial assignment was done using the raw instance
+    return _multiSelect.get(raw(this));
+  }
 
   get selectedEntries() { return iterateSelectedItems(this.items, this._selectedItems); }
 
@@ -134,7 +133,7 @@ class KdSoftChecklistModel {
 
     const selItems = [];
     for (let indx = 0; indx < this.items.length; indx += 1) {
-      const tempItem = this.items[indx];
+      const tempItem = raw(this.items[indx]);
       for (const id of ids) {
         if (this.getItemId(tempItem) === id) {
           selItems.push(tempItem);
@@ -173,11 +172,22 @@ class KdSoftChecklistModel {
     return this._selectedItems.has(raw(item));
   }
 
+  /* NOTE
+     It looks like the basic assumption is that when you make an array observable you don't need
+     to make each element observable because once you access the element like this: items[indx] then
+     the element will be wrapped with a proxy and become observable, and changes to the properties
+     of that wrapped element will trigger reactions.
+
+     If some elements are already observable, then it may happen that on assignment to the array
+     the proxy will be stripped! as it is not necessary. This also means, however, that one should not
+     keep references to proxies around if they get dynamically re-created.
+  */
+
   // expects numbers
   moveItem(from, to) {
     if (from === to) return;
 
-    const items = raw(this.items);
+    const items = this.items;
 
     // this algorithm keeps the array length constant
     const itemToMove = items[from];
@@ -187,16 +197,6 @@ class KdSoftChecklistModel {
       items.copyWithin(to + 1, to, from);
     }
     items[to] = itemToMove;
-
-    /* We made changes on the raw array, because copyWithin and assignments applied to the proxy
-      'this.items' strip the copied/assigned array elements of any proxies that might wrap them.
-      So we need to trigger a reaction explicitly by incrementing this.__changeCount, which
-      is a property that an instance of LitMvvmElement will always observe.
-      Simply re-assigning will not trigger a reaction, as the raw itmes object would not have changed.
-      Clearing and re-assigning will trigger a reaction, but will break code that relies on the items
-      property not changing in size and array elements, but only in their order.
-    */
-    this.__changeCount++;
   }
 
   unselectAll() {

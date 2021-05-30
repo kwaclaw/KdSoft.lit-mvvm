@@ -1,4 +1,4 @@
-import { observable, raw } from '@nx-js/observer-util/dist/es.es6.js';
+import { raw } from '@nx-js/observer-util/dist/es.es6.js';
 
 // Pre-order traversal of tree
 function* treeNodeEntries(node, parent, nodeIndex) {
@@ -19,7 +19,6 @@ class KdSoftTreeNodeModel {
     this.id = id;
     this.children = children;
     Object.assign(this, properties);
-    return observable(this);
   }
 
   get treeNodeEntries() { return treeNodeEntries(this, null, -1); }
@@ -32,13 +31,6 @@ class KdSoftTreeNodeModel {
     return false;
   }
 
-  /*
-    NOTE for moveNode():
-    We make changes on the raw arrays, because slice() with insertions of proxies
-    strips the copied/assigned array elements of any proxies that might wrap them.
-    So we need to trigger a reaction explicity by incrementing this.__changeCount
-    which is a property that an instance of LitMvvmElement will always observe.
-  */
   moveNode(fromId, toId, dropMode) {
     let fromEntry; let toEntry;
 
@@ -47,25 +39,26 @@ class KdSoftTreeNodeModel {
     for (const entry of treeNodeEntries(this, null)) {
       if (entry.node.id === fromId) {
         fromEntry = entry;
+        if (toEntry) break;
       }
       if (entry.node.id === toId) {
         toEntry = entry;
+        if (fromEntry) break;
       }
     }
 
     if (!fromEntry) return;
     if (!toEntry) return;
 
-    const fromNode = raw(fromEntry.node);
-    const fromParent = raw(fromEntry.parent);
+    const fromNode = fromEntry.node;
+    const fromParent = fromEntry.parent;
     if (!fromParent) return;
 
-    const toNode = raw(toEntry.node);
-    const toParent = raw(toEntry.parent);
+    const toNode = toEntry.node;
+    const toParent = toEntry.parent;
 
     if (fromNode.isAncestorOf(toNode)) return;
 
-    // it is more reliable to compare ids
     const fromIndx = fromEntry.nodeIndex;
     fromParent.children.splice(fromIndx, 1);
 
@@ -73,12 +66,10 @@ class KdSoftTreeNodeModel {
       if (dropMode === 'inside') {
         toNode.children.push(fromEntry.node);
       }
-      // see note above
-      this.__changeCount++;
       return;
     }
 
-    const moveDownSameParent = (fromParent.id == toParent.id) && (fromEntry.nodeIndex < toEntry.nodeIndex);
+    const moveDownSameParent = (fromParent.id === toParent.id) && (fromEntry.nodeIndex < toEntry.nodeIndex);
     // if we move down the same parent, then the target index has changed by -1
     const toIndx = moveDownSameParent ? toEntry.nodeIndex - 1: toEntry.nodeIndex;
     switch (dropMode) {
@@ -94,9 +85,6 @@ class KdSoftTreeNodeModel {
       default:
         break;
     }
-    // see note above
-    this.__changeCount++;
-
   }
 }
 

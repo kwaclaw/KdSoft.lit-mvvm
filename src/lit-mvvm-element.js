@@ -61,9 +61,9 @@ export class LitMvvmElement extends LitBaseElement {
         // We observe a model property called "__changeCount" that may or may not be present
         // on the model. This allows the model to trigger a reaction (and a call to render())
         // even when a regular observer would not work.
-        // Example: certain updates to arrays are best done on the raw array,
-        //    which would not trigger observed reactions, so at the end of the
-        //    array modifications one can call "this.__changeCount++;" from within the model
+        // Example: certain updates to arrays or complex object trees are best done on the
+        //    raw objects, which would not trigger observed reactions, so at the end of the
+        //    modifications one can call "this.__changeCount++;" from within the model
         //    and thus trigger a call to "render()". 
         const changeCount = this.model ? this.model.__changeCount : -1;
         // super._render() reads the relevant view model properties synchronously.
