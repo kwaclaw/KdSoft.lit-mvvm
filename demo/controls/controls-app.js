@@ -46,6 +46,20 @@ class ControlsApp extends LitMvvmElement {
     }
     this.tvRoot = observable(new KdSoftTreeNodeModel('0-0', tvChildren, { type: 'r', text: `Root Node` }));
 
+    const menuChildren = [];
+    for (let indx = 0; indx < 4; indx += 1) {
+      const menuGrandChildren = [];
+      if (indx === 3) {
+        for (let gci = 0; gci < 3; gci += 1) {
+          const gc = new KdSoftTreeNodeModel(`2-${indx}`, [] , { text: `Menu Item ${indx}-${gci}` });
+          menuGrandChildren.push(gc);
+        }
+      }
+      const child = new KdSoftTreeNodeModel(`1-${indx}`, menuGrandChildren , { text: `Menu Item ${indx}` });
+      menuChildren.push(child);
+    }
+    this.tvMenu = observable(new KdSoftTreeNodeModel('0-0', menuChildren, { text: `Node Menu` }));
+
     this.model = observable({
       dragDropEnabled: false
     })
@@ -58,28 +72,6 @@ class ControlsApp extends LitMvvmElement {
       else result = selEntry.item.name;
     }
     return result;
-  }
-
-  getChecklistItemTemplate(item) {
-    return html`${item.name}`;
-  }
-
-  getTreeViewContentTemplate(nodeModel) {
-    let cls = '';
-    switch (nodeModel.type) {
-      case 'gc':
-        cls = 'text-red-600';
-        break;
-      case 'c':
-        cls = 'text-blue-600';
-        break;
-      case 'r':
-        cls = 'text-black-600';
-        break;
-      default:
-        break;
-    }
-    return html`<span class=${cls}>${nodeModel.text}</span>`;
   }
 
   tvDragDropChanged(e) {
@@ -167,6 +159,32 @@ class ControlsApp extends LitMvvmElement {
     ];
   }
 
+  _getChecklistItemTemplate(item) {
+    return html`${item.name}`;
+  }
+
+  _getTreeViewContentTemplate(nodeModel) {
+    let cls = '';
+    switch (nodeModel.type) {
+      case 'gc':
+        cls = 'text-red-600';
+        break;
+      case 'c':
+        cls = 'text-blue-600';
+        break;
+      case 'r':
+        cls = 'text-black-600';
+        break;
+      default:
+        break;
+    }
+    return html`<span class=${cls}>${nodeModel.text}</span>`;
+  }
+
+  _getMenuItemTemplate(item) {
+    return html`<span>${item.text}</span>`;
+  }
+
   render() {
     return html`
       <style>
@@ -174,13 +192,17 @@ class ControlsApp extends LitMvvmElement {
           display: inline-block;
         }
       </style>
+      <kdsoft-context-menu id="tv-context"
+        .model=${this.tvMenu}
+        .getItemTemplate=${this._getMenuItemTemplate}
+      ></kdsoft-context-menu>
       <div id="container">
         <div id="check-list">
           <h1 class="font-bold text-xl mb-2 text-left">Plain Checklist</h1>
           <kdsoft-checklist
             id="just-clist"
             .model=${this.checklistModel}
-            .getItemTemplate=${item => this.getChecklistItemTemplate(item)}
+            .getItemTemplate=${item => this._getChecklistItemTemplate(item)}
             allow-drag-drop show-checkboxes></kdsoft-checklist>
         </div>
         <div id="drop-down">
@@ -203,11 +225,24 @@ class ControlsApp extends LitMvvmElement {
           <kdsoft-tree-view id="tv" class="py-0"
             ?allow-drag-drop=${this.model.dragDropEnabled}
             .model=${this.tvRoot}
-            .getContentTemplate=${this.getTreeViewContentTemplate}>
+            .getContentTemplate=${this._getTreeViewContentTemplate}>
           </kdsoft-tree-view>
         </div>
       </div>
     `;
+  }
+
+  // _bindTree(menu, selector, node) {
+  //   menu.bind(node);
+  //   const children = node.renderRoot.querySelectorAll(selector);
+  //   children.forEach(child => this._bindTree(menu, selector, child));
+  // }
+
+  rendered() {
+    const menu = this.renderRoot.getElementById('tv-context');
+    const tv = this.renderRoot.getElementById('tv');
+    // we don't need to bind eachh menu items, as the event bubbles up
+    menu.bind(tv);
   }
 }
 

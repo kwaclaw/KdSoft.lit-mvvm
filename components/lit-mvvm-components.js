@@ -14,3 +14,4 @@ import './kdsoft-expander';
 
 export { default as KdSoftTreeNodeModel } from './kdsoft-tree-node-model.js';
 import './kdsoft-tree-view.js';
+import './kdsoft-context-menu.js';
