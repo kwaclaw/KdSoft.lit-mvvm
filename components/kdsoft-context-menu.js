@@ -1,113 +1,9 @@
 ﻿import { html, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
-import { classMap } from 'lit/directives/class-map.js';
 import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
-import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
-import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import KdSoftDragDropProvider from './kdsoft-drag-drop-provider.js';
 
 import tailwindStyles from './styles/tailwind-styles.js';
 import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
-
-/* Sample CSS
-
-We have the following classes:
-    .simple-context-menu
-        .menu-options
-        .menu-option
-            .sub-menu
-        .menu-separator
-
-.simple-context-menu {
-    z-index: 100;
-    position: fixed;
-    display: none;
-    transition: 0.2s display ease-in;
-}
-
-.simple-context-menu:focus {
-    outline: none;
-}
-
-.simple-context-menu .menu-options {
-    width: auto;
-    min-width: 130px;
-    height: auto;
-    box-shadow: 0 4px 5px 3px rgba(0, 0, 0, 0.2);
-    list-style: none;
-    padding: 5px 0;
-    margin: 0;
-    background-color: white;
-    color: rgb(51, 51, 51);
-    line-height: 27px;
-    font-size: 13px;
-    margin-bottom: 0;
-    border: 1px solid rgb(200, 200, 200);
-}
-
-.simple-context-menu .menu-option {
-    font-weight: 400;
-    padding: 5px 18px 5px 28px;
-    cursor: pointer;
-}
-
-.simple-context-menu .menu-option:hover {
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.simple-context-menu .menu-option:focus {
-    outline: none;
-    background: rgba(0, 100, 255, 0.2);
-}
-
-.simple-context-menu .menu-separator {
-    display: block;
-    margin: 5px 7px;
-    height: 1px;
-    border-bottom: 1px solid #aaa;
-    background-color: #fff;
-}
-
-.simple-context-menu .menu-option.submenu {
-    position: relative;
-}
-
-.simple-context-menu .menu-option.submenu .menu-options {
-    display: none;
-    position: absolute;
-    padding-top: 0;
-    top: 0;
-    left: calc(100% - 7px);
-}
-
-.simple-context-menu .menu-option.submenu:hover > .menu-options {
-    display: block;
-}
-
-.simple-context-menu .menu-option.submenu:focus-within > .menu-options {
-    display: block;
-}
-
-.simple-context-menu .menu-option.submenu:focus > .menu-options {
-    display: block;
-}
-
-.simple-context-menu .menu-option.submenu::after {
-    content: "";
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    border: 5px solid transparent;
-    border-left-color: #808080;
-}
-
-.simple-context-menu .menu-option.submenu:hover::after {
-    border-left-color: #fff;
-}
-
-*/
 
 function showContextMenu(menu, target, pageX, pageY) {
   menu.actionTarget = target;
@@ -384,6 +280,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
             z-index: 100;
             position: fixed;
             display: none;
+            outline: none;
         }
         
         .simple-context-menu {

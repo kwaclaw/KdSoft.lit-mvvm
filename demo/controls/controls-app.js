@@ -51,7 +51,14 @@ class ControlsApp extends LitMvvmElement {
       const menuGrandChildren = [];
       if (indx === 3) {
         for (let gci = 0; gci < 3; gci += 1) {
-          const gc = new KdSoftTreeNodeModel(`2-${indx}`, [] , { text: `Menu Item ${indx}-${gci}` });
+          const menuGreatGrandChildren = [];
+          if (gci === 1) {
+            for (let ggci = 0; ggci < 2; ggci += 1) {
+              const gcc = new KdSoftTreeNodeModel(`3-${indx}`, [] , { text: `Menu Item ${indx}-${gci}-${ggci}` });
+              menuGreatGrandChildren.push(gcc);
+            }
+          }
+          const gc = new KdSoftTreeNodeModel(`2-${indx}`, menuGreatGrandChildren , { text: `Menu Item ${indx}-${gci}` });
           menuGrandChildren.push(gc);
         }
       }
@@ -241,7 +248,7 @@ class ControlsApp extends LitMvvmElement {
   rendered() {
     const menu = this.renderRoot.getElementById('tv-context');
     const tv = this.renderRoot.getElementById('tv');
-    // we don't need to bind eachh menu items, as the event bubbles up
+    // we don't need to bind each menu item (see _bindTree), as the event bubbles up
     menu.bind(tv);
   }
 }
