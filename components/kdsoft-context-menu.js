@@ -37,10 +37,10 @@ function showContextMenu(menu, target, pageX, pageY) {
   menu.focus();
 }
 
-function executeActive(options) {
+function executeActive(renderRoot, options) {
   let activeOption = null;
   for (let i = 0; i < options.length; i += 1) {
-    if (options[i] === document.activeElement) {
+    if (options[i] === renderRoot.activeElement) {
       activeOption = options[i];
     }
   }
@@ -50,10 +50,10 @@ function executeActive(options) {
   }
 }
 
-function getActiveIndex(options) {
+function getActiveIndex(renderRoot, options) {
   let result = null;
   for (let i = 0; i < options.length; i += 1) {
-    if (options[i] === document.activeElement) {
+    if (options[i] === renderRoot.activeElement) {
       result = i;
       break;
     }
@@ -62,8 +62,8 @@ function getActiveIndex(options) {
   return result;
 }
 
-function moveNext(options) {
-  let fi = getActiveIndex(options);
+function moveNext(menu, options) {
+  let fi = getActiveIndex(menu.renderRoot, options);
   fi = fi || 0;
 
   const parent = options[fi].parentNode;
@@ -88,8 +88,8 @@ function moveNext(options) {
   next.focus();
 }
 
-function movePrevious(options) {
-  let fi = getActiveIndex(options);
+function movePrevious(menu, options) {
+  let fi = getActiveIndex(menu.renderRoot, options);
   fi = fi || options.length - 1;
 
   const parent = options[fi].parentNode;
@@ -114,51 +114,42 @@ function movePrevious(options) {
   previous.focus();
 }
 
-function moveRight(options) {
-  const fi = getActiveIndex(options);
+function moveRight(menu, options) {
+  const fi = getActiveIndex(menu.renderRoot, options);
   if (fi == null) return;
 
   const subitem = options[fi].querySelector('.menu-option');
   if (subitem) subitem.focus();
 }
 
-function moveLeft(options) {
-  const fi = getActiveIndex(options);
+function moveLeft(menu, options) {
+  const fi = getActiveIndex(menu.renderRoot, options);
   if (fi == null) return;
 
   const parentOption = options[fi].parentElement.closest('.submenu');
   if (parentOption) parentOption.focus();
 }
 
-function setup(menu, executeAction) {
+function setup(menu) {
   menu.tabIndex = 0;
 
-  const options = menu.querySelectorAll('.menu-option');
-  for (let i = 0; i < options.length; i += 1) {
-    const opt = options[i];
-    opt.tabIndex = i + 1;
-    opt.addEventListener('click', (e) => {
-      const action = e.currentTarget.getAttribute('data-action');
-      executeAction(menu.actionTarget, action, e.currentTarget.dataset);
-    });
-  }
-
   menu.addEventListener('keyup', (e) => {
+    const options = menu.renderRoot.querySelectorAll('.menu-option');
     switch (e.code) {
       case 'Enter':
-        executeActive(options);
+        executeActive(menu.renderRoot, options);
         break;
       case 'ArrowLeft':
-        moveLeft(options);
+        moveLeft(menu, options);
         break;
       case 'ArrowUp':
-        movePrevious(options);
+        movePrevious(menu, options);
         break;
       case 'ArrowRight':
-        moveRight(options);
+        moveRight(menu, options);
         break;
       case 'ArrowDown':
-        moveNext(options);
+        moveNext(menu, options);
         break;
       default:
         break;
@@ -186,7 +177,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
     super();
     this._touchTimer = null;
     this.getItemTemplate = item => html`${item}`;
-    setup(this, () => {});
+    setup(this);
   }
 
   _contextMenuListener(e) {
@@ -260,6 +251,15 @@ export default class KdSoftContextMenu extends LitMvvmElement {
         return;
       }
       this._resetTouch();
+    }
+  }
+
+  // returns node entry = { node, parent, nodeIndex }
+  getNodeEntry(mouseEvent) {
+    for (const tgt of mouseEvent.composedPath()) {
+      if (tgt.tagName === 'LI' && tgt.classList.contains('menu-option')) {
+        return this.model.getNodeEntry(tgt.id);
+      }
     }
   }
 
@@ -369,14 +369,14 @@ export default class KdSoftContextMenu extends LitMvvmElement {
     ];
   }
 
-  createMenu(nodeModel, isRoot) {
+  createMenu(nodeModel, isRoot, tabIndex) {
     if (isRoot && nodeModel.children && nodeModel.children.length) {
       return html`
         <ul class="menu-options">
           ${repeat(
             nodeModel.children,
             childModel => childModel.id,
-            (childModel, index) => this.createMenu(childModel, false)
+            (childModel, index) => this.createMenu(childModel, false, tabIndex)
           )}
         </ul>
       `;
@@ -384,15 +384,16 @@ export default class KdSoftContextMenu extends LitMvvmElement {
       return nothing;
     }
     const hasChildren = nodeModel.children && nodeModel.children.length;
+    tabIndex += 1;
     return html`
-      <li class="menu-option ${hasChildren ? 'submenu' : ''}">
+      <li id=${nodeModel.id} class="menu-option ${hasChildren ? 'submenu' : ''}" tabindex=${tabIndex}>
         ${this.getItemTemplate(nodeModel)}
         ${!hasChildren ? nothing : html`
           <ul class="menu-options">
             ${repeat(
               nodeModel.children,
               childModel => childModel.id,
-              (childModel, index) => this.createMenu(childModel, false)
+              (childModel, index) => this.createMenu(childModel, false, tabIndex)
             )}
           </ul>`
         }
@@ -403,7 +404,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
   render() {
     return html`
       <nav id=${this.model.id} class="simple-context-menu ${this.model.children.length ? 'has-children' : ''}">
-        ${this.createMenu(this.model, true)}
+        ${this.createMenu(this.model, true, 0)}
       </nav>
     `;
   }

@@ -23,6 +23,14 @@ class KdSoftTreeNodeModel {
 
   get treeNodeEntries() { return treeNodeEntries(this, null, -1); }
 
+  getNodeEntry(nodeId) {
+    for (const entry of treeNodeEntries(this, null)) {
+      if (entry.node.id === nodeId) {
+        return entry;
+      }
+    }
+  }
+
   // returns true if this node is an ancestor of the other node, or if it is the same node
   isAncestorOf(otherNode) {
     for (const entry of treeNodeEntries(this, null, -1)) {
