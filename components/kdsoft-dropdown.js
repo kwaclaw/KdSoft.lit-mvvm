@@ -123,6 +123,9 @@ class KdSoftDropdown extends LitMvvmElement {
         #seltext {
           pointer-events: auto;
         }
+        #searchbox:focus {
+          outline-color: lightgrey;
+        }
         slot {
           display: flex;
           position: absolute;
@@ -155,7 +158,8 @@ class KdSoftDropdown extends LitMvvmElement {
         <input id="searchbox"
           type="text"
           tabindex="1"
-          class="my-auto py-1 flex-grow"
+          placeholder="search unselected entries"
+          class="my-auto p-1 flex-grow"
           @focus="${this._searchboxFocused}"
           @blur="${this._searchboxLostFocus}"
           @input="${this._searchTextChanged}"
