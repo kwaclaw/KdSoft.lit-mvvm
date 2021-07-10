@@ -47,24 +47,12 @@ class ControlsApp extends LitMvvmElement {
     this.tvRoot = observable(new KdSoftTreeNodeModel('0-0', tvChildren, { type: 'r', text: `Root Node` }));
 
     const menuChildren = [];
-    for (let indx = 0; indx < 4; indx += 1) {
-      const menuGrandChildren = [];
-      if (indx === 3) {
-        for (let gci = 0; gci < 3; gci += 1) {
-          const menuGreatGrandChildren = [];
-          if (gci === 1) {
-            for (let ggci = 0; ggci < 2; ggci += 1) {
-              const gcc = new KdSoftTreeNodeModel(`3-${indx}`, [] , { text: `Menu Item ${indx}-${gci}-${ggci}` });
-              menuGreatGrandChildren.push(gcc);
-            }
-          }
-          const gc = new KdSoftTreeNodeModel(`2-${indx}`, menuGreatGrandChildren , { text: `Menu Item ${indx}-${gci}` });
-          menuGrandChildren.push(gc);
-        }
-      }
-      const child = new KdSoftTreeNodeModel(`1-${indx}`, menuGrandChildren , { text: `Menu Item ${indx}` });
-      menuChildren.push(child);
-    }
+    const menuGrandChildren = [];
+    menuGrandChildren.push(new KdSoftTreeNodeModel(`before`, [] , { text: `Before`, disabled: false }));
+    menuGrandChildren.push(new KdSoftTreeNodeModel(`after`, [] , { text: `After`, disabled: false }));
+    menuGrandChildren.push(new KdSoftTreeNodeModel(`inside`, [] , { text: `Inside`, disabled: false }));
+    menuChildren.push(new KdSoftTreeNodeModel(`add`, menuGrandChildren, { text: `Add Node`, disabled: false }));
+    menuChildren.push(new KdSoftTreeNodeModel(`remove`, [], { text: `Remove Node`, disabled: false }));
     this.tvMenu = observable(new KdSoftTreeNodeModel('0-0', menuChildren, { text: `Node Menu` }));
 
     this.model = observable({
@@ -84,6 +72,31 @@ class ControlsApp extends LitMvvmElement {
   tvDragDropChanged(e) {
     const checked = e.currentTarget.checked;
     this.model.dragDropEnabled = checked;
+  }
+
+  _getClosestTreeNode(path) {
+    for (let indx = 0; indx < path.length; indx += 1) {
+      const classList = path[indx].classList;
+      if (classList && classList.contains('kdsoft-node'))
+        return path[indx];
+    }
+    return null;
+  }
+
+  tvMenuItemClicked(e) {
+    const menu = e.currentTarget;
+    var menuItem = (menu.getNodeEntry(e) || {}).node;
+    switch (menuItem.id) {
+      case 'remove':
+        // the menu is associated with the tree view as a whole, not an individual node
+        const treeView = menu.actionTarget;
+        const tn = this._getClosestTreeNode(menu.actionPath);
+        treeView.model.removeNode(tn.id);
+        console.log(`Removed node: ${tn.id}`);
+        break;
+      default:
+        break;
+    }
   }
 
   // model may still be undefined
@@ -202,6 +215,7 @@ class ControlsApp extends LitMvvmElement {
       <kdsoft-context-menu id="tv-context"
         .model=${this.tvMenu}
         .getItemTemplate=${this._getMenuItemTemplate}
+        @click=${this.tvMenuItemClicked}
       ></kdsoft-context-menu>
       <div id="container">
         <div id="check-list">
@@ -227,7 +241,7 @@ class ControlsApp extends LitMvvmElement {
         <div id="tree-view">
           <h1 class="font-bold text-xl mb-2 text-left">Treeview
             <input type="checkbox" class="kdsoft-checkbox align-text-bottom" @change=${this.tvDragDropChanged}/>
-            ${this.model.dragDropEnabled ? 'with' : 'without'} drag and drop
+            with context menu${this.model.dragDropEnabled ? ' and with' : ', but without'} drag and drop
           </h1>
           <kdsoft-tree-view id="tv" class="py-0"
             ?allow-drag-drop=${this.model.dragDropEnabled}
