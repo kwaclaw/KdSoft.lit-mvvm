@@ -5,9 +5,11 @@ import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
 import tailwindStyles from './styles/tailwind-styles.js';
 import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
-function showContextMenu(menu, target, pageX, pageY) {
+function showContextMenu(menu, target, path, pageX, pageY) {
   menu.actionTarget = target;
-  // need to render it before using menu.clientWidth/Height
+  menu.actionPath = path;
+
+ // need to render it before using menu.clientWidth/Height
   menu.style.display = 'block';
 
   // need to correct mouse coordinates when inside of bootstrap modal dialog
@@ -188,7 +190,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
 
     e.preventDefault();
     e.stopPropagation();
-    showContextMenu(this, e.currentTarget, e.pageX, e.pageY);
+    showContextMenu(this, e.currentTarget,e.path,  e.pageX, e.pageY);
     return false;
   }
 
@@ -202,6 +204,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
     e.stopPropagation();
 
     const target = e.currentTarget;
+    const path = e.path;
 
     const targetTouch = e.targetTouches[0];
     const pageX = targetTouch.pageX;
@@ -212,7 +215,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
     }
     this._touchTimer = window.setTimeout(() => {
       this._touchTimer = null;
-      showContextMenu(this, target, pageX, pageY);
+      showContextMenu(this, target, path, pageX, pageY);
     }, 700);
   }
 
