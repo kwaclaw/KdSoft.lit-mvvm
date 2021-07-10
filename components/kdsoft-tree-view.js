@@ -98,7 +98,7 @@ class KdSoftTreeView extends LitMvvmElement {
     const draggable = this.allowDragDrop ? 'true' : 'false';
     return html`
       ${isRoot || !this.allowDragDrop ? nothing : html`<div is="kdsoft-drop-target" id=${nodeModel.id} data-drop-mode="before"></div>`}
-      <kdsoft-expander id=${nodeModel.id} draggable=${draggable} data-drop-mode="inside" class="${nodeModel.children.length ? 'has-children': ''}">
+      <kdsoft-expander id=${nodeModel.id} draggable=${draggable} data-drop-mode="inside" class="${nodeModel.children.length ? 'kdsoft-node has-children': 'kdsoft-node'}">
         <div slot="expander">
           ${this.allowDragDrop ? html`<i class="expander-grip fas fa-xs fa-ellipsis-v text-gray-400"></i>` : nothing}
           <i class="expander-icon fas fa-lg fa-caret-right ${nodeModel.children.length ? 'text-blue-600': 'text-blue-200'}"></i>
