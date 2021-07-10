@@ -39,6 +39,40 @@ class KdSoftTreeNodeModel {
     return false;
   }
 
+  removeNode(nodeId) {
+    const fromEntry = this.getNodeEntry(nodeId);
+    if (!fromEntry) return;
+    if (!fromEntry.parent) return;
+
+    const fromIndx = fromEntry.nodeIndex;
+    fromEntry.parent.children.splice(fromIndx, 1);
+  }
+
+  // newNode must be instance of KdSoftTreeNodeModel or equivalent (duck-typing)
+  addNode(atNodeId, dropMode, newNode) {
+    const atEntry = this.getNodeEntry(atNodeId);
+    if (!atEntry) return;
+
+    const atNode = atEntry.node;
+    const atParent = atEntry.parent;
+
+    switch (dropMode) {
+      case 'before':
+        if (!atParent) return;
+        atParent.children.splice(atEntry.nodeIndex, 0, newNode);
+        break;
+      case 'after':
+        if (!atParent) return;
+        atParent.children.splice(atEntry.nodeIndex + 1, 0, newNode);
+        break;
+      case 'inside':
+        atNode.children.push(newNode);
+        break;
+      default:
+        break;
+    }
+  }
+
   moveNode(fromId, toId, dropMode) {
     let fromEntry; let toEntry;
 
