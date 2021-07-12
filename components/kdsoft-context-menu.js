@@ -190,7 +190,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
 
     e.preventDefault();
     e.stopPropagation();
-    showContextMenu(this, e.currentTarget,e.path,  e.pageX, e.pageY);
+    showContextMenu(this, e.currentTarget, e.composedPath(),  e.pageX, e.pageY);
     return false;
   }
 
@@ -204,7 +204,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
     e.stopPropagation();
 
     const target = e.currentTarget;
-    const path = e.path;
+    const path = e.composedPath();
 
     const targetTouch = e.targetTouches[0];
     const pageX = targetTouch.pageX;
