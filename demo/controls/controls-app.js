@@ -14,6 +14,27 @@ import {
   KdSoftTreeNodeModel
 } from '@kdsoft/lit-mvvm-components';
 
+function getClosestTreeNode(path) {
+  for (let indx = 0; indx < path.length; indx += 1) {
+    const classList = path[indx].classList;
+    if (classList && classList.contains('kdsoft-node'))
+      return path[indx];
+  }
+  return null;
+}
+
+function editNode(treeNode) {
+  const nodeEdit = treeNode.querySelector('.node-edit');
+  if (nodeEdit) {
+    nodeEdit.removeAttribute('hidden');
+    nodeEdit.nextElementSibling.setAttribute('hidden', '');
+    nodeEdit.value = nodeEdit.nextElementSibling.textContent;
+    nodeEdit.focus();
+    return true;
+  }
+  return false;
+}
+
 class ControlsApp extends LitMvvmElement {
   constructor() {
     super();
@@ -48,6 +69,7 @@ class ControlsApp extends LitMvvmElement {
 
     const menuChildren = [];
     const menuGrandChildren = [];
+    menuChildren.push(new KdSoftTreeNodeModel(`edit`, [], { text: `Edit Node`, disabled: false }));
     menuGrandChildren.push(new KdSoftTreeNodeModel(`before`, [] , { text: `Before`, disabled: false }));
     menuGrandChildren.push(new KdSoftTreeNodeModel(`after`, [] , { text: `After`, disabled: false }));
     menuGrandChildren.push(new KdSoftTreeNodeModel(`inside`, [] , { text: `Inside`, disabled: false }));
@@ -57,7 +79,9 @@ class ControlsApp extends LitMvvmElement {
 
     this.model = observable({
       dragDropEnabled: false
-    })
+    });
+
+    this.newNodeId = 0;
   }
 
   getChecklistText() {
@@ -74,29 +98,73 @@ class ControlsApp extends LitMvvmElement {
     this.model.dragDropEnabled = checked;
   }
 
-  _getClosestTreeNode(path) {
-    for (let indx = 0; indx < path.length; indx += 1) {
-      const classList = path[indx].classList;
-      if (classList && classList.contains('kdsoft-node'))
-        return path[indx];
-    }
-    return null;
-  }
-
   tvMenuItemClicked(e) {
     const menu = e.currentTarget;
+    const treeView = menu.actionTarget;
+    const treeNode = getClosestTreeNode(menu.actionPath);
+    const nodeModelEntry = treeView.model.getNodeEntry(treeNode.id);
+    const nodeModel = nodeModelEntry.node;
+
     var menuItem = (menu.getNodeEntry(e) || {}).node;
     switch (menuItem.id) {
+      case 'edit':
+        editNode(treeNode);
+        break;
       case 'remove':
         // the menu is associated with the tree view as a whole, not an individual node
-        const treeView = menu.actionTarget;
-        const tn = this._getClosestTreeNode(menu.actionPath);
-        treeView.model.removeNode(tn.id);
-        console.log(`Removed node: ${tn.id}`);
+        treeView.model.removeNode(treeNode.id);
+        console.log(`Removed node: ${treeNode.id}`);
+        break;
+      case 'before':
+      case 'after': {
+          const newNodeModel = new KdSoftTreeNodeModel(`n-${this.newNodeId++}`, [], { type: nodeModel.type, text: `New node ${this.newNodeId}` });
+          treeView.model.addNode(treeNode.id, menuItem.id, newNodeModel);
+          window.setTimeout(() => {
+            const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}`);
+            if (newNode) editNode(newNode);
+          }, 0);
+        }
+        break;
+      case 'inside': {
+          let nodeType = 'ggc';
+          switch (nodeModel.type) {
+            case 'r':
+              nodeType = 'c';
+              break;
+            case 'c':
+              nodeType = 'gc';
+              break;
+            default:
+              break;
+          }
+          const newNodeModel = new KdSoftTreeNodeModel(`n-${this.newNodeId++}`, [], { type: nodeType, text: `New node ${this.newNodeId}` });
+          // this.schedule(() => {
+          //   treeNode.ariaExpanded = true;
+          //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}`);
+          //   if (newNode) editNode(newNode);
+          // });
+          window.setTimeout(() => {
+            treeNode.ariaExpanded = true;
+            const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}`);
+            if (newNode) editNode(newNode);
+          }, 0);
+          nodeModel.addNode(treeNode.id, menuItem.id, newNodeModel);
+        }
         break;
       default:
         break;
     }
+  }
+
+  nodeEditLostFocus(e) {
+    e.preventDefault();
+    const seltext = e.currentTarget.nextElementSibling;
+    seltext.removeAttribute('hidden');
+    e.currentTarget.setAttribute('hidden', '');
+  }
+
+  nodeEditTextChanged(e, nodeModel) {
+    nodeModel.text = e.currentTarget.value;
   }
 
   // model may still be undefined
@@ -175,6 +243,9 @@ class ControlsApp extends LitMvvmElement {
         #ddown {
           width: 100%;
         }
+        .node-edit:focus {
+          border-color: lightgrey;
+        }
       `
     ];
   }
@@ -183,22 +254,31 @@ class ControlsApp extends LitMvvmElement {
     return html`${item.name}`;
   }
 
+  // caller must make sure that "this" refers to this object, and not the tree view
   _getTreeViewContentTemplate(nodeModel) {
     let cls = '';
     switch (nodeModel.type) {
       case 'gc':
-        cls = 'text-red-600';
+        cls += 'text-red-600';
         break;
       case 'c':
-        cls = 'text-blue-600';
+        cls += 'text-blue-600';
         break;
       case 'r':
-        cls = 'text-black-600';
+        cls += 'text-black-600';
         break;
       default:
         break;
     }
-    return html`<span class=${cls}>${nodeModel.text}</span>`;
+    return html`<span class="node-content">
+      <input type="text" placeholder="node text"
+          class="my-auto p-1 flex-grow node-edit"
+          tabindex="1"
+          @blur="${e => this.nodeEditLostFocus(e, nodeModel)}"
+          @input="${e => this.nodeEditTextChanged(e, nodeModel)}"
+          hidden />
+          <span class=${cls}>${nodeModel.text}</span>
+    </span>`;
   }
 
   _getMenuItemTemplate(item) {
@@ -243,10 +323,11 @@ class ControlsApp extends LitMvvmElement {
             <input type="checkbox" class="kdsoft-checkbox align-text-bottom" @change=${this.tvDragDropChanged}/>
             with context menu${this.model.dragDropEnabled ? ' and with' : ', but without'} drag and drop
           </h1>
+          <!-- invoke getContentTemplate as lambda, to force this component to be "this" in the method -->
           <kdsoft-tree-view id="tv" class="py-0"
             ?allow-drag-drop=${this.model.dragDropEnabled}
             .model=${this.tvRoot}
-            .getContentTemplate=${this._getTreeViewContentTemplate}>
+            .getContentTemplate=${nodeModel => this._getTreeViewContentTemplate(nodeModel)}>
           </kdsoft-tree-view>
         </div>
       </div>
