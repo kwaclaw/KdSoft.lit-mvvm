@@ -38,7 +38,7 @@ function editNode(treeNode) {
 class ControlsApp extends LitMvvmElement {
   constructor() {
     super();
-    this.scheduler = new Queue(priorities.HIGH);
+    this.scheduler = new Queue(priorities.LOW);
     this.checklistModel = observable(new KdSoftChecklistModel(
       [{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }, { id: 3, name: 'Gamma' }, { id: 4, name: 'Delta' }, { id: 5, name: 'Epsilon' }],
       [1],
@@ -138,16 +138,18 @@ class ControlsApp extends LitMvvmElement {
               break;
           }
           const newNodeModel = new KdSoftTreeNodeModel(`n-${this.newNodeId++}`, [], { type: nodeType, text: `New node ${this.newNodeId}` });
-          // this.schedule(() => {
-          //   treeNode.ariaExpanded = true;
-          //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}`);
-          //   if (newNode) editNode(newNode);
-          // });
-          window.setTimeout(() => {
+          // the scheduler must allow scheduling after all currently scheduled renderings are done,
+          // in case of @nx-js/queue-util this means using priorities.LOW; otherwise use window.setTimeout()
+          this.schedule(() => {
             treeNode.ariaExpanded = true;
             const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}`);
             if (newNode) editNode(newNode);
-          }, 0);
+          });
+          // window.setTimeout(() => {
+          //   treeNode.ariaExpanded = true;
+          //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}`);
+          //   if (newNode) editNode(newNode);
+          // }, 0);
           nodeModel.addNode(treeNode.id, menuItem.id, newNodeModel);
         }
         break;
