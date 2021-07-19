@@ -186,8 +186,12 @@ class KdSoftChecklist extends LitMvvmElement {
       <div part="item" class="w-full inline-flex items-baseline">
         ${hasArrows
           ? html`
-              <span class="leading-none cursor-pointer my-auto mr-1" @click=${this._upClick}><i class=${classMap(upArrowClasses)}></i></span>
-              <span class="leading-none cursor-pointer my-auto mr-2" @click=${this._downClick}><i class=${classMap(downArrowClasses)}></i></span>
+              <span class="leading-none cursor-pointer my-auto mr-1" @click=${this._upClick}>
+                <i class=${classMap(upArrowClasses)}></i>
+              </span>
+              <span class="leading-none cursor-pointer my-auto mr-2" @click=${this._downClick}>
+                <i class=${classMap(downArrowClasses)}></i>
+              </span>
             `
           : nothing
         }

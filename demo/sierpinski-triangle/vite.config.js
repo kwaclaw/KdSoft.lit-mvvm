@@ -5,9 +5,7 @@ export default defineConfig({
   server: {
     port: 41000,
     open: true,
-    hmr: {
-      protocol: 'ws'
-    },
+    hmr: { protocol: 'ws' },
     cors: true
   }
-})
+});

@@ -1,7 +1,6 @@
 import { html } from 'lit';
 import { styleMap } from 'lit/directives/style-map.js';
 import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
-
 import { DotModel } from './dot-model';
 
 export class Dot extends LitMvvmElement<DotModel> {
@@ -57,7 +56,7 @@ export class Dot extends LitMvvmElement<DotModel> {
     }
 
     return html`
-      <div style="${style}" @mouseover="${() => m.enter()}" @mouseout="${() => m.leave()}">
+      <div style=${style} @mouseover=${() => m.enter()} @mouseout=${() => m.leave()}>
         ${hover ? '*' : ''}<slot></slot>${hover ? '*' : ''}
       </div>
     `;

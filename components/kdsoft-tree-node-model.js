@@ -29,12 +29,13 @@ class KdSoftTreeNodeModel {
         return entry;
       }
     }
+    return undefined;
   }
 
   // returns true if this node is an ancestor of the other node, or if it is the same node
   isAncestorOf(otherNode) {
     for (const entry of treeNodeEntries(this, null, -1)) {
-      if (raw(entry.node) == raw(otherNode)) return true;
+      if (raw(entry.node) === raw(otherNode)) return true;
     }
     return false;
   }
@@ -113,7 +114,7 @@ class KdSoftTreeNodeModel {
 
     const moveDownSameParent = (fromParent.id === toParent.id) && (fromEntry.nodeIndex < toEntry.nodeIndex);
     // if we move down the same parent, then the target index has changed by -1
-    const toIndx = moveDownSameParent ? toEntry.nodeIndex - 1: toEntry.nodeIndex;
+    const toIndx = moveDownSameParent ? toEntry.nodeIndex - 1 : toEntry.nodeIndex;
     switch (dropMode) {
       case 'before':
         toParent.children.splice(toIndx, 0, fromEntry.node);

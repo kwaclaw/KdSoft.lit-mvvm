@@ -9,7 +9,7 @@ function showContextMenu(menu, target, path, pageX, pageY) {
   menu.actionTarget = target;
   menu.actionPath = path;
 
- // need to render it before using menu.clientWidth/Height
+  // need to render it before using menu.clientWidth/Height
   menu.style.display = 'block';
 
   // need to correct mouse coordinates when inside of bootstrap modal dialog
@@ -173,7 +173,6 @@ function setup(menu) {
   }, true);
 }
 
-
 export default class KdSoftContextMenu extends LitMvvmElement {
   constructor() {
     super();
@@ -190,7 +189,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
 
     e.preventDefault();
     e.stopPropagation();
-    showContextMenu(this, e.currentTarget, e.composedPath(),  e.pageX, e.pageY);
+    showContextMenu(this, e.currentTarget, e.composedPath(), e.pageX, e.pageY);
     return false;
   }
 
@@ -264,6 +263,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
         return this.model.getNodeEntry(tgt.id);
       }
     }
+    return undefined;
   }
 
   bind(element) {
@@ -377,13 +377,14 @@ export default class KdSoftContextMenu extends LitMvvmElement {
       return html`
         <ul class="menu-options">
           ${repeat(
-            nodeModel.children,
-            childModel => childModel.id,
-            (childModel, index) => this.createMenu(childModel, false, tabIndex)
+              nodeModel.children,
+              childModel => childModel.id,
+              (childModel, index) => this.createMenu(childModel, false, tabIndex)
           )}
         </ul>
       `;
-    } else if (isRoot) {
+    }
+    if (isRoot) {
       return nothing;
     }
     const hasChildren = nodeModel.children && nodeModel.children.length;
@@ -391,14 +392,17 @@ export default class KdSoftContextMenu extends LitMvvmElement {
     return html`
       <li id=${nodeModel.id} class="menu-option ${hasChildren ? 'submenu' : ''}" tabindex=${tabIndex}>
         ${this.getItemTemplate(nodeModel)}
-        ${!hasChildren ? nothing : html`
-          <ul class="menu-options">
-            ${repeat(
-              nodeModel.children,
-              childModel => childModel.id,
-              (childModel, index) => this.createMenu(childModel, false, tabIndex)
-            )}
-          </ul>`
+        ${!hasChildren
+          ? nothing
+          : html`
+            <ul class="menu-options">
+              ${repeat(
+                nodeModel.children,
+                childModel => childModel.id,
+                (childModel, index) => this.createMenu(childModel, false, tabIndex)
+              )}
+            </ul>
+            `
         }
       </li>
     `;
@@ -411,8 +415,6 @@ export default class KdSoftContextMenu extends LitMvvmElement {
       </nav>
     `;
   }
-
-
 }
 
 window.customElements.define('kdsoft-context-menu', KdSoftContextMenu);

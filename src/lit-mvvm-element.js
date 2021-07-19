@@ -1,5 +1,6 @@
 /* eslint-disable lines-between-class-members */
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable import/prefer-default-export */
 
 import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
 import { render as litRender, noChange } from 'lit/html.js';
@@ -30,17 +31,15 @@ export class LitMvvmElement extends LitBaseElement {
 
   constructor() {
     super();
-    this.renderOptions = {
-      host: this
-    };
-    this.__childPart = void 0;
+    this.renderOptions = { host: this };
+    this.__childPart = undefined;
     _scheduler.set(this, r => r());
   }
 
   createRenderRoot() {
     const rr = super.createRenderRoot();
     const rb = this.renderOptions.renderBefore;
-    if (rb === null || rb === void 0) {
+    if (rb === null || rb === undefined) {
       this.renderOptions.renderBefore = rr.firstChild;
     }
     return rr;
@@ -64,7 +63,7 @@ export class LitMvvmElement extends LitBaseElement {
         // Example: certain updates to arrays or complex object trees are best done on the
         //    raw objects, which would not trigger observed reactions, so at the end of the
         //    modifications one can call "this.__changeCount++;" from within the model
-        //    and thus trigger a call to "render()". 
+        //    and thus trigger a call to "render()".
         const changeCount = this.model ? this.model.__changeCount : -1;
         // super._render() reads the relevant view model properties synchronously.
         super._render();
@@ -107,7 +106,7 @@ export class LitMvvmElement extends LitBaseElement {
   connectedCallback() {
     super.connectedCallback();
     const cp = this.__childPart;
-    if (cp !== null && cp !== void 0) {
+    if (cp !== null && cp !== undefined) {
       cp.setConnected(true);
     }
     this.schedule(this._initialRender.bind(this));
@@ -117,7 +116,7 @@ export class LitMvvmElement extends LitBaseElement {
     unobserve(this._observer);
     super.disconnectedCallback();
     const cp = this.__childPart;
-    if (cp !== null && cp !== void 0) {
+    if (cp !== null && cp !== undefined) {
       cp.setConnected(false);
     }
   }

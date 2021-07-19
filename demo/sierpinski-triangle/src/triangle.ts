@@ -1,9 +1,7 @@
 
 import { html } from 'lit';
 import { LitMvvmElement } from '../../../lit-mvvm.js';
-
 import { TriangleModel } from './triangle-model';
-
 import './dot';
 
 //TODO if we want the dots to be rendered early we need a different way to build the tree structure,
@@ -18,7 +16,7 @@ export class SierpinskiTriangle extends LitMvvmElement<TriangleModel> {
     let m = this.model;
     if (m.dot) {
       return html`
-        <s-dot .model="${m.dot}" .scheduler="${this.scheduler}">
+        <s-dot .model=${m.dot} .scheduler=${this.scheduler}>
           ${m.sharedModel.seconds}
         </s-dot>
       `;
@@ -33,9 +31,9 @@ export class SierpinskiTriangle extends LitMvvmElement<TriangleModel> {
     }
 
     return html`
-      <s-triangle .model="${m.middle}" .scheduler="${this.scheduler}"></s-triangle>
-      <s-triangle .model="${m.left}" .scheduler="${this.scheduler}"></s-triangle>
-      <s-triangle .model="${m.right}" .scheduler="${this.scheduler}"></s-triangle>
+      <s-triangle .model=${m.middle} .scheduler=${this.scheduler}></s-triangle>
+      <s-triangle .model=${m.left} .scheduler=${this.scheduler}></s-triangle>
+      <s-triangle .model=${m.right} .scheduler=${this.scheduler}></s-triangle>
     `;
   }
 }

@@ -57,7 +57,6 @@ function drop(e) {
   this._element.dispatchEvent(evt);
 }
 
-
 class KdSoftDragDropProvider {
   constructor(getItemId) {
     this._getItemId = getItemId;

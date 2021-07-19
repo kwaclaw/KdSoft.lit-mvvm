@@ -2,9 +2,7 @@ import { html } from 'lit-html';
 import { styleMap } from 'lit/directives/style-map.js';
 import { Queue, priorities } from '@nx-js/queue-util';
 import { LitMvvmElement, css, BatchScheduler } from '@kdsoft/lit-mvvm';
-
 import { AppModel } from './app-model';
-
 import './triangle';
 
 class AnimationScheduler {
@@ -127,9 +125,9 @@ export class TriangleApplication extends LitMvvmElement<AppModel> {
       <div><span>Animation render events per second: ${animationsPerSecond.toFixed(2)}</span></div>
       <div><span>Node render events per second: ${rendersPerSecond}</span></div>
       <div><span>Node render requests per event: ${renderRequestsPerEvent}</span></div>
-      <div id="container" style="${style}">
+      <div id="container" style=${style}>
         <div>
-          <s-triangle .model="${triangleModel}" .scheduler="${this.nodeScheduler}"></s-triangle>
+          <s-triangle .model=${triangleModel} .scheduler=${this.nodeScheduler}></s-triangle>
         </div>
       </div>
     `;

@@ -6,7 +6,6 @@ import tailwindStyles from '@kdsoft/lit-mvvm-components/styles/tailwind-styles.j
 import checkboxStyles from '@kdsoft/lit-mvvm-components/styles/kdsoft-checkbox-styles.js';
 import fontAwesomeStyles from '@kdsoft/lit-mvvm-components/styles/fontawesome/css/all-styles.js';
 
-import '@kdsoft/lit-mvvm-components';
 import {
   KdSoftDropdownModel,
   KdSoftChecklistModel,
@@ -17,8 +16,9 @@ import {
 function getClosestTreeNode(path) {
   for (let indx = 0; indx < path.length; indx += 1) {
     const classList = path[indx].classList;
-    if (classList && classList.contains('kdsoft-node'))
+    if (classList && classList.contains('kdsoft-node')) {
       return path[indx];
+    }
   }
   return null;
 }
@@ -40,7 +40,13 @@ class ControlsApp extends LitMvvmElement {
     super();
     this.scheduler = new Queue(priorities.LOW);
     this.checklistModel = observable(new KdSoftChecklistModel(
-      [{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }, { id: 3, name: 'Gamma' }, { id: 4, name: 'Delta' }, { id: 5, name: 'Epsilon' }],
+      [
+        { id: 1, name: 'Alpha' },
+        { id: 2, name: 'Beta' },
+        { id: 3, name: 'Gamma' },
+        { id: 4, name: 'Delta' },
+        { id: 5, name: 'Epsilon' }
+      ],
       [1],
       true,
       item => item.name
@@ -62,7 +68,7 @@ class ControlsApp extends LitMvvmElement {
     for (let indx = 0; indx < 5; indx += 1) {
       const gci = indx * 3;
       const grandChildren = tvGrandChildren.slice(gci, gci + 3);
-      const child = new KdSoftTreeNodeModel(`2-${indx}`, grandChildren , { type: 'c', text: `Child blah blah ${indx}` });
+      const child = new KdSoftTreeNodeModel(`2-${indx}`, grandChildren, { type: 'c', text: `Child blah blah ${indx}` });
       tvChildren.push(child);
     }
     this.tvRoot = observable(new KdSoftTreeNodeModel('0-0', tvChildren, { type: 'r', text: `Root Node` }));
@@ -70,16 +76,14 @@ class ControlsApp extends LitMvvmElement {
     const menuChildren = [];
     const menuGrandChildren = [];
     menuChildren.push(new KdSoftTreeNodeModel(`edit`, [], { text: `Edit Node`, disabled: false }));
-    menuGrandChildren.push(new KdSoftTreeNodeModel(`before`, [] , { text: `Before`, disabled: false }));
-    menuGrandChildren.push(new KdSoftTreeNodeModel(`after`, [] , { text: `After`, disabled: false }));
-    menuGrandChildren.push(new KdSoftTreeNodeModel(`inside`, [] , { text: `Inside`, disabled: false }));
+    menuGrandChildren.push(new KdSoftTreeNodeModel(`before`, [], { text: `Before`, disabled: false }));
+    menuGrandChildren.push(new KdSoftTreeNodeModel(`after`, [], { text: `After`, disabled: false }));
+    menuGrandChildren.push(new KdSoftTreeNodeModel(`inside`, [], { text: `Inside`, disabled: false }));
     menuChildren.push(new KdSoftTreeNodeModel(`add`, menuGrandChildren, { text: `Add Node`, disabled: false }));
     menuChildren.push(new KdSoftTreeNodeModel(`remove`, [], { text: `Remove Node`, disabled: false }));
     this.tvMenu = observable(new KdSoftTreeNodeModel('0-0', menuChildren, { text: `Node Menu` }));
 
-    this.model = observable({
-      dragDropEnabled: false
-    });
+    this.model = observable({ dragDropEnabled: false });
 
     this.newNodeId = 0;
   }
@@ -105,7 +109,7 @@ class ControlsApp extends LitMvvmElement {
     const nodeModelEntry = treeView.model.getNodeEntry(treeNode.id);
     const nodeModel = nodeModelEntry.node;
 
-    var menuItem = (menu.getNodeEntry(e) || {}).node;
+    const menuItem = (menu.getNodeEntry(e) || {}).node;
     switch (menuItem.id) {
       case 'edit':
         editNode(treeNode);
@@ -191,10 +195,6 @@ class ControlsApp extends LitMvvmElement {
   }
 
   firstRendered() {
-    //
-  }
-
-  rendered() {
     //
   }
 

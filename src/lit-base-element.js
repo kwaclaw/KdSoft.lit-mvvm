@@ -141,7 +141,6 @@ export class LitBaseElement extends HTMLElement {
         this.beforeFirstRender();
       }
 
-      // 
       this._finalRender();
 
       if (!this._firstRendered) {
@@ -155,7 +154,7 @@ export class LitBaseElement extends HTMLElement {
 
   // override in derived class
   _finalRender() {
-    // implement actual rendering 
+    // implement actual rendering
   }
 
   _initialRender() {
