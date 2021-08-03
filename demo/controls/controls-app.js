@@ -10,7 +10,8 @@ import {
   KdSoftDropdownModel,
   KdSoftChecklistModel,
   KdSoftDropdownChecklistConnector,
-  KdSoftTreeNodeModel
+  KdSoftTreeNodeModel,
+  KdSoftActiveItemModel,
 } from '@kdsoft/lit-mvvm-components';
 
 function getClosestTreeNode(path) {
@@ -82,6 +83,15 @@ class ControlsApp extends LitMvvmElement {
     menuChildren.push(new KdSoftTreeNodeModel(`add`, menuGrandChildren, { text: `Add Node`, disabled: false }));
     menuChildren.push(new KdSoftTreeNodeModel(`remove`, [], { text: `Remove Node`, disabled: false }));
     this.tvMenu = observable(new KdSoftTreeNodeModel('0-0', menuChildren, { text: `Node Menu` }));
+
+    const imageModels = [
+      { href: 'images/82-600x300.jpg' },
+      { href: 'images/98-600x300.jpg' },
+      { href: 'images/329-600x300.jpg' },
+      { href: 'images/384-600x300.jpg' },
+      { href: 'images/521-600x300.jpg' }
+    ];
+    this.carouselModel = observable(new KdSoftActiveItemModel(imageModels, 0));
 
     this.model = observable({ dragDropEnabled: false });
 
@@ -219,6 +229,10 @@ class ControlsApp extends LitMvvmElement {
       checkboxStyles,
       fontAwesomeStyles,
       css`
+        :host {
+          display: inline-block;
+        }
+
         kdsoft-dropdown {
           min-width: 200px;
           width: auto;
@@ -263,6 +277,38 @@ class ControlsApp extends LitMvvmElement {
         .node-edit:focus {
           border-color: lightgrey;
         }
+        
+        #slider {
+          position: relative;
+        }
+        div[slot] {
+          display: flex;
+          align-items: center;
+          height: 100%;
+          width: 3rem;
+          opacity:0.3;
+        } 
+        div[slot] > img {
+          display: none;
+          color: blue;
+          width: 100%;
+          height: 50%;
+        } 
+        div[slot]:hover > img {
+          display: unset;
+        }
+        div[slot] > svg {
+          display: none;
+          fill: white;
+          width: 100%;
+          height: 50%;
+        } 
+        div[slot]:hover > svg {
+          display: unset;
+        }
+        div[slot].end-item {
+          display:none;
+        }
       `
     ];
   }
@@ -302,13 +348,57 @@ class ControlsApp extends LitMvvmElement {
     return html`<span>${item.text}</span>`;
   }
 
+  _getCarouselItemTemplate(item, index) {
+    return html`<img src=${item.href} ></img>`;
+  }
+
   render() {
+    const cm = this.carouselModel;
+    const len = this.carouselModel.items.length || 0;
+    const indx = this.carouselModel.activeIndex;
+    const leftAngleClass = indx <= 0 ? 'end-item' : '';
+    const rightAngleClass = indx >= (len - 1) ? 'end-item' : '';
     return html`
-      <style>
-        :host {
-          display: inline-block;
-        }
-      </style>
+      <svg style="display:none" version="1.1"
+        <defs>
+          <symbol id="angle-left"
+            viewBox="0 0 69.773 122.88"
+            preserveAspectRatio="none"
+            enable-background="new 0 0 69.773 122.88"
+            xml:space="preserve">
+            <g>
+              <polygon points="69.773,0 49.771,0 0,61.44 49.771,122.88 69.773,122.88 20,61.44 69.773,0"/>
+            </g>
+          </symbol>
+          <symbol id="angle-right"
+            viewBox="0 0 69.773 122.88"
+            preserveAspectRatio="none"
+            enable-background="new 0 0 69.773 122.88"
+            xml:space="preserve">
+            <g>
+              <polygon points="0,0 20,0 69.773,61.44 20,122.88 0,122.88 49.772,61.44 0,0"/>
+            </g>
+          </symbol>
+          <symbol id="angle-top"
+            viewBox="0 0 122.88 69.773"
+            preserveAspectRatio="none"
+            enable-background="new 0 0 122.88 69.773"
+            xml:space="preserve">
+            <g>
+              <polygon points="122.88,69.773 122.88,49.772 61.44,0 0,49.772 0,69.773 61.44,20 122.88,69.773"/>
+            </g>
+          </symbol>
+          <symbol id="angle-bottom"
+            viewBox="0 0 122.88 69.773"
+            preserveAspectRatio="none"
+            enable-background="new 0 0 122.88 69.773"
+            xml:space="preserve">
+            <g>
+              <polygon points="122.88,0 122.88,20 61.44,69.773 0,20 0,0 61.44,49.772 122.88,0"/>
+            </g>
+          </symbol>
+        </defs>
+      </svg>
       <kdsoft-context-menu id="tv-context"
         .model=${this.tvMenu}
         .getItemTemplate=${this._getMenuItemTemplate}
@@ -346,6 +436,24 @@ class ControlsApp extends LitMvvmElement {
             .model=${this.tvRoot}
             .getContentTemplate=${nodeModel => this._getTreeViewContentTemplate(nodeModel)}>
           </kdsoft-tree-view>
+        </div>
+        <div id="slider">
+          <h1 class="font-bold text-xl mb-2 text-left">Slider</h1>
+          <!-- invoke getContentTemplate as lambda, to force this component to be "this" in the method -->
+          <kdsoft-slider id="carousel" class="py-0"
+            .model=${cm}
+            .getItemTemplate=${(item, index) => this._getCarouselItemTemplate(item, index)}>
+            <div slot="left" class=${leftAngleClass}>
+              <svg @click=${() => cm.decrementActiveIndex()}>
+                <use href="#angle-left"></use>
+              </svg>
+            </div>
+            <div slot="right" class=${rightAngleClass}>
+              <svg @click=${() => cm.incrementActiveIndex()}>
+                <use href="#angle-right"></use>
+              </svg>
+            </div>
+          </kdsoft-slider>
         </div>
       </div>
     `;
