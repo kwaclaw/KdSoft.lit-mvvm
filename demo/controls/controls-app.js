@@ -36,6 +36,22 @@ function editNode(treeNode) {
   return false;
 }
 
+const horizontalImageModels = [
+  { href: 'images/82-600x300.jpg' },
+  { href: 'images/98-600x300.jpg' },
+  { href: 'images/329-600x300.jpg' },
+  { href: 'images/384-600x300.jpg' },
+  { href: 'images/521-600x300.jpg' }
+];
+
+const verticalImageModels = [
+  { href: 'images/29-300x600.jpg' },
+  { href: 'images/841-300x600.jpg' },
+  { href: 'images/789-300x600.jpg' },
+  { href: 'images/933-300x600.jpg' },
+  { href: 'images/424-300x600.jpg' }
+];
+
 class ControlsApp extends LitMvvmElement {
   constructor() {
     super();
@@ -84,16 +100,12 @@ class ControlsApp extends LitMvvmElement {
     menuChildren.push(new KdSoftTreeNodeModel(`remove`, [], { text: `Remove Node`, disabled: false }));
     this.tvMenu = observable(new KdSoftTreeNodeModel('0-0', menuChildren, { text: `Node Menu` }));
 
-    const imageModels = [
-      { href: 'images/82-600x300.jpg' },
-      { href: 'images/98-600x300.jpg' },
-      { href: 'images/329-600x300.jpg' },
-      { href: 'images/384-600x300.jpg' },
-      { href: 'images/521-600x300.jpg' }
-    ];
-    this.carouselModel = observable(new KdSoftActiveItemModel(imageModels, 0));
+    this.carouselModel = observable(new KdSoftActiveItemModel(horizontalImageModels, 0));
 
-    this.model = observable({ dragDropEnabled: false });
+    this.model = observable({
+      dragDropEnabled: false,
+      sliderVertical: false
+    });
 
     this.newNodeId = 0;
   }
@@ -198,6 +210,23 @@ class ControlsApp extends LitMvvmElement {
     nodeModel.text = e.currentTarget.value;
   }
 
+  carouselClickDown(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    this.carouselModel.decrementActiveIndex();
+  }
+
+  carouselClickUp(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    this.carouselModel.incrementActiveIndex();
+  }
+
+  sliderVerticalChanged(e) {
+    this.model.sliderVertical = !this.model.sliderVertical;
+    this.carouselModel.items = this.model.sliderVertical ? verticalImageModels : horizontalImageModels;
+  }
+
   // model may still be undefined
   connectedCallback() {
     super.connectedCallback();
@@ -281,32 +310,37 @@ class ControlsApp extends LitMvvmElement {
         #slider {
           position: relative;
         }
-        div[slot] {
+        #carousel {
+          height: var(--sliderImageHeight);
+        }
+        #carousel div[slot] {
           display: flex;
           align-items: center;
+          justify-content: center;
           height: 100%;
           width: 3rem;
+          padding: 0.3rem;
           opacity:0.3;
         } 
-        div[slot] > img {
-          display: none;
-          color: blue;
-          width: 100%;
-          height: 50%;
-        } 
-        div[slot]:hover > img {
-          display: unset;
-        }
-        div[slot] > svg {
+        #carousel div[slot] > svg {
           display: none;
           fill: white;
           width: 100%;
           height: 50%;
         } 
-        div[slot]:hover > svg {
+        #carousel div[slot].vertical {
+          flex-direction: column;
+          width: 100%;
+          height: 3rem;
+        } 
+        #carousel div[slot].vertical > svg {
+          width: 50%;
+          height: 100%;
+        } 
+        #carousel div[slot]:hover > svg {
           display: unset;
         }
-        div[slot].end-item {
+        #carousel div[slot].end-item {
           display:none;
         }
       `
@@ -356,9 +390,15 @@ class ControlsApp extends LitMvvmElement {
     const cm = this.carouselModel;
     const len = this.carouselModel.items.length || 0;
     const indx = this.carouselModel.activeIndex;
-    const leftAngleClass = indx <= 0 ? 'end-item' : '';
-    const rightAngleClass = indx >= (len - 1) ? 'end-item' : '';
+    const firstAngleClass = indx <= 0 ? 'end-item' : '';
+    const lastAngleClass = indx >= (len - 1) ? 'end-item' : '';
+
     return html`
+      <style>
+        :host {
+          --sliderImageHeight: ${this.model.sliderVertical ? '600px' : '300px'};
+        }
+      </style>
       <svg style="display:none" version="1.1"
         <defs>
           <symbol id="angle-left"
@@ -399,12 +439,15 @@ class ControlsApp extends LitMvvmElement {
           </symbol>
         </defs>
       </svg>
+
       <kdsoft-context-menu id="tv-context"
         .model=${this.tvMenu}
         .getItemTemplate=${this._getMenuItemTemplate}
         @click=${this.tvMenuItemClicked}
       ></kdsoft-context-menu>
+
       <div id="container">
+
         <div id="check-list">
           <h1 class="font-bold text-xl mb-2 text-left">Plain Checklist</h1>
           <kdsoft-checklist
@@ -413,6 +456,7 @@ class ControlsApp extends LitMvvmElement {
             .getItemTemplate=${item => this._getChecklistItemTemplate(item)}
             allow-drag-drop show-checkboxes></kdsoft-checklist>
         </div>
+
         <div id="drop-down">
           <h1 class="font-bold text-xl mb-2 text-left">Checklist in Dropdown</h1>
           <kdsoft-dropdown id="ddown" class="py-0"
@@ -425,6 +469,7 @@ class ControlsApp extends LitMvvmElement {
             </kdsoft-checklist>
           </kdsoft-dropdown>
         </div>
+
         <div id="tree-view">
           <h1 class="font-bold text-xl mb-2 text-left">Treeview
             <input type="checkbox" class="kdsoft-checkbox align-text-bottom" @change=${this.tvDragDropChanged}/>
@@ -437,23 +482,47 @@ class ControlsApp extends LitMvvmElement {
             .getContentTemplate=${nodeModel => this._getTreeViewContentTemplate(nodeModel)}>
           </kdsoft-tree-view>
         </div>
+
         <div id="slider">
-          <h1 class="font-bold text-xl mb-2 text-left">Slider</h1>
+          <h1 class="font-bold text-xl mb-2 text-left">Slider
+            <input type="checkbox" class="kdsoft-checkbox align-text-bottom"
+              ?checked=${this.model.sliderVertical}
+              @change=${this.sliderVerticalChanged}>
+              Orientation Vertical
+            </input>
+          </h1>
           <!-- invoke getContentTemplate as lambda, to force this component to be "this" in the method -->
           <kdsoft-slider id="carousel" class="py-0"
+            orientation=${this.model.sliderVertical ? 'vertical' : 'horizontal'}
             .model=${cm}
-            .getItemTemplate=${(item, index) => this._getCarouselItemTemplate(item, index)}>
-            <div slot="left" class=${leftAngleClass}>
-              <svg @click=${() => cm.decrementActiveIndex()}>
-                <use href="#angle-left"></use>
-              </svg>
-            </div>
-            <div slot="right" class=${rightAngleClass}>
-              <svg @click=${() => cm.incrementActiveIndex()}>
-                <use href="#angle-right"></use>
-              </svg>
-            </div>
+            .getItemTemplate=${(item, index) => this._getCarouselItemTemplate(item, index)}
+          >
+            ${this.model.sliderVertical
+              ? html`
+                <div slot="top" class="vertical ${firstAngleClass}">
+                  <svg @click=${this.carouselClickDown}>
+                    <use href="#angle-top"></use>
+                  </svg>
+                </div>
+                <div slot="bottom" class="vertical ${lastAngleClass}">
+                  <svg @click=${this.carouselClickUp}>
+                    <use href="#angle-bottom"></use>
+                  </svg>
+                </div>`
+              : html`
+                <div slot="left" class="${firstAngleClass}">
+                  <svg @click=${this.carouselClickDown}>
+                    <use href="#angle-left"></use>
+                  </svg>
+                </div>
+                <div slot="right" class="${lastAngleClass}">
+                  <svg @click=${this.carouselClickUp}>
+                    <use href="#angle-right"></use>
+                  </svg>
+                </div>`
+            }
           </kdsoft-slider>
+
         </div>
       </div>
     `;
