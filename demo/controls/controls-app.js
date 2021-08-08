@@ -312,6 +312,7 @@ class ControlsApp extends LitMvvmElement {
         }
         #carousel {
           height: var(--sliderImageHeight);
+          width: var(--sliderImageWidth);
         }
         #carousel div[slot] {
           display: flex;
@@ -320,11 +321,14 @@ class ControlsApp extends LitMvvmElement {
           height: 100%;
           width: 3rem;
           padding: 0.3rem;
-          opacity:0.3;
+          /* opacity:0.3; */
         } 
         #carousel div[slot] > svg {
           display: none;
           fill: white;
+          fill-opacity: 0.3;
+          stroke-width: 2;
+          stroke: white;
           width: 100%;
           height: 50%;
         } 
@@ -386,6 +390,34 @@ class ControlsApp extends LitMvvmElement {
     return html`<img src=${item.href} ></img>`;
   }
 
+  _getHorizontalAngles(firstAngleClass, lastAngleClass) {
+    return html`
+      <div slot="left" class="${firstAngleClass}">
+        <svg @click=${this.carouselClickDown}>
+          <use href="#angle-left"></use>
+        </svg>
+      </div>
+      <div slot="right" class="${lastAngleClass}">
+        <svg @click=${this.carouselClickUp}>
+          <use href="#angle-right"></use>
+        </svg>
+      </div>`;
+  }
+
+  _getVerticalAngles(firstAngleClass, lastAngleClass) {
+    return html`
+      <div slot="top" class="vertical ${firstAngleClass}">
+        <svg @click=${this.carouselClickDown}>
+          <use href="#angle-top"></use>
+        </svg>
+      </div>
+      <div slot="bottom" class="vertical ${lastAngleClass}">
+        <svg @click=${this.carouselClickUp}>
+          <use href="#angle-bottom"></use>
+        </svg>
+      </div>`;
+  }
+
   render() {
     const cm = this.carouselModel;
     const len = this.carouselModel.items.length || 0;
@@ -397,6 +429,7 @@ class ControlsApp extends LitMvvmElement {
       <style>
         :host {
           --sliderImageHeight: ${this.model.sliderVertical ? '600px' : '300px'};
+          --sliderImageWidth: ${this.model.sliderVertical ? '300px' : '600px'};
         }
       </style>
       <svg style="display:none" version="1.1"
@@ -484,42 +517,22 @@ class ControlsApp extends LitMvvmElement {
         </div>
 
         <div id="slider">
-          <h1 class="font-bold text-xl mb-2 text-left">Slider
-            <input type="checkbox" class="kdsoft-checkbox align-text-bottom"
+          <h1 class="flex font-bold text-xl mb-2 text-left items-center">Slider
+            <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
               ?checked=${this.model.sliderVertical}
               @change=${this.sliderVerticalChanged}>
               Orientation Vertical
             </input>
           </h1>
           <!-- invoke getContentTemplate as lambda, to force this component to be "this" in the method -->
-          <kdsoft-slider id="carousel" class="py-0"
+          <kdsoft-slider id="carousel" class="p-0"
             orientation=${this.model.sliderVertical ? 'vertical' : 'horizontal'}
             .model=${cm}
             .getItemTemplate=${(item, index) => this._getCarouselItemTemplate(item, index)}
           >
             ${this.model.sliderVertical
-              ? html`
-                <div slot="top" class="vertical ${firstAngleClass}">
-                  <svg @click=${this.carouselClickDown}>
-                    <use href="#angle-top"></use>
-                  </svg>
-                </div>
-                <div slot="bottom" class="vertical ${lastAngleClass}">
-                  <svg @click=${this.carouselClickUp}>
-                    <use href="#angle-bottom"></use>
-                  </svg>
-                </div>`
-              : html`
-                <div slot="left" class="${firstAngleClass}">
-                  <svg @click=${this.carouselClickDown}>
-                    <use href="#angle-left"></use>
-                  </svg>
-                </div>
-                <div slot="right" class="${lastAngleClass}">
-                  <svg @click=${this.carouselClickUp}>
-                    <use href="#angle-right"></use>
-                  </svg>
-                </div>`
+              ? this._getVerticalAngles(firstAngleClass, lastAngleClass)
+              : this._getHorizontalAngles(firstAngleClass, lastAngleClass)
             }
           </kdsoft-slider>
 
