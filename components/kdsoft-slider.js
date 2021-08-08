@@ -1,9 +1,6 @@
 ﻿import { html, nothing } from 'lit';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
-import tailwindStyles from './styles/tailwind-styles.js';
-import checkboxStyles from './styles/kdsoft-checkbox-styles.js';
-import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
 const orientationClasses = {
   horizontal: {
@@ -84,14 +81,15 @@ class KdSoftSlider extends LitMvvmElement {
 
   static get styles() {
     return [
-      tailwindStyles,
-      checkboxStyles,
-      fontAwesomeStyles,
       css`
         :host {
           display: block;
         }
-
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }        
         #container {
           position: relative;
           height: 100%;
@@ -137,7 +135,7 @@ class KdSoftSlider extends LitMvvmElement {
           display: flex;
           align-items: center;
           justify-content: center;
-          min-width: 100%;
+          /* min-width: 100%; */
           scroll-snap-align: center center;
         }
 
@@ -146,7 +144,7 @@ class KdSoftSlider extends LitMvvmElement {
           display: flex;
           align-items: center;
           justify-content: center;
-          min-height: 100%;
+          /* min-height: 100%; */
           scroll-snap-align: center center;
         }
 
@@ -213,9 +211,9 @@ class KdSoftSlider extends LitMvvmElement {
         <div class="${classes.left}">
           <slot name="${classes.left}"></slot>
         </div>
-        <ul id="items" class="${classes.items} ${classes.carousel}" tabindex="0">
+        <ul id="items" class="${classes.items} ${classes.carousel}">
           ${this.model.items.map((item, itemIndex) => html`
-              <li class="${classes['carousel-item']}" tabindex="0" data-index="${itemIndex}">
+              <li class="${classes['carousel-item']}" data-index="${itemIndex}">
                 ${this.getItemTemplate(item, itemIndex)}
               </li>
             `
