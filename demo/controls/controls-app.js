@@ -315,11 +315,15 @@ class ControlsApp extends LitMvvmElement {
         #slider {
           position: relative;
         }
-        #carousel {
+        .carousel {
           height: var(--sliderImageHeight);
           width: var(--sliderImageWidth);
         }
-        #carousel div[slot] {
+        .carousel img[slot] {
+          /* fix horizontal display */
+          max-width: unset;
+        }
+        .carousel > div[slot] {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -328,28 +332,28 @@ class ControlsApp extends LitMvvmElement {
           padding: 0.3rem;
           /* opacity:0.3; */
         } 
-        #carousel div[slot] > svg {
+        .carousel > div[slot] > svg {
           display: none;
-          fill: white;
+          fill: gray;
           fill-opacity: 0.3;
           stroke-width: 2;
           stroke: white;
           width: 100%;
           height: 50%;
         } 
-        #carousel div[slot].vertical {
+        .carousel > div[slot].vertical {
           flex-direction: column;
           width: 100%;
           height: 3rem;
         } 
-        #carousel div[slot].vertical > svg {
+        .carousel > div[slot].vertical > svg {
           width: 50%;
           height: 100%;
         } 
-        #carousel div[slot]:hover > svg {
+        .carousel > div[slot]:hover > svg {
           display: unset;
         }
-        #carousel div[slot].end-item {
+        .carousel > div[slot].end-item {
           display:none;
         }
       `
@@ -429,12 +433,13 @@ class ControlsApp extends LitMvvmElement {
     const indx = this.carouselModel.activeIndex;
     const firstAngleClass = indx <= 0 ? 'end-item' : '';
     const lastAngleClass = indx >= (len - 1) ? 'end-item' : '';
+    const sliderVertical = this.model.sliderVertical;
 
     return html`
       <style>
         :host {
-          --sliderImageHeight: ${this.model.sliderVertical ? '600px' : '300px'};
-          --sliderImageWidth: ${this.model.sliderVertical ? '300px' : '600px'};
+          --sliderImageHeight: ${sliderVertical ? '600px' : '300px'};
+          --sliderImageWidth: ${sliderVertical ? '300px' : '600px'};
         }
       </style>
       <svg style="display:none" version="1.1"
@@ -529,18 +534,32 @@ class ControlsApp extends LitMvvmElement {
               Orientation Vertical
             </input>
           </h1>
-          <!-- invoke getContentTemplate as lambda, to force this component to be "this" in the method -->
-          <kdsoft-slider id="carousel" class="p-0"
-            orientation=${this.model.sliderVertical ? 'vertical' : 'horizontal'}
-            .model=${cm}
-            .getItemTemplate=${(item, index) => this._getCarouselItemTemplate(item, index)}
-          >
-            ${this.model.sliderVertical
-              ? this._getVerticalAngles(firstAngleClass, lastAngleClass)
-              : this._getHorizontalAngles(firstAngleClass, lastAngleClass)
-            }
-          </kdsoft-slider>
+          <div class="flex flex-nowrap ${sliderVertical ? 'flex-row' : 'flex-col'}">
+            
+            <!-- invoke getContentTemplate as lambda, to force this component to be "this" in the method -->
+            <kdsoft-slider class="carousel p-0 ${sliderVertical ? 'mr-2' : 'mb-2'}"
+              orientation=${sliderVertical ? 'vertical' : 'horizontal'}
+              .model=${cm}
+              .getItemTemplate=${(item, index) => this._getCarouselItemTemplate(item, index)}
+            >
+              ${sliderVertical
+                ? this._getVerticalAngles(firstAngleClass, lastAngleClass)
+                : this._getHorizontalAngles(firstAngleClass, lastAngleClass)
+              }
+            </kdsoft-slider>
 
+            <!-- here we use indexed slots instead of a template callback -->
+            <kdsoft-slider2 class="carousel p-0"
+              orientation=${sliderVertical ? 'vertical' : 'horizontal'}
+              .model=${cm}
+            >
+              ${sliderVertical
+                ? this._getVerticalAngles(firstAngleClass, lastAngleClass)
+                : this._getHorizontalAngles(firstAngleClass, lastAngleClass)
+              }
+              ${cm.items.map((item, itemIndex) => html`<img slot="item_${itemIndex}" src=${item.href} ></img>`)}
+            </kdsoft-slider2>
+          </div>
         </div>
       </div>
     `;
