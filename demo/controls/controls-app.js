@@ -277,11 +277,14 @@ class ControlsApp extends LitMvvmElement {
           grid-template-columns: 1fr 1fr;
           grid-gap: 1em;
           justify-items: center;
+          height: calc(100vh - 96px);
+          overflow-y: scroll;
         }
         #container>div {
           background-color: lightsalmon;
           padding: 0.5em;
         }
+
         #check-list {
           position: relative;
           width: 100%;
@@ -297,12 +300,14 @@ class ControlsApp extends LitMvvmElement {
           overflow: initial;
           text-overflow: initial;
         }
+
         #drop-down {
           width: 100%;
         }
         #ddown {
           width: 100%;
         }
+
         .node-edit:focus {
           border-color: lightgrey;
         }
@@ -519,7 +524,7 @@ class ControlsApp extends LitMvvmElement {
         <div id="slider">
           <h1 class="flex font-bold text-xl mb-2 text-left items-center">Slider
             <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
-              ?checked=${this.model.sliderVertical}
+              .checked=${sliderVertical}
               @change=${this.sliderVerticalChanged}>
               Orientation Vertical
             </input>
