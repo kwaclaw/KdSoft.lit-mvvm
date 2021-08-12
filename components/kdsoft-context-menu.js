@@ -267,11 +267,12 @@ export default class KdSoftContextMenu extends LitMvvmElement {
   }
 
   bind(element) {
-    element.addEventListener('contextmenu', this._contextMenuListener.bind(this), false);
-    element.addEventListener('touchstart', this._touchStartListener.bind(this), false);
-    element.addEventListener('touchend', this._touchEndListener.bind(this), false);
-    element.addEventListener('touchcancel', this._touchCancelListener.bind(this), false);
-    element.addEventListener('touchmove', this._touchMoveListener.bind(this), false);
+    const options = { capture: false, passive: true };
+    element.addEventListener('contextmenu', this._contextMenuListener.bind(this), options);
+    element.addEventListener('touchstart', this._touchStartListener.bind(this), options);
+    element.addEventListener('touchend', this._touchEndListener.bind(this), options);
+    element.addEventListener('touchcancel', this._touchCancelListener.bind(this), options);
+    element.addEventListener('touchmove', this._touchMoveListener.bind(this), options);
   }
 
   static get styles() {
