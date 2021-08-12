@@ -29,13 +29,6 @@ class KdSoftActiveItemModel {
   decrementActiveIndex() {
     this.activeIndex -= 1;
   }
-
-  // removeActiveItem() {
-  //   this.itemModels.splice(this.activeItemIndex, 1);
-  //   if (this.activeItemIndex >= this.itemModels.length) {
-  //     this.activeItemIndex = this.itemModels.length - 1;
-  //   }
-  // }
 }
 
 export default KdSoftActiveItemModel;
