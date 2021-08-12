@@ -1,6 +1,6 @@
-﻿import { html, nothing } from 'lit';
+﻿import { html } from 'lit';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
+import { LitMvvmElement, css, BatchScheduler } from '@kdsoft/lit-mvvm';
 
 const orientationClasses = {
   horizontal: {
@@ -9,7 +9,6 @@ const orientationClasses = {
     footer: 'footer',
     left: 'left',
     right: 'right',
-    container: 'container-horizontal',
     carousel: 'carousel-horizontal',
     'carousel-item': 'carousel-item-horizontal'
   },
@@ -19,7 +18,6 @@ const orientationClasses = {
     footer: 'right-bar',
     left: 'top',
     right: 'bottom',
-    container: 'container-vertical',
     carousel: 'carousel-vertical',
     'carousel-item': 'carousel-item-vertical'
   }
@@ -31,7 +29,6 @@ class KdSoftSlider extends LitMvvmElement {
     // LOW priority means proper queueing for scroll actions
     this.scheduler = new Queue(priorities.LOW);
     //this.scheduler = new BatchScheduler(300);
-    this.getItemTemplate = (item, index) => html`${item}`;
   }
 
   get orientation() { return this.getAttribute('orientation') || 'horizontal'; }
@@ -46,10 +43,10 @@ class KdSoftSlider extends LitMvvmElement {
 
   _scrollToActiveItem(itemsControl, activeIndex) {
     if (this.orientation === 'vertical') {
-      const scrollPoint = (itemsControl.clientHeight * activeIndex);
+      const scrollPoint = itemsControl.clientHeight * activeIndex;
       itemsControl.scroll({ top: scrollPoint, behavior: 'smooth' });
     } else {
-      const scrollPoint = (itemsControl.clientWidth * activeIndex);
+      const scrollPoint = itemsControl.clientWidth * activeIndex;
       itemsControl.scroll({ left: scrollPoint, behavior: 'smooth' });
     }
   }
@@ -100,14 +97,6 @@ class KdSoftSlider extends LitMvvmElement {
             "topleft    top   topright"
             "left       main   right"
             "bottomleft bottom bottomright";
-        }
-
-        .container-horizontal {
-          height: 100%;
-        }
-
-        .container-vertical {
-          width: 100%;
         }
 
         .carousel-horizontal {
@@ -204,17 +193,17 @@ class KdSoftSlider extends LitMvvmElement {
   render() {
     const classes = this.orientation === 'vertical' ? orientationClasses.vertical : orientationClasses.horizontal;
     return html`
-      <div id="container" class="${classes.container}" @keydown=${this._itemsKeyDown}>
+      <div id="container" @keydown=${this._itemsKeyDown}>
         <div class="${classes.header}">
           <slot name="${classes.header}"></slot>
         </div>
         <div class="${classes.left}">
           <slot name="${classes.left}"></slot>
         </div>
-        <ul id="items" class="${classes.items} ${classes.carousel}">
+        <ul id="items" class="${classes.items} ${classes.carousel}" name="slider2">
           ${this.model.items.map((item, itemIndex) => html`
               <li class="${classes['carousel-item']}" data-index="${itemIndex}">
-                ${this.getItemTemplate(item, itemIndex)}
+                <slot name="item_${itemIndex}"></slot>
               </li>
             `
           )}
@@ -232,12 +221,20 @@ class KdSoftSlider extends LitMvvmElement {
   rendered() {
     // reading observable properties here will still register them for the next render()
     const activeIndex = this.model.activeIndex;
-    this.schedule(() => {
+    // this.schedule(() => {
+    //   const itemsControl = this.renderRoot.getElementById('items');
+    //   if (itemsControl) {
+    //     this._scrollToActiveItem(itemsControl, activeIndex);
+    //   }
+    // });
+
+    // seems this is more reliable, using at least 10ms
+    window.setTimeout(() => {
       const itemsControl = this.renderRoot.getElementById('items');
       if (itemsControl) {
         this._scrollToActiveItem(itemsControl, activeIndex);
       }
-    });
+    }, 10);
   }
 }
 

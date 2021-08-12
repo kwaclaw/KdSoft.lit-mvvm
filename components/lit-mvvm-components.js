@@ -5,7 +5,6 @@ import './kdsoft-expander';
 import './kdsoft-tree-view.js';
 import './kdsoft-context-menu.js';
 import './kdsoft-slider.js';
-import './kdsoft-slider2.js';
 
 export { default as KdSoftChecklistModel } from './kdsoft-checklist-model.js';
 export { default as KdSoftDragDropProvider } from './kdsoft-drag-drop-provider.js';
