@@ -100,12 +100,14 @@ class ControlsApp extends LitMvvmElement {
     menuChildren.push(new KdSoftTreeNodeModel(`remove`, [], { text: `Remove Node`, disabled: false }));
     this.tvMenu = observable(new KdSoftTreeNodeModel('0-0', menuChildren, { text: `Node Menu` }));
 
-    this.carouselModel = observable(new KdSoftActiveItemModel(horizontalImageModels, 0));
+    this.carouselModel = observable(new KdSoftActiveItemModel());
 
     this.model = observable({
       dragDropEnabled: false,
       sliderVertical: false
     });
+    this.carouselModel.items = this.model.sliderVertical ? verticalImageModels : horizontalImageModels;
+    this.carouselModel.activeIndex = 0;
 
     this.newNodeId = 0;
   }
@@ -535,21 +537,7 @@ class ControlsApp extends LitMvvmElement {
             </input>
           </h1>
           <div class="flex flex-nowrap ${sliderVertical ? 'flex-row' : 'flex-col'}">
-            
-            <!-- invoke getContentTemplate as lambda, to force this component to be "this" in the method -->
-            <kdsoft-slider class="carousel p-0 ${sliderVertical ? 'mr-2' : 'mb-2'}"
-              orientation=${sliderVertical ? 'vertical' : 'horizontal'}
-              .model=${cm}
-              .getItemTemplate=${(item, index) => this._getCarouselItemTemplate(item, index)}
-            >
-              ${sliderVertical
-                ? this._getVerticalAngles(firstAngleClass, lastAngleClass)
-                : this._getHorizontalAngles(firstAngleClass, lastAngleClass)
-              }
-            </kdsoft-slider>
-
-            <!-- here we use indexed slots instead of a template callback -->
-            <kdsoft-slider2 class="carousel p-0"
+            <kdsoft-slider class="carousel p-0"
               orientation=${sliderVertical ? 'vertical' : 'horizontal'}
               .model=${cm}
             >
@@ -557,8 +545,9 @@ class ControlsApp extends LitMvvmElement {
                 ? this._getVerticalAngles(firstAngleClass, lastAngleClass)
                 : this._getHorizontalAngles(firstAngleClass, lastAngleClass)
               }
+              <!-- here we use indexed slots instead of a template callback -->
               ${cm.items.map((item, itemIndex) => html`<img slot="item_${itemIndex}" src=${item.href} ></img>`)}
-            </kdsoft-slider2>
+            </kdsoft-slider>
           </div>
         </div>
       </div>
