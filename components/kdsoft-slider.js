@@ -221,6 +221,7 @@ class KdSoftSlider extends LitMvvmElement {
   rendered() {
     // reading observable properties here will still register them for the next render()
     const activeIndex = this.model.activeIndex;
+
     // this.schedule(() => {
     //   const itemsControl = this.renderRoot.getElementById('items');
     //   if (itemsControl) {
@@ -228,13 +229,14 @@ class KdSoftSlider extends LitMvvmElement {
     //   }
     // });
 
-    // seems this is more reliable, using at least 10ms
+    // seems this is more reliable, using at least 5ms for the timeout (when the deugger is running);
+    // looks like one of the reasons is that it does not use the microtask queue
     window.setTimeout(() => {
       const itemsControl = this.renderRoot.getElementById('items');
       if (itemsControl) {
         this._scrollToActiveItem(itemsControl, activeIndex);
       }
-    }, 10);
+    }, 5);
   }
 }
 
