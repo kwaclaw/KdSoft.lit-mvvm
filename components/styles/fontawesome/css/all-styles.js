@@ -3,7 +3,7 @@ import { css } from '@kdsoft/lit-mvvm';
 export default css`
 
 /*!
- * Font Awesome Free 5.15.3 by @fontawesome - https://fontawesome.com
+ * Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  */
 
@@ -5416,10 +5416,6 @@ readers do not read off random characters that represent icons */
 
 .fa-trello:before {
   content: "\\f181";
-}
-
-.fa-tripadvisor:before {
-  content: "\\f262";
 }
 
 .fa-trophy:before {
