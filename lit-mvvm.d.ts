@@ -1,6 +1,6 @@
 
-import { CSSResultGroup, CSSResultFlatArray } from '@lit/reactive-element/css-tag';
-export * from '@lit/reactive-element/css-tag.js';
+import { CSSResultGroup, CSSResultOrNative } from '@lit/reactive-element/css-tag';
+export * from '@lit/reactive-element/css-tag';
 
 declare const finalized = 'finalized';
 export declare type Initializer = (element: LitBaseElement) => void;
@@ -16,7 +16,7 @@ export declare class LitBaseElement extends HTMLElement {
  * Created lazily on user subclasses when finalizing the class.
  * @nocollapse
  */
-  static elementStyles?: CSSResultFlatArray;
+  static elementStyles?: Array<CSSResultOrNative>;
 
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -57,7 +57,7 @@ export declare class LitBaseElement extends HTMLElement {
    * to preserve the cascade order with the assumption that it's most important
    * that last added styles override previous styles.
    */
-  protected static finalizeStyles(styles?: CSSResultGroup): CSSResultFlatArray;
+  protected static finalizeStyles(styles?: CSSResultGroup): Array<CSSResultOrNative>;
 
   /**
    * Node or ShadowRoot into which element DOM should be rendered. Defaults

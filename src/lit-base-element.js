@@ -68,8 +68,6 @@ export class LitBaseElement extends HTMLElement {
     const elementStyles = [];
     if (Array.isArray(styles)) {
       // Dedupe the flattened array in reverse order to preserve the last items.
-      // TODO(sorvell): casting to Array<unknown> works around TS error that
-      // appears to come from trying to flatten a type CSSResultArray.
       const set = new Set(styles.flat(Infinity).reverse());
       // Then preserve original order by adding the set items in reverse order.
       for (const s of set) {
