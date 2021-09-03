@@ -23,7 +23,7 @@ const orientationClasses = {
   }
 };
 
-class KdSoftSlider extends LitMvvmElement {
+class KdSoftNavContainer extends LitMvvmElement {
   constructor() {
     super();
     // LOW priority means proper queueing for scroll actions
@@ -82,11 +82,13 @@ class KdSoftSlider extends LitMvvmElement {
         :host {
           display: block;
         }
+
         ul {
             list-style: none;
             margin: 0;
             padding: 0;
-        }        
+        }   
+             
         #container {
           position: relative;
           height: 100%;
@@ -200,7 +202,7 @@ class KdSoftSlider extends LitMvvmElement {
         <div class="${classes.left}">
           <slot name="${classes.left}"></slot>
         </div>
-        <ul id="items" class="${classes.items} ${classes.carousel}" name="slider2">
+        <ul id="items" class="${classes.items} ${classes.carousel}">
           ${this.model.items.map((item, itemIndex) => html`
               <li class="${classes['carousel-item']}" data-index="${itemIndex}">
                 <slot name="item_${itemIndex}"></slot>
@@ -229,7 +231,14 @@ class KdSoftSlider extends LitMvvmElement {
     //   }
     // });
 
-    // seems this is more reliable, using at least 5ms for the timeout (when the deugger is running);
+    // requestAnimationFrame(() => {
+    //   const itemsControl = this.renderRoot.getElementById('items');
+    //   if (itemsControl) {
+    //     this._scrollToActiveItem(itemsControl, activeIndex);
+    //   }
+    // });
+
+    // seems that setTimout with at least 5ms is more reliable when the debugger is running;
     // looks like one of the reasons is that it does not use the microtask queue
     window.setTimeout(() => {
       const itemsControl = this.renderRoot.getElementById('items');
@@ -240,4 +249,4 @@ class KdSoftSlider extends LitMvvmElement {
   }
 }
 
-window.customElements.define('kdsoft-slider', KdSoftSlider);
+window.customElements.define('kdsoft-nav-container', KdSoftNavContainer);
