@@ -5,6 +5,8 @@ import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
 import tailwindStyles from '@kdsoft/lit-mvvm-components/styles/tailwind-styles.js';
 import checkboxStyles from '@kdsoft/lit-mvvm-components/styles/kdsoft-checkbox-styles.js';
 import fontAwesomeStyles from '@kdsoft/lit-mvvm-components/styles/fontawesome/css/all-styles.js';
+import './item-carousel.js';
+import './tab-container.js';
 
 import {
   KdSoftDropdownModel,
@@ -101,13 +103,15 @@ class ControlsApp extends LitMvvmElement {
     this.tvMenu = observable(new KdSoftTreeNodeModel('0-0', menuChildren, { text: `Node Menu` }));
 
     this.carouselModel = observable(new KdSoftActiveItemModel());
+    this.switcherModel = observable(new KdSoftActiveItemModel());
 
     this.model = observable({
       dragDropEnabled: false,
-      sliderVertical: false
     });
     this.carouselModel.items = this.model.sliderVertical ? verticalImageModels : horizontalImageModels;
     this.carouselModel.activeIndex = 0;
+    this.switcherModel.items = this.model.sliderVertical ? verticalImageModels : horizontalImageModels;
+    this.switcherModel.activeIndex = 0;
 
     this.newNodeId = 0;
   }
@@ -212,21 +216,14 @@ class ControlsApp extends LitMvvmElement {
     nodeModel.text = e.currentTarget.value;
   }
 
-  carouselClickDown(e) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    this.carouselModel.decrementActiveIndex();
-  }
-
-  carouselClickUp(e) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    this.carouselModel.incrementActiveIndex();
-  }
-
   sliderVerticalChanged(e) {
-    this.model.sliderVertical = !this.model.sliderVertical;
-    this.carouselModel.items = this.model.sliderVertical ? verticalImageModels : horizontalImageModels;
+    this.carouselModel.vertical = !this.carouselModel.vertical;
+    this.carouselModel.items = this.carouselModel.vertical ? verticalImageModels : horizontalImageModels;
+  }
+
+  switcherVerticalChanged(e) {
+    this.switcherModel.vertical = !this.switcherModel.vertical;
+    this.switcherModel.items = this.switcherModel.vertical ? verticalImageModels : horizontalImageModels;
   }
 
   // model may still be undefined
@@ -282,6 +279,7 @@ class ControlsApp extends LitMvvmElement {
           height: calc(100vh - 96px);
           overflow-y: scroll;
         }
+
         #container>div {
           background-color: lightsalmon;
           padding: 0.5em;
@@ -291,6 +289,7 @@ class ControlsApp extends LitMvvmElement {
           position: relative;
           width: 100%;
         }
+
         #check-list > p {
           width: 100%;
           white-space: nowrap;
@@ -298,6 +297,7 @@ class ControlsApp extends LitMvvmElement {
           text-overflow: ellipsis;
           min-height: 2em;
         }
+
         #check-list > p:hover {
           overflow: initial;
           text-overflow: initial;
@@ -306,57 +306,13 @@ class ControlsApp extends LitMvvmElement {
         #drop-down {
           width: 100%;
         }
+
         #ddown {
           width: 100%;
         }
 
         .node-edit:focus {
           border-color: lightgrey;
-        }
-        
-        #slider {
-          position: relative;
-        }
-        .carousel {
-          height: var(--sliderImageHeight);
-          width: var(--sliderImageWidth);
-        }
-        .carousel img[slot] {
-          /* fix horizontal display */
-          max-width: unset;
-        }
-        .carousel > div[slot] {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-          width: 3rem;
-          padding: 0.3rem;
-          /* opacity:0.3; */
-        } 
-        .carousel > div[slot] > svg {
-          display: none;
-          fill: gray;
-          fill-opacity: 0.3;
-          stroke-width: 2;
-          stroke: white;
-          width: 100%;
-          height: 50%;
-        } 
-        .carousel > div[slot].vertical {
-          flex-direction: column;
-          width: 100%;
-          height: 3rem;
-        } 
-        .carousel > div[slot].vertical > svg {
-          width: 50%;
-          height: 100%;
-        } 
-        .carousel > div[slot]:hover > svg {
-          display: unset;
-        }
-        .carousel > div[slot].end-item {
-          display:none;
         }
       `
     ];
@@ -397,94 +353,44 @@ class ControlsApp extends LitMvvmElement {
     return html`<span>${item.text}</span>`;
   }
 
-  _getCarouselItemTemplate(item, index) {
-    return html`<img src=${item.href} ></img>`;
+  _getImageItemTemplate(item, index) {
+    return html`<img slot="item_${index}" src=${item.href} ></img>`;
   }
 
-  _getHorizontalAngles(firstAngleClass, lastAngleClass) {
+  _getOrientationHeader(vertical, caption, changeHandler) {
     return html`
-      <div slot="left" class="${firstAngleClass}">
-        <svg @click=${this.carouselClickDown}>
-          <use href="#angle-left"></use>
-        </svg>
-      </div>
-      <div slot="right" class="${lastAngleClass}">
-        <svg @click=${this.carouselClickUp}>
-          <use href="#angle-right"></use>
-        </svg>
-      </div>`;
+      <h1 class="flex font-bold text-xl mb-2 text-left items-center">${caption}
+        <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
+          .checked=${vertical}
+          @change=${changeHandler}>
+          Orientation Vertical
+        </input>
+      </h1>
+    `;
   }
 
-  _getVerticalAngles(firstAngleClass, lastAngleClass) {
+  // Note: we also need to copy in our custom CSS in a style element,
+  //       we can only assume that the component has tailwind styles
+  _getTabTemplate (model, item, index) {
+    const activeClass = model.activeIndex === index ? 'active' : '';
     return html`
-      <div slot="top" class="vertical ${firstAngleClass}">
-        <svg @click=${this.carouselClickDown}>
-          <use href="#angle-top"></use>
-        </svg>
-      </div>
-      <div slot="bottom" class="vertical ${lastAngleClass}">
-        <svg @click=${this.carouselClickUp}>
-          <use href="#angle-bottom"></use>
-        </svg>
-      </div>`;
+      <style>
+        .tab:hover {
+          background-color: lightblue;
+        }
+        .tab.active {
+          background-color: gray;
+        }
+      </style>
+      <button type="button"
+        @click=${() => { model.activeIndex = index; }}
+        class="tab px-2 py-1 bg-gray-300 ${activeClass}"
+      >Image ${index}</button>
+    `;
   }
 
   render() {
-    const cm = this.carouselModel;
-    const len = this.carouselModel.items.length || 0;
-    const indx = this.carouselModel.activeIndex;
-    const firstAngleClass = indx <= 0 ? 'end-item' : '';
-    const lastAngleClass = indx >= (len - 1) ? 'end-item' : '';
-    const sliderVertical = this.model.sliderVertical;
-
     return html`
-      <style>
-        :host {
-          --sliderImageHeight: ${sliderVertical ? '600px' : '300px'};
-          --sliderImageWidth: ${sliderVertical ? '300px' : '600px'};
-        }
-      </style>
-      <svg style="display:none" version="1.1"
-        <defs>
-          <symbol id="angle-left"
-            viewBox="0 0 69.773 122.88"
-            preserveAspectRatio="none"
-            enable-background="new 0 0 69.773 122.88"
-            xml:space="preserve">
-            <g>
-              <polygon points="69.773,0 49.771,0 0,61.44 49.771,122.88 69.773,122.88 20,61.44 69.773,0"/>
-            </g>
-          </symbol>
-          <symbol id="angle-right"
-            viewBox="0 0 69.773 122.88"
-            preserveAspectRatio="none"
-            enable-background="new 0 0 69.773 122.88"
-            xml:space="preserve">
-            <g>
-              <polygon points="0,0 20,0 69.773,61.44 20,122.88 0,122.88 49.772,61.44 0,0"/>
-            </g>
-          </symbol>
-          <symbol id="angle-top"
-            viewBox="0 0 122.88 69.773"
-            preserveAspectRatio="none"
-            enable-background="new 0 0 122.88 69.773"
-            xml:space="preserve">
-            <g>
-              <polygon points="122.88,69.773 122.88,49.772 61.44,0 0,49.772 0,69.773 61.44,20 122.88,69.773"/>
-            </g>
-          </symbol>
-          <symbol id="angle-bottom"
-            viewBox="0 0 122.88 69.773"
-            preserveAspectRatio="none"
-            enable-background="new 0 0 122.88 69.773"
-            xml:space="preserve">
-            <g>
-              <polygon points="122.88,0 122.88,20 61.44,69.773 0,20 0,0 61.44,49.772 122.88,0"/>
-            </g>
-          </symbol>
-        </defs>
-      </svg>
-
       <kdsoft-context-menu id="tv-context"
         .model=${this.tvMenu}
         .getItemTemplate=${this._getMenuItemTemplate}
@@ -529,26 +435,20 @@ class ControlsApp extends LitMvvmElement {
         </div>
 
         <div id="slider">
-          <h1 class="flex font-bold text-xl mb-2 text-left items-center">Slider
-            <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
-              .checked=${sliderVertical}
-              @change=${this.sliderVerticalChanged}>
-              Orientation Vertical
-            </input>
-          </h1>
-          <div class="flex flex-nowrap ${sliderVertical ? 'flex-row' : 'flex-col'}">
-            <kdsoft-slider class="carousel p-0"
-              orientation=${sliderVertical ? 'vertical' : 'horizontal'}
-              .model=${cm}
-            >
-              ${sliderVertical
-                ? this._getVerticalAngles(firstAngleClass, lastAngleClass)
-                : this._getHorizontalAngles(firstAngleClass, lastAngleClass)
-              }
-              <!-- here we use indexed slots instead of a template callback -->
-              ${cm.items.map((item, itemIndex) => html`<img slot="item_${itemIndex}" src=${item.href} ></img>`)}
-            </kdsoft-slider>
-          </div>
+          ${this._getOrientationHeader(this.carouselModel.vertical, 'Carousel', this.sliderVerticalChanged)}
+          <item-carousel
+            .model=${this.carouselModel}
+            .getItemTemplate=${this._getImageItemTemplate}
+          ></item-carousel>
+        </div>
+
+        <div id="switcher">
+          ${this._getOrientationHeader(this.switcherModel.vertical, 'Tab Container', this.switcherVerticalChanged)}
+          <tab-container
+            .model=${this.switcherModel}
+            .getItemTemplate=${this._getImageItemTemplate}
+            .getTabTemplate=${this._getTabTemplate}
+          ></tab-container>
         </div>
       </div>
     `;
