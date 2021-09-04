@@ -258,7 +258,7 @@ class ControlsApp extends LitMvvmElement {
       fontAwesomeStyles,
       css`
         :host {
-          display: inline-block;
+          display: block;
         }
 
         kdsoft-dropdown {
@@ -277,11 +277,14 @@ class ControlsApp extends LitMvvmElement {
           grid-gap: 1em;
           justify-items: center;
           height: calc(100vh - 96px);
+          width: 100%;
           overflow-y: scroll;
+          background-color: lightblue;
         }
 
         #container>div {
-          background-color: lightsalmon;
+          background-color: lightsteelblue;
+          border: solid 1px;
           padding: 0.5em;
         }
 
@@ -311,8 +314,38 @@ class ControlsApp extends LitMvvmElement {
           width: 100%;
         }
 
+        #tree-view {
+          width: 100%;
+        }
+
         .node-edit:focus {
           border-color: lightgrey;
+        }
+
+        #slider {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        #slider item-carousel {
+          --itemHeight: 300px;
+          --itemWidth: 600px;
+          margin: auto;
+        }
+
+        #slider item-carousel img[slot] {
+          max-width: unset;
+        }
+
+        #switcher {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        #switcher tab-container {
+          margin: auto;
         }
       `
     ];
