@@ -5,21 +5,19 @@ import { LitMvvmElement, css, BatchScheduler } from '@kdsoft/lit-mvvm';
 const orientationClasses = {
   horizontal: {
     items: 'items-horizontal',
+    item: 'item-horizontal',
     header: 'header',
     footer: 'footer',
     left: 'left',
     right: 'right',
-    carousel: 'carousel-horizontal',
-    'carousel-item': 'carousel-item-horizontal'
   },
   vertical: {
     items: 'items-vertical',
+    item: 'item-vertical',
     header: 'left-bar',
     footer: 'right-bar',
     left: 'top',
     right: 'bottom',
-    carousel: 'carousel-vertical',
-    'carousel-item': 'carousel-item-vertical'
   }
 };
 
@@ -101,7 +99,10 @@ export default class KdSoftNavContainer extends LitMvvmElement {
             "bottomleft bottom bottomright";
         }
 
-        .carousel-horizontal {
+        .items-horizontal {
+          grid-area: main-start / left-start / main-end / right-end;
+          background-color: lightgray;
+
           flex-direction: row;
           flex: 1 1 auto;
           display: flex;
@@ -111,37 +112,13 @@ export default class KdSoftNavContainer extends LitMvvmElement {
           scroll-snap-type: inline mandatory;
         }
 
-        .carousel-vertical {
-          flex-direction: column;
-          flex: 1 1 auto;
-          display: flex;
-          flex-wrap: nowrap;
-          overflow-y: hidden;
-          -webkit-overflow-scrolling: touch;
-          scroll-snap-type: inline mandatory;
-        }
-
-        .carousel-item-horizontal {
+        .item-horizontal {
           flex-direction: row;
           display: flex;
           align-items: center;
           justify-content: center;
           /* min-width: 100%; */
           scroll-snap-align: center center;
-        }
-
-        .carousel-item-vertical {
-          flex-direction: column;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          /* min-height: 100%; */
-          scroll-snap-align: center center;
-        }
-
-        .items-horizontal {
-          grid-area: main-start / left-start / main-end / right-end;
-          background-color: lightgray;
         }
 
         .header {
@@ -165,6 +142,23 @@ export default class KdSoftNavContainer extends LitMvvmElement {
         .items-vertical {
           grid-area: top-start / main-start / bottom-end / main-end;
           background-color: lightgray;
+
+          flex-direction: column;
+          flex: 1 1 auto;
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-y: hidden;
+          -webkit-overflow-scrolling: touch;
+          scroll-snap-type: inline mandatory;
+        }
+
+        .item-vertical {
+          flex-direction: column;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          /* min-height: 100%; */
+          scroll-snap-align: center center;
         }
 
         .left-bar {
@@ -202,9 +196,9 @@ export default class KdSoftNavContainer extends LitMvvmElement {
         <div class="${classes.left}">
           <slot name="${classes.left}"></slot>
         </div>
-        <ul id="items" class="${classes.items} ${classes.carousel}">
+        <ul id="items" class="${classes.items}">
           ${this.model.items.map((item, itemIndex) => html`
-              <li class="${classes['carousel-item']}" data-index="${itemIndex}">
+              <li class="${classes.item}" data-index="${itemIndex}">
                 <slot name="item_${itemIndex}"></slot>
               </li>
             `
