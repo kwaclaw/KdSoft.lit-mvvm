@@ -138,6 +138,8 @@ class ControlsApp extends LitMvvmElement {
     const nodeModel = nodeModelEntry.node;
 
     const menuItem = (menu.getNodeEntry(e) || {}).node;
+    if (!menuItem) return;
+
     switch (menuItem.id) {
       case 'edit':
         editNode(treeNode);
@@ -148,57 +150,59 @@ class ControlsApp extends LitMvvmElement {
         console.log(`Removed node: ${treeNode.id}`);
         break;
       case 'before':
-      case 'after': {
-        const newNodeModel = new KdSoftTreeNodeModel(
-          `n-${this.newNodeId += 1}`,
-          [],
-          { type: nodeModel.type, text: `New node ${this.newNodeId}` }
-        );
-        treeView.model.addNode(treeNode.id, menuItem.id, newNodeModel);
-        // the scheduler must allow scheduling after all currently scheduled renderings are done,
-        // in case of @nx-js/queue-util this means using priorities.LOW; otherwise use window.setTimeout()
-        this.schedule(() => {
-          const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
-          if (newNode) editNode(newNode);
-        });
-        // window.setTimeout(() => {
-        //   // a tree node can have siblings with the same id before and after (kdsoft-drop-target components)
-        //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
-        //   if (newNode) editNode(newNode);
-        // }, 0);
-      }
-        break;
-      case 'inside': {
-        let nodeType = 'ggc';
-        switch (nodeModel.type) {
-          case 'r':
-            nodeType = 'c';
-            break;
-          case 'c':
-            nodeType = 'gc';
-            break;
-          default:
-            break;
+      case 'after':
+        {
+          const newNodeModel = new KdSoftTreeNodeModel(
+            `n-${this.newNodeId += 1}`,
+            [],
+            { type: nodeModel.type, text: `New node ${this.newNodeId}` }
+          );
+          treeView.model.addNode(treeNode.id, menuItem.id, newNodeModel);
+          // the scheduler must allow scheduling after all currently scheduled renderings are done,
+          // in case of @nx-js/queue-util this means using priorities.LOW; otherwise use window.setTimeout()
+          this.schedule(() => {
+            const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
+            if (newNode) editNode(newNode);
+          });
+          // window.setTimeout(() => {
+          //   // a tree node can have siblings with the same id before and after (kdsoft-drop-target components)
+          //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
+          //   if (newNode) editNode(newNode);
+          // }, 0);
         }
-        const newNodeModel = new KdSoftTreeNodeModel(
-          `n-${this.newNodeId += 1}`,
-          [],
-          { type: nodeType, text: `New node ${this.newNodeId}` }
-        );
-        // the scheduler must allow scheduling after all currently scheduled renderings are done,
-        // in case of @nx-js/queue-util this means using priorities.LOW; otherwise use window.setTimeout()
-        this.schedule(() => {
-          treeNode.ariaExpanded = true;
-          const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
-          if (newNode) editNode(newNode);
-        });
-        // window.setTimeout(() => {
-        //   treeNode.ariaExpanded = true;
-        //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
-        //   if (newNode) editNode(newNode);
-        // }, 0);
-        nodeModel.addNode(treeNode.id, menuItem.id, newNodeModel);
-      }
+        break;
+      case 'inside':
+        {
+          let nodeType = 'ggc';
+          switch (nodeModel.type) {
+            case 'r':
+              nodeType = 'c';
+              break;
+            case 'c':
+              nodeType = 'gc';
+              break;
+            default:
+              break;
+          }
+          const newNodeModel = new KdSoftTreeNodeModel(
+            `n-${this.newNodeId += 1}`,
+            [],
+            { type: nodeType, text: `New node ${this.newNodeId}` }
+          );
+          // the scheduler must allow scheduling after all currently scheduled renderings are done,
+          // in case of @nx-js/queue-util this means using priorities.LOW; otherwise use window.setTimeout()
+          this.schedule(() => {
+            treeNode.ariaExpanded = true;
+            const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
+            if (newNode) editNode(newNode);
+          });
+          // window.setTimeout(() => {
+          //   treeNode.ariaExpanded = true;
+          //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
+          //   if (newNode) editNode(newNode);
+          // }, 0);
+          nodeModel.addNode(treeNode.id, menuItem.id, newNodeModel);
+        }
         break;
       default:
         break;
