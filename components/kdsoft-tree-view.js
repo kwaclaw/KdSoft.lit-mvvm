@@ -10,7 +10,7 @@ import tailwindStyles from './styles/tailwind-styles.js';
 import checkboxStyles from './styles/kdsoft-checkbox-styles.js';
 import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
-class KdSoftTreeView extends LitMvvmElement {
+export default class KdSoftTreeView extends LitMvvmElement {
   constructor() {
     super();
     this.scheduler = new Queue(priorities.HIGH);

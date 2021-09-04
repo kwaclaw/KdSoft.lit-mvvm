@@ -20,7 +20,7 @@ function isChildOf(parent, child) {
   return true;
 }
 
-class KdSoftDropdown extends LitMvvmElement {
+export default class KdSoftDropdown extends LitMvvmElement {
   constructor() {
     super();
     this.scheduler = new Queue(priorities.HIGH);

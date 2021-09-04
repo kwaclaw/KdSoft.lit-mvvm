@@ -419,4 +419,3 @@ export default class KdSoftContextMenu extends LitMvvmElement {
 }
 
 window.customElements.define('kdsoft-context-menu', KdSoftContextMenu);
-

@@ -25,7 +25,7 @@ function getListItemIndex(item) {
 
 // and: https://web.dev/more-capable-form-controls/
 
-class KdSoftChecklist extends LitMvvmElement {
+export default class KdSoftChecklist extends LitMvvmElement {
   // turns this into a form-associated custom element:
   // https://html.spec.whatwg.org/multipage/custom-elements.html#custom-elements-face-example
   // and: https://web.dev/more-capable-form-controls/

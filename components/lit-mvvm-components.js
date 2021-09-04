@@ -1,10 +1,20 @@
-import './kdsoft-checklist';
-import './kdsoft-drop-target';
-import './kdsoft-dropdown';
-import './kdsoft-expander';
-import './kdsoft-tree-view.js';
-import './kdsoft-context-menu.js';
-import './kdsoft-nav-container.js';
+import KdSoftChecklist from './kdsoft-checklist';
+import KdSoftDropTarget from './kdsoft-drop-target';
+import KdSoftDropdown from './kdsoft-dropdown';
+import KdSoftExpander from './kdsoft-expander';
+import KdSoftTreeView from './kdsoft-tree-view.js';
+import KdSoftContextMenu from './kdsoft-context-menu.js';
+import KdSoftNavContainer from './kdsoft-nav-container.js';
+
+export {
+  KdSoftChecklist,
+  KdSoftDropTarget,
+  KdSoftDropdown,
+  KdSoftExpander,
+  KdSoftTreeView,
+  KdSoftContextMenu,
+  KdSoftNavContainer
+};
 
 export { default as KdSoftChecklistModel } from './kdsoft-checklist-model.js';
 export { default as KdSoftDragDropProvider } from './kdsoft-drag-drop-provider.js';

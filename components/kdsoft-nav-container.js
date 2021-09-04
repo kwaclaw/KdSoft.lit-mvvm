@@ -23,7 +23,7 @@ const orientationClasses = {
   }
 };
 
-class KdSoftNavContainer extends LitMvvmElement {
+export default class KdSoftNavContainer extends LitMvvmElement {
   constructor() {
     super();
     // LOW priority means proper queueing for scroll actions

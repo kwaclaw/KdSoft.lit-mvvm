@@ -41,7 +41,7 @@ function updateExpansion(element, doExpand) {
   });
 }
 
-class KdSoftExpander extends LitMvvmElement {
+export default class KdSoftExpander extends LitMvvmElement {
   constructor() {
     super();
     this.scheduler = new Queue(priorities.HIGH);
