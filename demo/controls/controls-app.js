@@ -347,6 +347,14 @@ class ControlsApp extends LitMvvmElement {
         #switcher tab-container {
           margin: auto;
         }
+
+        #switcher .tab:hover {
+          background-color: lightblue;
+        }
+
+        #switcher .tab.active {
+          background-color: gray;
+        }
       `
     ];
   }
@@ -386,10 +394,6 @@ class ControlsApp extends LitMvvmElement {
     return html`<span>${item.text}</span>`;
   }
 
-  _getImageItemTemplate(item, index) {
-    return html`<img slot="item_${index}" src=${item.href} ></img>`;
-  }
-
   _getOrientationHeader(vertical, caption, changeHandler) {
     return html`
       <h1 class="flex font-bold text-xl mb-2 text-left items-center">${caption}
@@ -407,15 +411,7 @@ class ControlsApp extends LitMvvmElement {
   _getTabTemplate (model, item, index) {
     const activeClass = model.activeIndex === index ? 'active' : '';
     return html`
-      <style>
-        .tab:hover {
-          background-color: lightblue;
-        }
-        .tab.active {
-          background-color: gray;
-        }
-      </style>
-      <button type="button"
+      <button type="button" slot="tab_${index}"
         @click=${() => { model.activeIndex = index; }}
         class="tab px-2 py-1 bg-gray-300 ${activeClass}"
       >Image ${index}</button>
@@ -469,19 +465,17 @@ class ControlsApp extends LitMvvmElement {
 
         <div id="slider">
           ${this._getOrientationHeader(this.carouselModel.vertical, 'Carousel', this.sliderVerticalChanged)}
-          <item-carousel
-            .model=${this.carouselModel}
-            .getItemTemplate=${this._getImageItemTemplate}
-          ></item-carousel>
+          <item-carousel .model=${this.carouselModel}>
+            ${this.carouselModel.items.map((item, index) => html`<img slot="item_${index}" src=${item.href}></img>`)}
+          </item-carousel>
         </div>
 
         <div id="switcher">
           ${this._getOrientationHeader(this.switcherModel.vertical, 'Tab Container', this.switcherVerticalChanged)}
-          <tab-container
-            .model=${this.switcherModel}
-            .getItemTemplate=${this._getImageItemTemplate}
-            .getTabTemplate=${this._getTabTemplate}
-          ></tab-container>
+          <tab-container .model=${this.switcherModel}>
+            ${this.switcherModel.items.map((item, index) => this._getTabTemplate(this.switcherModel, item, index))}
+            <img slot="item" src=${this.switcherModel.activeItem.href}></img>
+          </tab-container>
         </div>
       </div>
     `;

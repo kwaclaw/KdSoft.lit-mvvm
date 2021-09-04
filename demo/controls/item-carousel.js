@@ -11,7 +11,6 @@ class ItemCarousel extends LitMvvmElement {
     // LOW priority means proper queueing for scroll actions
     this.scheduler = new Queue(priorities.LOW);
     //this.scheduler = new BatchScheduler(300);
-    this.getItemTemplate = (item, index) => html`${item}`;
   }
 
   carouselClickDown(e) {
@@ -40,13 +39,8 @@ class ItemCarousel extends LitMvvmElement {
         }
 
         .carousel {
-          height: var(--itemHeight);
-          width: var(--itemWidth);
-        }
-
-        .carousel img[slot] {
-          /* fix horizontal display */
-          max-width: unset;
+          height: var(--height);
+          width: var(--width);
         }
 
         .carousel > div[slot] {
@@ -119,6 +113,8 @@ class ItemCarousel extends LitMvvmElement {
       </div>`;
   }
 
+  /* eslint-disable indent */
+
   render() {
     const cm = this.model;
     const len = cm.items.length || 0;
@@ -129,8 +125,8 @@ class ItemCarousel extends LitMvvmElement {
     return html`
       <style>
         :host {
-          --itemHeight: ${cm.vertical ? '600px' : '300px'};
-          --itemWidth: ${cm.vertical ? '300px' : '600px'};
+          --height: ${cm.vertical ? 'var(--itemWidth, 600px)' : 'var(--itemHeight, 300px)'};
+          --width: ${cm.vertical ? 'var(--itemHeight, 300px)' : 'var(--itemWidth, 600px)'};
         }
       </style>
       <svg style="display:none" version="1.1"
@@ -174,18 +170,17 @@ class ItemCarousel extends LitMvvmElement {
         </defs>
       </svg>
 
-      <div class="flex flex-nowrap ${cm.vertical ? 'flex-row' : 'flex-col'}">
-        <kdsoft-nav-container class="carousel p-0"
-          orientation=${cm.vertical ? 'vertical' : 'horizontal'}
-          .model=${cm}
-        >
-          ${cm.vertical
-            ? this._getVerticalAngles(firstAngleClass, lastAngleClass)
-            : this._getHorizontalAngles(firstAngleClass, lastAngleClass)
-          }
-          ${cm.items.map((item, itemIndex) => this.getItemTemplate(item, itemIndex))}
-        </kdsoft-nav-container>
-      </div>
+      <kdsoft-nav-container class="carousel p-0"
+        orientation=${cm.vertical ? 'vertical' : 'horizontal'}
+        .model=${cm}
+      >
+        ${cm.vertical
+          ? this._getVerticalAngles(firstAngleClass, lastAngleClass)
+          : this._getHorizontalAngles(firstAngleClass, lastAngleClass)
+        }
+        <!-- forwarding slots from grand-child to parent -->
+        ${cm.items.map((item, itemIndex) => html`<slot name="item_${itemIndex}" slot="item_${itemIndex}"></slot>`)}
+      </kdsoft-nav-container>
     `;
   }
 }

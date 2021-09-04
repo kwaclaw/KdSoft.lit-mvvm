@@ -11,13 +11,6 @@ class TabContainer extends LitMvvmElement {
     // LOW priority means proper queueing for scroll actions
     this.scheduler = new Queue(priorities.LOW);
     //this.scheduler = new BatchScheduler(300);
-    this.getItemTemplate = (item, index) => html`${item}`;
-    this.getTabTemplate = (model, item, index) => html`
-        <button type="button"
-          @click=${() => { model.activeIndex = index; }}
-          class="px-2 py-1 bg-gray-300"
-        >Image ${index}</button>
-      `;
   }
 
   shouldRender() {
@@ -45,39 +38,18 @@ class TabContainer extends LitMvvmElement {
     ];
   }
 
-  _getHorizontalTabs(sm) {
-    return html`
-      <div slot="header" class="horizontal-tabs">
-        ${sm.items.map((item, itemIndex) => this.getTabTemplate(sm, item, itemIndex))}
-      </div>
-    `;
-  }
-
-  _getVerticalTabs(sm) {
-    return html`
-      <div slot="left-bar"  class="vertical-tabs">
-        ${sm.items.map((item, itemIndex) => this.getTabTemplate(sm, item, itemIndex))}
-      </div>
-    `;
-  }
-
   render() {
     const sm = this.model;
+    const tabSlot = sm.vertical ? 'left-bar' : 'header';
+    const tabClass = sm.vertical ? 'vertical-tabs' : 'horizontal-tabs';
     return html`
-      <style>
-      </style>
-      <div class="flex flex-nowrap ${sm.vertical ? 'flex-row' : 'flex-col'}">
-        <kdsoft-nav-container class="p-0"
-          orientation=${sm.vertical ? 'vertical' : 'horizontal'}
-          .model=${sm}
-        >
-          ${sm.vertical
-            ? this._getVerticalTabs(sm)
-            : this._getHorizontalTabs(sm)
-          }
-          ${this.getItemTemplate(sm.activeItem, sm.activeIndex)}
-        </kdsoft-nav-container>
-      </div>
+      <kdsoft-nav-container .model=${sm} class="p-0" orientation="${sm.vertical ? 'vertical' : 'horizontal'}">
+        <div slot="${tabSlot}" class="${tabClass}">
+          ${sm.items.map((item, itemIndex) => html`<slot name="tab_${itemIndex}"></slot>`)}
+        </div>
+        <!-- forwarding first item slot from grand-child to parent -->
+        <slot name="item" slot="item_0"></slot>
+      </kdsoft-nav-container>
     `;
   }
 }
