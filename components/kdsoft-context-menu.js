@@ -267,7 +267,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
   }
 
   bind(element) {
-    const options = { capture: false, passive: true };
+    const options = { capture: false, passive: false };
     element.addEventListener('contextmenu', this._contextMenuListener.bind(this), options);
     element.addEventListener('touchstart', this._touchStartListener.bind(this), options);
     element.addEventListener('touchend', this._touchEndListener.bind(this), options);
