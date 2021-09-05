@@ -350,6 +350,13 @@ class ControlsApp extends LitMvvmElement {
 
         #switcher tab-container {
           margin: auto;
+          overflow-x: clip;
+          overflow-y: visible;
+        }
+
+        #switcher tab-container.vertical {
+          overflow-x: visible;
+          overflow-y: clip;
         }
 
         #switcher .tab:hover {
@@ -357,7 +364,12 @@ class ControlsApp extends LitMvvmElement {
         }
 
         #switcher .tab.active {
-          background-color: gray;
+          background-color: darkgrey;
+          transform: scale(1.1) translate(0, -4%);
+        }
+
+        #switcher .tab.active.vertical {
+          transform: scale(1.1) translate(-4%, 0);
         }
       `
     ];
@@ -414,10 +426,11 @@ class ControlsApp extends LitMvvmElement {
   //       we can only assume that the component has tailwind styles
   _getTabTemplate (model, item, index) {
     const activeClass = model.activeIndex === index ? 'active' : '';
+    const verticalClass = model.vertical ? 'vertical' : '';
     return html`
       <button type="button" slot="tab_${index}"
         @click=${() => { model.activeIndex = index; }}
-        class="tab px-2 py-1 bg-gray-300 ${activeClass}"
+        class="tab px-2 py-1 bg-gray-300 ${activeClass} ${verticalClass}"
       >Image ${index}</button>
     `;
   }
@@ -476,7 +489,7 @@ class ControlsApp extends LitMvvmElement {
 
         <div id="switcher">
           ${this._getOrientationHeader(this.switcherModel.vertical, 'Tab Container', this.switcherVerticalChanged)}
-          <tab-container .model=${this.switcherModel}>
+          <tab-container .model=${this.switcherModel} class="${this.switcherModel.vertical ? 'vertical' : ''}">
             ${this.switcherModel.items.map((item, index) => this._getTabTemplate(this.switcherModel, item, index))}
             <img slot="item" src=${this.switcherModel.activeItem.href}></img>
           </tab-container>
