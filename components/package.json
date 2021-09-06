@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm-components",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "description": "Webcomponents based on @kdsoft-lit-mvvm",
   "author": "Karl Waclawek",
   "email": "karl@waclawek.net",
@@ -48,7 +48,7 @@
     "postcss-copy": "^7.1.0",
     "postcss-import": "^14.0.2",
     "rimraf": "^3.0.2",
-    "tailwindcss": "^2.2.9"
+    "tailwindcss": "^2.2.10"
   },
   "scripts": {
     "postcss-fontawesome": "postcss node_modules/@fortawesome/fontawesome-free/css/all.css -o _tmp/fontawesome/css/all.css",
