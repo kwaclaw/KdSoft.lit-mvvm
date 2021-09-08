@@ -2,7 +2,7 @@ import { css } from '@kdsoft/lit-mvvm';
 
 export default css`
 
-/*! tailwindcss v2.2.11 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v2.2.10 | MIT License | https://tailwindcss.com */
 
 /*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
 
