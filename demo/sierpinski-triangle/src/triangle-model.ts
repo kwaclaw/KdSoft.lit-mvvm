@@ -1,4 +1,3 @@
-import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { DotModel } from "./dot-model";
 
 const targetSize = 25;

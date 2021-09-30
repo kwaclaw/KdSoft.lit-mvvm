@@ -1,5 +1,3 @@
-import { observable } from '@nx-js/observer-util/dist/es.es6.js';
-
 export class DotModel {
   constructor(x?: number, y?: number, size?: number) {
     this.x = x;

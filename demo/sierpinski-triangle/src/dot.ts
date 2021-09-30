@@ -1,6 +1,5 @@
-import { html } from 'lit/html.js';
 import { styleMap } from 'lit/directives/style-map.js';
-import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
+import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
 import { DotModel } from './dot-model';
 
 export class Dot extends LitMvvmElement<DotModel> {
