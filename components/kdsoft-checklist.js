@@ -1,7 +1,6 @@
-import { html, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
+import { LitMvvmElement, html, nothing, css } from '@kdsoft/lit-mvvm';
 import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import KdSoftDragDropProvider from './kdsoft-drag-drop-provider.js';

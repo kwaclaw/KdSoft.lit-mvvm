@@ -1,6 +1,5 @@
-﻿import { html } from 'lit';
-import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { LitMvvmElement, css, BatchScheduler } from '@kdsoft/lit-mvvm';
+﻿import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
+import { LitMvvmElement, html, css, BatchScheduler } from '@kdsoft/lit-mvvm';
 
 const orientationClasses = {
   horizontal: {
