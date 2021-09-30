@@ -1,6 +1,7 @@
 
 import { CSSResultGroup, CSSResultOrNative } from '@lit/reactive-element/css-tag';
 export * from '@lit/reactive-element/css-tag';
+export * from 'lit/html';
 
 declare const finalized = 'finalized';
 export declare type Initializer = (element: LitBaseElement) => void;
