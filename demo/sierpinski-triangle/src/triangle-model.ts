@@ -19,7 +19,6 @@ export class TriangleModel {
       this.left = new TriangleModel(sharedModel, x - s, y + (s / 2), s);
       this.right = new TriangleModel(sharedModel, x + s, y + (s / 2), s);
     }
-    return observable(this);
   }
 
   x?: number;

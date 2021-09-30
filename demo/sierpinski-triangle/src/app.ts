@@ -1,5 +1,6 @@
 import { html } from 'lit-html';
 import { styleMap } from 'lit/directives/style-map.js';
+import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util';
 import { LitMvvmElement, css, BatchScheduler } from '@kdsoft/lit-mvvm';
 import { AppModel } from './app-model';
@@ -68,7 +69,7 @@ export class TriangleApplication extends LitMvvmElement<AppModel> {
     //this.nodeScheduler = new Queue(priorities.LOW);
 
     // this will trigger a render() call, if we are already connected
-    this.model = new AppModel(1000);
+    this.model = observable(new AppModel(1000));
   }
 
   private animationScheduler: AnimationScheduler;

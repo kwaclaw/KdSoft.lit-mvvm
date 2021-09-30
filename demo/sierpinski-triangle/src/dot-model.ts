@@ -5,8 +5,6 @@ export class DotModel {
     this.x = x;
     this.y = y;
     this.size = size;
-
-    return observable(this);
   }
 
   x?: number;

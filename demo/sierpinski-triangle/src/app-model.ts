@@ -7,8 +7,6 @@ export class AppModel {
   constructor(initialSize: number) {
     this.sharedModel = observable({ seconds: 0 });
     this.triangleModel = new TriangleModel(this.sharedModel, 0, 0, initialSize);
-
-    return observable(this);
   }
 
   sharedModel: { seconds: number };
