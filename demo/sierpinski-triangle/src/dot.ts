@@ -1,4 +1,4 @@
-import { html } from 'lit';
+import { html } from 'lit/html.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
 import { DotModel } from './dot-model';

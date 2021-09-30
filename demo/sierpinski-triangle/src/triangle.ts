@@ -1,5 +1,5 @@
 
-import { html } from 'lit';
+import { html } from 'lit/html.js';
 import { LitMvvmElement } from '../../../lit-mvvm.js';
 import { TriangleModel } from './triangle-model';
 import './dot';
