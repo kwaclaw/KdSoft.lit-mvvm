@@ -1,7 +1,6 @@
 import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { html } from 'lit';
-import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
+import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
 import tailwindStyles from '@kdsoft/lit-mvvm-components/styles/tailwind-styles.js';
 import checkboxStyles from '@kdsoft/lit-mvvm-components/styles/kdsoft-checkbox-styles.js';
 import fontAwesomeStyles from '@kdsoft/lit-mvvm-components/styles/fontawesome/css/all-styles.js';
@@ -59,13 +58,7 @@ class ControlsApp extends LitMvvmElement {
     super();
     this.scheduler = new Queue(priorities.LOW);
     this.checklistModel = observable(new KdSoftChecklistModel(
-      [
-        { id: 1, name: 'Alpha' },
-        { id: 2, name: 'Beta' },
-        { id: 3, name: 'Gamma' },
-        { id: 4, name: 'Delta' },
-        { id: 5, name: 'Epsilon' }
-      ],
+      [{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }, { id: 3, name: 'Gamma' }],
       [1],
       true,
       item => item.name
@@ -108,6 +101,7 @@ class ControlsApp extends LitMvvmElement {
     this.model = observable({
       dragDropEnabled: false,
     });
+
     this.carouselModel.items = this.model.sliderVertical ? verticalImageModels : horizontalImageModels;
     this.carouselModel.activeIndex = 0;
     this.switcherModel.items = this.model.sliderVertical ? verticalImageModels : horizontalImageModels;
@@ -123,6 +117,12 @@ class ControlsApp extends LitMvvmElement {
       else result = selEntry.item.name;
     }
     return result;
+  }
+
+  addCheckItem() {
+    const items = this.checklistModel.items;
+    const ix = items.length;
+    items.push({ id: ix, name: `Item_${ix}` });
   }
 
   tvDragDropChanged(e) {
@@ -446,7 +446,10 @@ class ControlsApp extends LitMvvmElement {
       <div id="container">
 
         <div id="check-list">
-          <h1 class="font-bold text-xl mb-2 text-left">Plain Checklist</h1>
+          <h1 class="flex font-bold text-xl mb-2 text-left">
+            Plain Checklist
+            <button class="ml-auto" @click=${e => this.addCheckItem(e)}>Add Item</button>
+          </h1>
           <kdsoft-checklist
             id="just-clist"
             .model=${this.checklistModel}

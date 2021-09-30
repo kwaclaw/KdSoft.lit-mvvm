@@ -1,6 +1,5 @@
 ﻿import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { html } from 'lit';
-import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
+import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
 import tailwindStyles from '@kdsoft/lit-mvvm-components/styles/tailwind-styles.js';
 import fontAwesomeStyles from '@kdsoft/lit-mvvm-components/styles/fontawesome/css/all-styles.js';
 import '@kdsoft/lit-mvvm-components';
