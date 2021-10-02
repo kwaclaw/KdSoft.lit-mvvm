@@ -110,6 +110,10 @@ export default class KdSoftDropdown extends LitMvvmElement {
       fontAwesomeStyles,
       checkboxStyles,
       css`
+        :host {
+          display: inline-block;
+          line-height: 1.25em;
+        }
         #container {
           display: flex;
           align-items: baseline;
@@ -138,12 +142,6 @@ export default class KdSoftDropdown extends LitMvvmElement {
   render() {
     const selText = this.model.selectedText;
     const result = html`
-      <style>
-        :host {
-          display: inline-block;
-          line-height: 1.25em;
-        }
-      </style>
       <div id="container" class="border">
         <span id="seltext"
           class="my-auto p-1 flex-grow whitespace-nowrap overflow-x-hidden"
