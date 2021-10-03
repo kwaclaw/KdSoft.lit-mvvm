@@ -2,9 +2,9 @@ import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
 import KdSoftDropdownConnector from './kdsoft-dropdown-connector.js';
 
 function _getSelectedText(clm) {
-  let result = null;
+  let result = '';
   for (const selEntry of clm.selectedEntries) {
-    if (result === null) result += `, ${selEntry.item.name}`;
+    if (result === '') result += `, ${selEntry.item.name}`;
     else result = selEntry.item.name;
   }
   return result;
