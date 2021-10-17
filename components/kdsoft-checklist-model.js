@@ -95,11 +95,16 @@ class KdSoftChecklistModel {
   get filteredItems() { return iterateFilter(this.items, this._selectedItems, this.filter); }
 
   selectIndex(index, select) {
+    if (index < 0 || index >= this.items.length) {
+      return;
+    }
+
+    const rawItem = raw(this.items[index]);
     if (this.multiSelect) {
-      if (select) this._selectedItems.add(raw(this.items[index]));
-      else this._selectedItems.delete(raw(this.items[index]));
+      if (select) this._selectedItems.add(rawItem);
+      else this._selectedItems.delete(rawItem);
     } else if (select) {
-      this._selectedItems = new WeakSet([raw(this.items[index])]);
+      this._selectedItems = new WeakSet([rawItem]);
     } else {
       this._selectedItems = new WeakSet();
     }
@@ -107,8 +112,9 @@ class KdSoftChecklistModel {
 
   selectId(id, select) {
     let selItem = null;
-    for (let indx = 0; indx < this.items.length; indx += 1) {
-      const tempItem = this.items[indx];
+    const rawItems = raw(this.items);
+    for (let indx = 0; indx < rawItems.length; indx += 1) {
+      const tempItem = raw(rawItems[indx]);
       if (this.getItemId(tempItem) === id) {
         selItem = tempItem;
         break;
@@ -117,10 +123,10 @@ class KdSoftChecklistModel {
     if (selItem === null) return;
 
     if (this.multiSelect) {
-      if (select) this._selectedItems.add(raw(selItem));
-      else this._selectedItems.delete(raw(selItem));
+      if (select) this._selectedItems.add(selItem);
+      else this._selectedItems.delete(selItem);
     } else if (select) {
-      this._selectedItems = new WeakSet([raw(selItem)]);
+      this._selectedItems = new WeakSet([selItem]);
     } else {
       this._selectedItems = new WeakSet();
     }
@@ -132,8 +138,9 @@ class KdSoftChecklistModel {
     }
 
     const selItems = [];
-    for (let indx = 0; indx < this.items.length; indx += 1) {
-      const tempItem = raw(this.items[indx]);
+    const rawItems = raw(this.items);
+    for (let indx = 0; indx < rawItems.length; indx += 1) {
+      const tempItem = raw(rawItems[indx]);
       for (const id of ids) {
         if (this.getItemId(tempItem) === id) {
           selItems.push(tempItem);
@@ -143,7 +150,7 @@ class KdSoftChecklistModel {
     }
 
     for (let indx = 0; indx < selItems.length; indx += 1) {
-      const selItem = raw(selItems[indx]);
+      const selItem = selItems[indx];
       if (this.multiSelect) {
         if (select) this._selectedItems.add(selItem);
         else this._selectedItems.delete(selItem);
@@ -156,6 +163,10 @@ class KdSoftChecklistModel {
   }
 
   toggleIndex(index) {
+    if (index < 0 || index >= this.items.length) {
+      return;
+    }
+
     const rawItem = raw(this.items[index]);
     const isSelected = this._selectedItems.has(rawItem);
     if (this.multiSelect) {
@@ -165,6 +176,19 @@ class KdSoftChecklistModel {
       this._selectedItems = new WeakSet();
     } else {
       this._selectedItems = new WeakSet(rawItem);
+    }
+  }
+
+  selectAll(select) {
+    if (select) {
+      const rawItems = raw(this.items);
+      if (this.multiSelect || (rawItems || []).length <= 1) {
+        this._selectedItems = rawItems ? new WeakSet(rawItems.map(item => raw(item))) : new WeakSet();
+      } else {
+        throw new Error('Must not select multiple items');
+      }
+    } else {
+      this._selectedItems = new WeakSet();
     }
   }
 
