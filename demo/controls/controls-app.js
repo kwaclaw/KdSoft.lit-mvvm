@@ -512,6 +512,9 @@ class ControlsApp extends LitMvvmElement {
     const tv = this.renderRoot.getElementById('tv');
     // we don't need to bind each menu item (see _bindTree), as the event bubbles up
     menu.bind(tv);
+
+    // it may be necessary to reconnect the drop down connector
+    this.checklistConnector.reconnectDropdownSlot();
   }
 }
 
