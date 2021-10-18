@@ -94,6 +94,9 @@ export default class KdSoftDropdown extends LitMvvmElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+    // necessary?
+    //this.shadowRoot.host.removeEventListener('focusout', this._hostLostFocus);
+    //this.shadowRoot.host.removeEventListener('focusin', this._hostFocused);
     if (this.connector) this.connector.disconnectDropdownSlot();
   }
 
