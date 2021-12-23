@@ -71,15 +71,15 @@ export default class KdSoftChecklist extends LitMvvmElement {
 
   // The following properties and methods aren't strictly required,  but native form controls provide them.
   // Providing them helps ensure consistency with native controls.
-  get form() { return this.internals_.form; }
+  get form() { return this._internals.form; }
   get name() { return this.getAttribute('name'); }
   get type() { return this.localName; }
-  get validity() { return this.internals_.validity; }
-  get validationMessage() { return this.internals_.validationMessage; }
-  get willValidate() { return this.internals_.willValidate; }
+  get validity() { return this._internals.validity; }
+  get validationMessage() { return this._internals.validationMessage; }
+  get willValidate() { return this._internals.willValidate; }
 
-  checkValidity() { return this.internals_.checkValidity(); }
-  reportValidity() { return this.internals_.reportValidity(); }
+  checkValidity() { return this._internals.checkValidity(); }
+  reportValidity() { return this._internals.reportValidity(); }
 
   // Observed attributes will trigger an attributeChangedCallback, which in turn will cause a re-render to be scheduled!
   static get observedAttributes() {
