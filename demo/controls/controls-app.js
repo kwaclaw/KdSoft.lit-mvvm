@@ -1,12 +1,8 @@
 import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
-import tailwindStyles from '@kdsoft/lit-mvvm-components/styles/tailwind-styles.js';
 import checkboxStyles from '@kdsoft/lit-mvvm-components/styles/kdsoft-checkbox-styles.js';
 import fontAwesomeStyles from '@kdsoft/lit-mvvm-components/styles/fontawesome/css/all-styles.js';
-import './item-carousel.js';
-import './tab-container.js';
-
 import {
   KdSoftDropdownModel,
   KdSoftChecklistModel,
@@ -14,6 +10,11 @@ import {
   KdSoftTreeNodeModel,
   KdSoftActiveItemModel,
 } from '@kdsoft/lit-mvvm-components';
+// since tailwind classes are generated only as used, we cannot import them
+// from a prebuilt library, but need to generate the ones we use locally
+import tailwindStyles from './styles/tailwind-styles.js';
+import './item-carousel.js';
+import './tab-container.js';
 
 function getClosestTreeNode(path) {
   for (let indx = 0; indx < path.length; indx += 1) {

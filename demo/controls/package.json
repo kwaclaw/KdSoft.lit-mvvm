@@ -1,12 +1,9 @@
 {
   "name": "controls-demo",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
-  "scripts": {
-    "start": "vite"
-  },
   "dependencies": {
     "@kdsoft/lit-mvvm": "../../",
     "@kdsoft/lit-mvvm-components": "file:../../components",
@@ -18,6 +15,44 @@
     "last 1 Safari versions"
   ],
   "devDependencies": {
-    "vite": "^2.6.10"
+    "vite": "^2.7.6",
+    "eslint": "^8.5.0",
+    "autoprefixer": "^10.4.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.3",
+    "postcss": "^8.4.5",
+    "postcss-cli": "^9.1.0",
+    "postcss-copy": "^7.1.0",
+    "postcss-import": "^14.0.2",
+    "rimraf": "^3.0.2",
+    "tailwindcss": "^3.0.7"
+  },
+  "scripts": {
+    "start": "vite",
+    "postcss-css": "postcss css/**/*.css --dir _tmp",
+    "wrap-css": "node scripts/wrap-css.mjs _tmp/**/*.css styles _tmp",
+    "prebuild": "rimraf _tmp/**/*",
+    "build": "npm run postcss-css && npm run wrap-css",
+    "prepare": "npm run build"
+  },
+  "postcss": {
+    "plugins": {
+      "postcss-import": {},
+      "postcss-copy": {
+        "basePath": [
+          "node_modules"
+        ],
+        "template": "[path]/[name].[ext][query]",
+        "dest": "styles/assets"
+      },
+      "tailwindcss": {
+        "content": ["./*.{html,js}"],
+        "theme": {
+          "extend": {}
+        },
+        "plugins": []
+      },
+      "autoprefixer": {}
+    }
   }
 }
