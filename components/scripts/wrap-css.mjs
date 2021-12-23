@@ -56,7 +56,7 @@ function makeJsFilePath(cssRoot, cssFile) {
 
   const cssDir = dirname(cssFile);
   const cssRelativeDir = relative(cssRoot, cssDir);
-  
+
   return join(cssRelativeDir, jsFileName);
 }
 
