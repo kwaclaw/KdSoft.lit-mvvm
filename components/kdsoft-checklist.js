@@ -9,13 +9,13 @@ import tailwindStyles from './styles/tailwind-styles.js';
 import checkboxStyles from './styles/kdsoft-checkbox-styles.js';
 import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
-const arrowBase = { far: true, 'fa-lg': true, 'text-gray-500': true, 'align-text-bottom': true };
+const arrowBase = { 'fa-regular': true, 'fa-lg': true, 'text-gray-500': true, 'align-text-bottom': true };
 
 const classList = {
-  upArrowVisible: { ...arrowBase, 'fa-caret-square-up': true },
-  upArrowHidden: { ...arrowBase, 'fa-caret-square-up': true, invisible: true },
-  downArrowVisible: { ...arrowBase, 'fa-caret-square-down': true },
-  downArrowHidden: { ...arrowBase, 'fa-caret-square-down': true, invisible: true },
+  upArrowVisible: { ...arrowBase, 'fa-square-caret-up': true },
+  upArrowHidden: { ...arrowBase, 'fa-square-caret-up': true, invisible: true },
+  downArrowVisible: { ...arrowBase, 'fa-square-caret-down': true },
+  downArrowHidden: { ...arrowBase, 'fa-square-caret-down': true, invisible: true },
 };
 
 function getListItemIndex(item) {

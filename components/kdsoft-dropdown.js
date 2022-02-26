@@ -171,7 +171,7 @@ export default class KdSoftDropdown extends LitMvvmElement {
           @focusin="${this._dropdownButtonFocused}"
           @click="${this._dropdownButtonClicked}"
         >
-          <span id="dropDownButtonIcon" class="fas fa-caret-down"></span>
+          <span id="dropDownButtonIcon" class="fa-solid fa-caret-down"></span>
         </button>
       </div>
       <div id="dropdown" class="z-50" ?hidden=${!this.model.dropped}>

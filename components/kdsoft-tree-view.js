@@ -109,7 +109,7 @@ export default class KdSoftTreeView extends LitMvvmElement {
       >
         <div slot="expander">
           ${this.allowDragDrop ? html`<i class="expander-grip fas fa-xs fa-ellipsis-v text-gray-400"></i>` : nothing}
-          <i class="expander-icon fas fa-lg fa-caret-right ${nodeModel.children.length ? 'text-blue-600' : 'text-blue-200'}"></i>
+          <i class="expander-icon fa-solid fa-lg fa-caret-right ${nodeModel.children.length ? 'text-blue-600' : 'text-blue-200'}"></i>
         </div>
         <div slot="header">${this._getContentTemplate(nodeModel)}</div>
         <div slot="content">
