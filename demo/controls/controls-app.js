@@ -1,6 +1,6 @@
 import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
+import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import checkboxStyles from '@kdsoft/lit-mvvm-components/styles/kdsoft-checkbox-styles.js';
 import fontAwesomeStyles from '@kdsoft/lit-mvvm-components/styles/fontawesome/css/all-styles.js';
 import {
