@@ -1,5 +1,5 @@
 ﻿import { repeat } from 'lit/directives/repeat.js';
-import { LitMvvmElement, html, nothing, css } from '@kdsoft/lit-mvvm';
+import { LitMvvmElement, html, nothing, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 
 import tailwindStyles from './styles/tailwind-styles.js';
 import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';

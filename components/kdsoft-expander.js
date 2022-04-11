@@ -1,4 +1,4 @@
-import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
+import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 
 import tailwindStyles from './styles/tailwind-styles.js';

@@ -1,5 +1,5 @@
 import { repeat } from 'lit/directives/repeat.js';
-import { LitMvvmElement, html, nothing, BatchScheduler, css } from '@kdsoft/lit-mvvm';
+import { LitMvvmElement, html, nothing, BatchScheduler, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import './kdsoft-expander.js';
 import './kdsoft-drop-target.js';
