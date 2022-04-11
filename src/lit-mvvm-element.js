@@ -4,7 +4,7 @@
 
 import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
 import { render as litRender, noChange } from 'lit/html.js';
-import { LitBaseElement } from './lit-base-element';
+import { LitBaseElement } from './lit-base-element.js';
 
 const _model = new WeakMap();
 const _scheduler = new WeakMap();
@@ -113,7 +113,9 @@ export class LitMvvmElement extends LitBaseElement {
   }
 
   disconnectedCallback() {
-    unobserve(this._observer);
+    if (this._observer) {
+      unobserve(this._observer);
+    }
     super.disconnectedCallback();
     const cp = this.__childPart;
     if (cp !== null && cp !== undefined) {
