@@ -126,6 +126,12 @@ class ControlsApp extends LitMvvmElement {
     items.push({ id: ix, name: `Item_${ix}` });
   }
 
+  searchTextChanged(e) {
+    const searchText = e.currentTarget.value;
+    const regex = new RegExp(searchText, 'i');
+    this.checklistModel.filter = item => regex.test(item.name);
+  }
+
   tvDragDropChanged(e) {
     const checked = e.currentTarget.checked;
     this.model.dragDropEnabled = checked;
@@ -298,19 +304,6 @@ class ControlsApp extends LitMvvmElement {
           width: 100%;
         }
 
-        #check-list > p {
-          width: 100%;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          min-height: 2em;
-        }
-
-        #check-list > p:hover {
-          overflow: initial;
-          text-overflow: initial;
-        }
-
         #drop-down {
           width: 100%;
         }
@@ -451,6 +444,11 @@ class ControlsApp extends LitMvvmElement {
             Plain Checklist
             <button class="ml-auto" @click=${e => this.addCheckItem(e)}>Add Item</button>
           </h1>
+          <input id="searchbox"
+            type="text"
+            placeholder="search unselected entries"
+            class="my-auto p-1 flex-grow"
+            @input="${this.searchTextChanged}" />
           <kdsoft-checklist
             id="just-clist"
             .model=${this.checklistModel}
