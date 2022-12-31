@@ -15,24 +15,26 @@
     "last 1 Safari versions"
   ],
   "devDependencies": {
-    "vite": "^2.9.9",
-    "eslint": "^8.17.0",
-    "autoprefixer": "^10.4.7",
+    "vite": "^4.0.2",
+    "eslint": "^8.30.0",
+    "autoprefixer": "^10.4.13",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "postcss": "^8.4.14",
-    "postcss-cli": "^9.1.0",
+    "postcss": "^8.4.20",
+    "postcss-cli": "^10.1.0",
     "postcss-copy": "^7.1.0",
-    "postcss-import": "^14.1.0",
+    "postcss-import": "^15.1.0",
     "rimraf": "^3.0.2",
-    "tailwindcss": "^3.0.24"
+    "tailwindcss": "^3.2.4",
+    "@fortawesome/fontawesome-free": "^6.2.1"
   },
   "scripts": {
     "start": "vite",
+    "postcss-fontawesome": "postcss node_modules/@fortawesome/fontawesome-free/css/all.css -o _tmp/fontawesome/css/all.css",
     "postcss-css": "postcss css/**/*.css --dir _tmp",
     "wrap-css": "node scripts/wrap-css.mjs _tmp/**/*.css styles _tmp",
     "prebuild": "rimraf _tmp/**/*",
-    "build": "npm run postcss-css && npm run wrap-css",
+    "build": "npm run postcss-fontawesome && npm run postcss-css && npm run wrap-css",
     "prepare": "npm run build"
   },
   "postcss": {

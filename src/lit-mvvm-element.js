@@ -3,7 +3,7 @@
 /* eslint-disable import/prefer-default-export */
 
 import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
-import { render as litRender, noChange } from 'lit/html.js';
+import { render as litRender, noChange } from 'lit-html';
 import { LitBaseElement } from './lit-base-element.js';
 
 const _model = new WeakMap();

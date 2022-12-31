@@ -1,4 +1,4 @@
-import { styleMap } from 'lit/directives/style-map.js';
+import { styleMap } from 'lit-html/directives/style-map.js';
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
 import { DotModel } from './dot-model';
 

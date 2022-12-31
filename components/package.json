@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm-components",
-  "version": "1.0.0-beta.16",
+  "version": "1.0.0-beta.20",
   "description": "Webcomponents based on @kdsoft-lit-mvvm",
   "author": "Karl Waclawek",
   "email": "karl@waclawek.net",
@@ -28,7 +28,7 @@
     "url": "https://github.com/kwaclaw/KdSoft.lit-mvvm.git"
   },
   "dependencies": {
-    "@kdsoft/lit-mvvm": "^2.1.2",
+    "@kdsoft/lit-mvvm": "..",
     "@nx-js/queue-util": "^1.1.1",
     "glob": "^8.0.3"
   },
@@ -38,24 +38,21 @@
     "last 1 Safari versions"
   ],
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^6.1.1",
-    "eslint": "^8.17.0",
-    "autoprefixer": "^10.4.7",
+    "autoprefixer": "^10.4.13",
+    "eslint": "^8.31.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "postcss": "^8.4.14",
-    "postcss-cli": "^9.1.0",
+    "postcss": "^8.4.20",
+    "postcss-cli": "^10.1.0",
     "postcss-copy": "^7.1.0",
-    "postcss-import": "^14.1.0",
-    "rimraf": "^3.0.2",
-    "tailwindcss": "^3.0.24"
+    "postcss-import": "^15.1.0",
+    "rimraf": "^3.0.2"
   },
   "scripts": {
-    "postcss-fontawesome": "postcss node_modules/@fortawesome/fontawesome-free/css/all.css -o _tmp/fontawesome/css/all.css",
     "postcss-css": "postcss css/**/*.css --dir _tmp",
     "wrap-css": "node scripts/wrap-css.mjs _tmp/**/*.css styles _tmp",
     "prebuild": "rimraf _tmp/**/*",
-    "build": "npm run postcss-fontawesome && npm run postcss-css && npm run wrap-css",
+    "build": "npm run postcss-css && npm run wrap-css",
     "prepare": "npm run build"
   },
   "postcss": {
@@ -67,13 +64,6 @@
         ],
         "template": "[path]/[name].[ext][query]",
         "dest": "styles/assets"
-      },
-      "tailwindcss": {
-        "content": ["./*.{html,js}"],
-        "theme": {
-          "extend": {}
-        },
-        "plugins": []
       },
       "autoprefixer": {}
     }

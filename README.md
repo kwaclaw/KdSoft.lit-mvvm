@@ -46,7 +46,7 @@ class MyCheckList extends LitMvvmElement {
   _itemClicked(e) {
     const itemDiv = e.currentTarget.closest('.list-item');
     if (this.model.multiSelect) {
-      this.model.toggleIndex(itemDiv.dataset.itemIndex);
+      this.model.toggleSelectedIndex(itemDiv.dataset.itemIndex);
     } else { // on single select we don't toggle a clicked item
       this.model.selectIndex(itemDiv.dataset.itemIndex, true);
     }

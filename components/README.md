@@ -26,7 +26,7 @@ class TabContainer extends LitMvvmElement {
           display: block;
         }
         
-        kdsoft-nav-container {
+        kds-nav-container {
           padding: 0;
         }
 
@@ -47,13 +47,13 @@ class TabContainer extends LitMvvmElement {
     const tabSlot = sm.vertical ? 'left-bar' : 'header';
     const tabClass = sm.vertical ? 'vertical-tabs' : 'horizontal-tabs';
     return html`
-      <kdsoft-nav-container .model=${sm} orientation="${sm.vertical ? 'vertical' : 'horizontal'}">
+      <kds-nav-container .model=${sm} orientation="${sm.vertical ? 'vertical' : 'horizontal'}">
         <div slot="${tabSlot}" class="${tabClass}">
           ${sm.items.map((item, itemIndex) => html`<slot name="tab_${itemIndex}"></slot>`)}
         </div>
         <!-- forwarding first item slot from grand-child to parent -->
         <slot name="item" slot="item_0"></slot>
-      </kdsoft-nav-container>
+      </kds-nav-container>
     `;
   }
 }

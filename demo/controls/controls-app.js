@@ -1,25 +1,27 @@
 import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
-import checkboxStyles from '@kdsoft/lit-mvvm-components/styles/kdsoft-checkbox-styles.js';
-import fontAwesomeStyles from '@kdsoft/lit-mvvm-components/styles/fontawesome/css/all-styles.js';
-import {
-  KdSoftDropdownModel,
-  KdSoftChecklistModel,
-  KdSoftDropdownChecklistConnector,
-  KdSoftTreeNodeModel,
-  KdSoftActiveItemModel,
-} from '@kdsoft/lit-mvvm-components';
+import { } from '@kdsoft/lit-mvvm-components';
+import checkboxStyles from './styles/kds-checkbox-styles.js';
+import KdsTreeNodeModel from './kds-tree-node-model';
+import KdsListModel from './kds-list-model.js';
+import KdsDropdownModel from './kds-dropdown-model.js';
+import KdsActiveItemModel from './kds-active-item-model.js';
+import KdsDropdownChecklistConnector from './kds-dropdown-checklist-connector.js';
+import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 // since tailwind classes are generated only as used, we cannot import them
 // from a prebuilt library, but need to generate the ones we use locally
 import tailwindStyles from './styles/tailwind-styles.js';
-import './item-carousel.js';
+import './kds-carousel.js';
 import './tab-container.js';
+import './demo-tree-view.js';
+import './demo-check-list.js';
+import './kds-dropdown.js';
 
 function getClosestTreeNode(path) {
   for (let indx = 0; indx < path.length; indx += 1) {
     const classList = path[indx].classList;
-    if (classList && classList.contains('kdsoft-node')) {
+    if (classList && classList.contains('kds-node')) {
       return path[indx];
     }
   }
@@ -27,7 +29,12 @@ function getClosestTreeNode(path) {
 }
 
 function editNode(treeNode) {
-  const nodeEdit = treeNode.querySelector('.node-edit');
+  const nodeEditSlot = treeNode.querySelector('slot[name="content"]');
+  let nodeEdit = null;
+  for (const an of nodeEditSlot.assignedNodes()) {
+    nodeEdit = an.querySelector('.node-edit');
+    if (nodeEdit) break;
+  }
   if (nodeEdit) {
     nodeEdit.removeAttribute('hidden');
     nodeEdit.nextElementSibling.setAttribute('hidden', '');
@@ -58,15 +65,15 @@ class ControlsApp extends LitMvvmElement {
   constructor() {
     super();
     this.scheduler = new Queue(priorities.LOW);
-    this.checklistModel = observable(new KdSoftChecklistModel(
+    this.checklistModel = observable(new KdsListModel(
       [{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }, { id: 3, name: 'Gamma' }],
       [1],
       true,
-      item => item.name
+      item => item.id
     ));
 
-    this.dropDownModel = observable(new KdSoftDropdownModel());
-    this.checklistConnector = new KdSoftDropdownChecklistConnector(
+    this.dropDownModel = observable(new KdsDropdownModel());
+    this.checklistConnector = new KdsDropdownChecklistConnector(
       () => this.renderRoot.getElementById('ddown'),
       () => this.renderRoot.getElementById('clist'),
       () => this.getChecklistText()
@@ -74,30 +81,30 @@ class ControlsApp extends LitMvvmElement {
 
     const tvGrandChildren = [];
     for (let indx = 0; indx < 15; indx += 1) {
-      const grandChild = new KdSoftTreeNodeModel(`3-${indx}`, [], { type: 'gc', text: `Grand child blah blah ${indx}` });
+      const grandChild = new KdsTreeNodeModel(`3-${indx}`, [], { type: 'gc', text: `Grand child blah blah ${indx}` });
       tvGrandChildren.push(grandChild);
     }
     const tvChildren = [];
     for (let indx = 0; indx < 5; indx += 1) {
       const gci = indx * 3;
       const grandChildren = tvGrandChildren.slice(gci, gci + 3);
-      const child = new KdSoftTreeNodeModel(`2-${indx}`, grandChildren, { type: 'c', text: `Child blah blah ${indx}` });
+      const child = new KdsTreeNodeModel(`2-${indx}`, grandChildren, { type: 'c', text: `Child blah blah ${indx}` });
       tvChildren.push(child);
     }
-    this.tvRoot = observable(new KdSoftTreeNodeModel('0-0', tvChildren, { type: 'r', text: `Root Node` }));
+    this.tvRoot = observable(new KdsTreeNodeModel('0-0', tvChildren, { type: 'r', text: `Root Node` }));
 
     const menuChildren = [];
     const menuGrandChildren = [];
-    menuChildren.push(new KdSoftTreeNodeModel(`edit`, [], { text: `Edit Node`, disabled: false }));
-    menuGrandChildren.push(new KdSoftTreeNodeModel(`before`, [], { text: `Before`, disabled: false }));
-    menuGrandChildren.push(new KdSoftTreeNodeModel(`after`, [], { text: `After`, disabled: false }));
-    menuGrandChildren.push(new KdSoftTreeNodeModel(`inside`, [], { text: `Inside`, disabled: false }));
-    menuChildren.push(new KdSoftTreeNodeModel(`add`, menuGrandChildren, { text: `Add Node`, disabled: false }));
-    menuChildren.push(new KdSoftTreeNodeModel(`remove`, [], { text: `Remove Node`, disabled: false }));
-    this.tvMenu = observable(new KdSoftTreeNodeModel('0-0', menuChildren, { text: `Node Menu` }));
+    menuChildren.push(new KdsTreeNodeModel(`edit`, [], { text: `Edit Node`, disabled: false }));
+    menuGrandChildren.push(new KdsTreeNodeModel(`before`, [], { text: `Before`, disabled: false }));
+    menuGrandChildren.push(new KdsTreeNodeModel(`after`, [], { text: `After`, disabled: false }));
+    menuGrandChildren.push(new KdsTreeNodeModel(`inside`, [], { text: `Inside`, disabled: false }));
+    menuChildren.push(new KdsTreeNodeModel(`add`, menuGrandChildren, { text: `Add Node`, disabled: false }));
+    menuChildren.push(new KdsTreeNodeModel(`remove`, [], { text: `Remove Node`, disabled: false }));
+    this.tvMenu = observable(new KdsTreeNodeModel('0-0', menuChildren, { text: `Node Menu` }));
 
-    this.carouselModel = observable(new KdSoftActiveItemModel());
-    this.switcherModel = observable(new KdSoftActiveItemModel());
+    this.carouselModel = observable(new KdsActiveItemModel());
+    this.switcherModel = observable(new KdsActiveItemModel());
 
     this.model = observable({
       dragDropEnabled: false,
@@ -111,6 +118,13 @@ class ControlsApp extends LitMvvmElement {
     this.newNodeId = 0;
   }
 
+  searchTextChanged(e) {
+    const searchText = e.currentTarget.value;
+    const regex = new RegExp(searchText, 'i');
+    // we always include selected items
+    this.checklistModel.filter = item => this.checklistModel.isItemSelected(item) || regex.test(item.name);
+  }
+
   getChecklistText() {
     let result = null;
     for (const selEntry of this.checklistModel.selectedEntries) {
@@ -120,16 +134,14 @@ class ControlsApp extends LitMvvmElement {
     return result;
   }
 
+  checkSelectedChanged(e) {
+    this.model.checkedIsSelected = e.currentTarget.checked;
+  }
+
   addCheckItem() {
     const items = this.checklistModel.items;
     const ix = items.length;
     items.push({ id: ix, name: `Item_${ix}` });
-  }
-
-  searchTextChanged(e) {
-    const searchText = e.currentTarget.value;
-    const regex = new RegExp(searchText, 'i');
-    this.checklistModel.filter = item => regex.test(item.name);
   }
 
   tvDragDropChanged(e) {
@@ -159,7 +171,7 @@ class ControlsApp extends LitMvvmElement {
       case 'before':
       case 'after':
         {
-          const newNodeModel = new KdSoftTreeNodeModel(
+          const newNodeModel = new KdsTreeNodeModel(
             `n-${this.newNodeId += 1}`,
             [],
             { type: nodeModel.type, text: `New node ${this.newNodeId}` }
@@ -168,12 +180,12 @@ class ControlsApp extends LitMvvmElement {
           // the scheduler must allow scheduling after all currently scheduled renderings are done,
           // in case of @nx-js/queue-util this means using priorities.LOW; otherwise use window.setTimeout()
           this.schedule(() => {
-            const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
+            const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kds-node`);
             if (newNode) editNode(newNode);
           });
           // window.setTimeout(() => {
           //   // a tree node can have siblings with the same id before and after (kdsoft-drop-target components)
-          //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
+          //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kds-node`);
           //   if (newNode) editNode(newNode);
           // }, 0);
         }
@@ -191,7 +203,7 @@ class ControlsApp extends LitMvvmElement {
             default:
               break;
           }
-          const newNodeModel = new KdSoftTreeNodeModel(
+          const newNodeModel = new KdsTreeNodeModel(
             `n-${this.newNodeId += 1}`,
             [],
             { type: nodeType, text: `New node ${this.newNodeId}` }
@@ -200,12 +212,12 @@ class ControlsApp extends LitMvvmElement {
           // in case of @nx-js/queue-util this means using priorities.LOW; otherwise use window.setTimeout()
           this.schedule(() => {
             treeNode.ariaExpanded = true;
-            const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
+            const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kds-node`);
             if (newNode) editNode(newNode);
           });
           // window.setTimeout(() => {
           //   treeNode.ariaExpanded = true;
-          //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kdsoft-node`);
+          //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kds-node`);
           //   if (newNode) editNode(newNode);
           // }, 0);
           nodeModel.addNode(treeNode.id, menuItem.id, newNodeModel);
@@ -214,17 +226,6 @@ class ControlsApp extends LitMvvmElement {
       default:
         break;
     }
-  }
-
-  nodeEditLostFocus(e) {
-    e.preventDefault();
-    const seltext = e.currentTarget.nextElementSibling;
-    seltext.removeAttribute('hidden');
-    e.currentTarget.setAttribute('hidden', '');
-  }
-
-  nodeEditTextChanged(e, nodeModel) {
-    nodeModel.text = e.currentTarget.value;
   }
 
   sliderVerticalChanged(e) {
@@ -272,16 +273,6 @@ class ControlsApp extends LitMvvmElement {
           display: block;
         }
 
-        kdsoft-dropdown {
-          min-width: 200px;
-          width: auto;
-        }
-
-        kdsoft-checklist {
-          min-width: 200px;
-          width: auto;
-        }
-
         #container {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -293,16 +284,22 @@ class ControlsApp extends LitMvvmElement {
           background-color: lightblue;
         }
 
-        #container>div {
+        #container > div {
           background-color: lightsteelblue;
           border: solid 1px;
           padding: 0.5em;
         }
 
+        /* #region Checklist */
+
         #check-list {
           position: relative;
           width: 100%;
         }
+
+        /* #rendegion Checklist */
+
+        /* #region Dropdown Checklist */
 
         #drop-down {
           width: 100%;
@@ -312,29 +309,55 @@ class ControlsApp extends LitMvvmElement {
           width: 100%;
         }
 
+        #ddown::part(container) {
+          border: 1px solid;
+        }
+
+        #ddown::part(dropDownButton) {
+          margin-top: auto;
+          margin-bottom: auto;
+          padding-top: 0.15em;
+          padding-bottom: 0.15em;
+          padding-left: 0.25em;
+          padding-right: 0.25em;
+          background-color: lightgray;
+        }
+
+        #ddown::part(dropDownButton):hover {
+          background-color: darkgray;
+        }
+
+        /* #rendegion Dropdown Checklist */
+
+        /* #region Treeview */
+
         #tree-view {
           width: 100%;
         }
 
-        .node-edit:focus {
-          border-color: lightgrey;
-        }
+        /* #rendegion Treeview */
 
-        #slider {
+        /* #region Carousel */
+
+        #carousel {
           width: 100%;
           display: flex;
           flex-direction: column;
         }
 
-        #slider item-carousel {
+        #carousel kds-carousel {
           --itemHeight: 300px;
           --itemWidth: 600px;
           margin: auto;
         }
 
-        #slider item-carousel img[slot] {
+        #carousel kds-carousel img[slot] {
           max-width: unset;
         }
+
+        /* #rendegion Carousel */
+
+        /* #region Switcher */
 
         #switcher {
           width: 100%;
@@ -365,39 +388,11 @@ class ControlsApp extends LitMvvmElement {
         #switcher .tab.active.vertical {
           transform: scale(1.1) translate(-4%, 0);
         }
+
+        /* #rendegion Switcher */
+
       `
     ];
-  }
-
-  _getChecklistItemTemplate(item) {
-    return html`${item.name}`;
-  }
-
-  // caller must make sure that "this" refers to this object, and not the tree view
-  _getTreeViewContentTemplate(nodeModel) {
-    let cls = '';
-    switch (nodeModel.type) {
-      case 'gc':
-        cls += 'text-red-600';
-        break;
-      case 'c':
-        cls += 'text-blue-600';
-        break;
-      case 'r':
-        cls += 'text-black-600';
-        break;
-      default:
-        break;
-    }
-    return html`<span class="node-content">
-      <input type="text" placeholder="node text"
-          class="my-auto p-1 flex-grow node-edit"
-          tabindex="1"
-          @blur="${e => this.nodeEditLostFocus(e, nodeModel)}"
-          @input="${e => this.nodeEditTextChanged(e, nodeModel)}"
-          hidden />
-          <span class=${cls}>${nodeModel.text}</span>
-    </span>`;
   }
 
   _getMenuItemTemplate(item) {
@@ -440,8 +435,9 @@ class ControlsApp extends LitMvvmElement {
       <div id="container">
 
         <div id="check-list">
-          <h1 class="flex font-bold text-xl mb-2 text-left">
-            Plain Checklist
+          <h1 class="flex font-bold text-xl mb-2 text-left">Plain Checklist
+            <input type="checkbox" class="kds-checkbox my-auto ml-3 mr-1" @change=${e => this.checkSelectedChanged(e)}/>
+              Checked==Selected
             <button class="ml-auto" @click=${e => this.addCheckItem(e)}>Add Item</button>
           </h1>
           <input id="searchbox"
@@ -449,44 +445,45 @@ class ControlsApp extends LitMvvmElement {
             placeholder="search unselected entries"
             class="my-auto p-1 flex-grow"
             @input="${this.searchTextChanged}" />
-          <kdsoft-checklist
-            id="just-clist"
+          <demo-check-list
             .model=${this.checklistModel}
-            .getItemTemplate=${item => this._getChecklistItemTemplate(item)}
-            allow-drag-drop show-checkboxes></kdsoft-checklist>
+            checkboxes
+            arrows
+            allow-drag-drop
+            ?checked-is-selected=${this.model.checkedIsSelected}>
+          </demo-check-list>
         </div>
 
         <div id="drop-down">
           <h1 class="font-bold text-xl mb-2 text-left">Checklist in Dropdown</h1>
-          <kdsoft-dropdown id="ddown" class="py-0"
-            .model=${this.dropDownModel} .connector=${this.checklistConnector}>
-            <kdsoft-checklist
-              id="clist"
-              class="text-black"
-              .model=${this.checklistModel}
-              .getItemTemplate=${item => html`${item.name}`}>
-            </kdsoft-checklist>
-          </kdsoft-dropdown>
+          <kds-dropdown id="ddown" class="py-0" .model=${this.dropDownModel}>
+            <demo-check-list id="clist" class="w-full"
+              .model=${this.checklistModel} 
+              .connector=${this.checklistConnector}
+              checkboxes
+              allow-drag-drop>
+            </demo-check-list>
+            <span slot="dropDownButtonIcon" class="fa-solid fa-lg fa-caret-down"></span>
+          </kds-dropdown>
         </div>
 
         <div id="tree-view">
           <h1 class="font-bold text-xl mb-2 text-left">Treeview
-            <input type="checkbox" class="kdsoft-checkbox align-text-bottom" @change=${this.tvDragDropChanged}/>
+            <input type="checkbox" class="kds-checkbox align-text-bottom" @change=${this.tvDragDropChanged}/>
             with context menu${this.model.dragDropEnabled ? ' and with' : ', but without'} drag and drop
           </h1>
           <!-- invoke getContentTemplate as lambda, to force this component to be "this" in the method -->
-          <kdsoft-tree-view id="tv" class="py-0"
+          <demo-tree-view id="tv" class="py-0"
             ?allow-drag-drop=${this.model.dragDropEnabled}
             .model=${this.tvRoot}
-            .getContentTemplate=${nodeModel => this._getTreeViewContentTemplate(nodeModel)}>
-          </kdsoft-tree-view>
+          ></demo-tree-view>
         </div>
 
-        <div id="slider">
+        <div id="carousel">
           ${this._getOrientationHeader(this.carouselModel.vertical, 'Carousel', this.sliderVerticalChanged)}
-          <item-carousel .model=${this.carouselModel}>
+          <kds-carousel .model=${this.carouselModel}>
             ${this.carouselModel.items.map((item, index) => html`<img slot="item_${index}" src=${item.href}></img>`)}
-          </item-carousel>
+          </kds-carousel>
         </div>
 
         <div id="switcher">

@@ -169,7 +169,7 @@ function setup(menu) {
   }, true);
 }
 
-export default class KdSoftContextMenu extends LitMvvmElement {
+export default class KdsContextMenu extends LitMvvmElement {
   constructor() {
     super();
     this._touchTimer = null;
@@ -374,9 +374,9 @@ export default class KdSoftContextMenu extends LitMvvmElement {
       return html`
         <ul class="menu-options">
           ${repeat(
-              nodeModel.children,
-              childModel => childModel.id,
-              (childModel, index) => this.createMenu(childModel, false, tabIndex)
+            nodeModel.children,
+            childModel => childModel.id,
+            (childModel, index) => this.createMenu(childModel, false, tabIndex)
           )}
         </ul>
       `;
@@ -399,7 +399,7 @@ export default class KdSoftContextMenu extends LitMvvmElement {
                 (childModel, index) => this.createMenu(childModel, false, tabIndex)
               )}
             </ul>
-            `
+          `
         }
       </li>
     `;
@@ -414,4 +414,4 @@ export default class KdSoftContextMenu extends LitMvvmElement {
   }
 }
 
-window.customElements.define('kdsoft-context-menu', KdSoftContextMenu);
+window.customElements.define('kds-context-menu', KdsContextMenu);
