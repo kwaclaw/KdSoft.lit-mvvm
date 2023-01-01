@@ -52,7 +52,7 @@ function downClick(e) {
 const _dragDrop = new WeakMap();
 
 //TODO maybe we need to pass in the getItemId() function for the drag-drop events
-export default class KdsCheckItem extends LitMvvmElement {
+export default class KdsListItem extends LitMvvmElement {
   constructor() {
     super();
     this.scheduler = new Queue(priorities.HIGH);
@@ -73,12 +73,6 @@ export default class KdsCheckItem extends LitMvvmElement {
   set selected(val) {
     if (val) this.setAttribute('selected', '');
     else this.removeAttribute('selected');
-  }
-
-  get checked() { return this.hasAttribute('checked'); }
-  set checked(val) {
-    if (val) this.setAttribute('checked', '');
-    else this.removeAttribute('checked');
   }
 
   get arrows() { return this.hasAttribute('arrows'); }
@@ -119,7 +113,6 @@ export default class KdsCheckItem extends LitMvvmElement {
       ...super.observedAttributes,
       'checkbox',
       'selected',
-      'checked',
       'arrows',
       'up',
       'down'
@@ -172,12 +165,6 @@ export default class KdsCheckItem extends LitMvvmElement {
           align-items: baseline;
         }
 
-        .kds-check-box {
-          margin-top: auto;
-          margin-bottom: auto;
-          margin-right: 0.5em;
-        }
-
         .up-arrow, .down-arrow {
           line-height: 1;
           cursor: pointer;
@@ -225,7 +212,7 @@ export default class KdsCheckItem extends LitMvvmElement {
                 <input type="checkbox" part="checkbox"
                   tabindex="-1" 
                   @click=${this._checkboxClick}
-                  .checked=${this.checked}
+                  .checked=${this.selected}
                   ?disabled=${this.model.disabled} />
               </slot>`
             : nothing
@@ -238,4 +225,4 @@ export default class KdsCheckItem extends LitMvvmElement {
   }
 }
 
-window.customElements.define('kds-check-item', KdsCheckItem);
+window.customElements.define('kds-list-item', KdsListItem);

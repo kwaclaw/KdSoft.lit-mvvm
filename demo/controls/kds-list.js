@@ -4,12 +4,12 @@ import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 
 //#region click and key events
 
-// the slotted elements are supposed to be instances of <kds-check-item> or <kds-item>;
-// we assign the _index property for easier handling of list-related events
+// the slotted elements are supposed to be instances of <kds-list-item>;
+// we assign the _kdsIndex property for easier handling of list-related events
 function slotChange(e) {
   const listItems = e.currentTarget.assignedElements();
   for (let indx = 0; indx < listItems.length; indx += 1) {
-    listItems[indx]._index = indx;
+    listItems[indx]._kdsIndex = indx;
   }
 }
 
@@ -29,26 +29,21 @@ function onItemDrop(e) {
 }
 
 function onItemClick(e) {
-  this.model.toggleSelectedIndex(e.detail.item._index);
+  this.model.toggleSelectedIndex(e.detail.item._kdsIndex);
 }
 
 // do we want to have a checkbox click mean the same as an item click?
 function onItemCheckClick(e) {
-  e.detail.item.checked = !e.detail.item.checked;
-}
-
-function onItemCheckSelectClick(e) {
-  const newSelected = this.model.toggleSelectedIndex(e.detail.item._index);
-  e.detail.item.checked = newSelected;
+  this.model.toggleSelectedIndex(e.detail.item._kdsIndex);
 }
 
 function onItemUpClick(e) {
-  const itemIndex = e.detail.item._index;
+  const itemIndex = e.detail.item._kdsIndex;
   this.model.moveItem(itemIndex, itemIndex - 1);
 }
 
 function onItemDownClick(e) {
-  const itemIndex = e.detail.item._index;
+  const itemIndex = e.detail.item._kdsIndex;
   this.model.moveItem(itemIndex, itemIndex + 1);
 }
 
@@ -69,7 +64,7 @@ function onItemListKeydown(e) {
     }
     case 'Enter': {
       const itemNode = e.target;
-      this.model.selectIndex(itemNode._index, true);
+      this.model.selectIndex(itemNode._kdsIndex, true);
       break;
     }
     case ' ': {
@@ -103,7 +98,6 @@ export default class KdsList extends LitMvvmElement {
     this._onItemDrop = onItemDrop.bind(this);
     this._onItemClick = onItemClick.bind(this);
     this._onItemCheckClick = onItemCheckClick.bind(this);
-    this._onItemCheckSelectClick = onItemCheckSelectClick.bind(this);
     this._onItemUpClick = onItemUpClick.bind(this);
     this._onItemDownClick = onItemDownClick.bind(this);
     this._onItemListKeydown = onItemListKeydown.bind(this);
@@ -122,43 +116,12 @@ export default class KdsList extends LitMvvmElement {
   checkValidity() { return this._internals.checkValidity(); }
   reportValidity() { return this._internals.reportValidity(); }
 
-  get checkedIsSelected() { return this.hasAttribute('checked-is-selected'); }
-  set checkedIsSelected(val) {
-    if (val) {
-      this.setAttribute('checked-is-selected', '');
-    } else {
-      this.removeAttribute('checked-is-selected');
-    }
-    this.setItemClickListeners();
-  }
-
-  removeItemClickListeners() {
-    this.removeEventListener('kds-item-click', this._onItemClick);
-    this.removeEventListener('kds-item-click', this._onItemCheckSelectClick);
-    this.removeEventListener('kds-item-check-click', this._onItemCheckClick);
-    this.removeEventListener('kds-item-check-click', this._onItemCheckSelectClick);
-  }
-
-  setItemClickListeners() {
-    this.removeItemClickListeners();
-    if (this.checkedIsSelected) {
-      this.addEventListener('kds-item-click', this._onItemCheckSelectClick);
-      this.addEventListener('kds-item-check-click', this._onItemCheckSelectClick);
-    } else {
-      this.addEventListener('kds-item-click', this._onItemClick);
-      this.addEventListener('kds-item-check-click', this._onItemCheckClick);
-    }
-  }
-
   // Observed attributes will trigger an attributeChangedCallback, which in turn will cause a re-render to be scheduled!
   static get observedAttributes() {
     return [...super.observedAttributes, 'checked-is-selected'];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'checked-is-selected') {
-      this.setItemClickListeners();
-    }
     // trigger re-render
     super.attributeChangedCallback(name, oldValue, newValue);
   }
@@ -181,14 +144,16 @@ export default class KdsList extends LitMvvmElement {
   connectedCallback() {
     super.connectedCallback();
     this.addEventListener('kds-drop', this._onItemDrop);
-    this.setItemClickListeners();
+    this.addEventListener('kds-item-click', this._onItemClick);
+    this.addEventListener('kds-item-check-click', this._onItemCheckClick);
     this.addEventListener('kds-item-up-click', this._onItemUpClick);
     this.addEventListener('kds-item-down-click', this._onItemDownClick);
   }
 
   disconnectedCallback() {
     this.removeEventListener('kds-drop', this._onItemDrop);
-    this.removeItemClickListeners();
+    this.removeEventListener('kds-item-click', this._onItemClick);
+    this.removeEventListener('kds-item-check-click', this._onItemCheckClick);
     this.removeEventListener('kds-item-up-click', this._onItemUpClick);
     this.removeEventListener('kds-item-down-click', this._onItemDownClick);
     if (this._selectObserver) unobserve(this._selectObserver);
@@ -241,7 +206,7 @@ export default class KdsList extends LitMvvmElement {
   render() {
     const result = html`
       <div id="container">
-        <ul id="item-list" s
+        <ul id="item-list"
           part="ul"
           @keydown=${this._onItemListKeydown}
         >

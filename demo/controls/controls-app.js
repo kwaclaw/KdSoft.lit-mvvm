@@ -390,7 +390,6 @@ class ControlsApp extends LitMvvmElement {
         }
 
         /* #rendegion Switcher */
-
       `
     ];
   }
@@ -436,8 +435,6 @@ class ControlsApp extends LitMvvmElement {
 
         <div id="check-list">
           <h1 class="flex font-bold text-xl mb-2 text-left">Plain Checklist
-            <input type="checkbox" class="kds-checkbox my-auto ml-3 mr-1" @change=${e => this.checkSelectedChanged(e)}/>
-              Checked==Selected
             <button class="ml-auto" @click=${e => this.addCheckItem(e)}>Add Item</button>
           </h1>
           <input id="searchbox"
@@ -449,8 +446,7 @@ class ControlsApp extends LitMvvmElement {
             .model=${this.checklistModel}
             checkboxes
             arrows
-            allow-drag-drop
-            ?checked-is-selected=${this.model.checkedIsSelected}>
+            allow-drag-drop>
           </demo-check-list>
         </div>
 

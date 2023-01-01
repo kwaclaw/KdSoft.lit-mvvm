@@ -10,7 +10,7 @@ import checkboxStyles from './styles/kds-checkbox-styles.js';
 //import '@kdsoft/lit-mvvm-components';
 import KdsDragDropProvider from './kds-drag-drop-provider.js';
 import './kds-list.js';
-import './kds-check-item.js';
+import './kds-list-item.js';
 
 const arrowBase = { 'fa-solid': true, 'fa-lg': true, 'text-gray-500': true };
 
@@ -20,7 +20,7 @@ const arrowClassList = {
 };
 
 function getListItemId(item) {
-  return Number(item._index);
+  return Number(item._kdsIndex);
 }
 
 export default class DemoCheckList extends LitMvvmElement {
@@ -48,18 +48,17 @@ export default class DemoCheckList extends LitMvvmElement {
     else this.removeAttribute('arrows');
   }
 
-  get checkedIsSelected() { return this.hasAttribute('checked-is-selected'); }
-  set checkedIsSelected(val) {
-    if (val) this.setAttribute('checked-is-selected', '');
-    else this.removeAttribute('checked-is-selected');
-  }
-
   // Observed attributes will trigger an attributeChangedCallback, which in turn will cause a re-render to be scheduled!
   static get observedAttributes() {
-    return [...super.observedAttributes, 'allow-drag-drop', 'checkboxes', 'arrows', 'checked-is-selected'];
+    return [...super.observedAttributes, 'allow-drag-drop', 'checkboxes', 'arrows'];
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'allow-drag-drop') {
+      this._dragDrop?.disconnect();
+      if (newValue === '') this._dragDrop = new KdsDragDropProvider(getListItemId);
+      else this._dragDrop = null;
+    }
     // trigger re-render
     super.attributeChangedCallback(name, oldValue, newValue);
   }
@@ -84,25 +83,25 @@ export default class DemoCheckList extends LitMvvmElement {
           outline: 2px solid darkgray;
         }
 
-        kds-check-item {
+        kds-list-item {
           padding: 2px;
         }
 
-        kds-check-item[selected] {
+        kds-list-item[selected] {
           background-color: lightgray
         }
 
-        kds-check-item:hover {
+        kds-list-item:hover {
           background-color: lightblue;
         }
 
-        kds-check-item:focus {
+        kds-list-item:focus {
           outline: 1px grey solid;
         }
 
         /* #region styling default checkbox */
 
-        kds-check-item::part(checkbox) {
+        kds-list-item::part(checkbox) {
           width: 1.2rem;
           height: 1.2rem;
           -webkit-appearance: none;
@@ -126,24 +125,25 @@ export default class DemoCheckList extends LitMvvmElement {
           margin-bottom: auto;
         }
         
-        kds-check-item::part(checkbox):active {
+        kds-list-item::part(checkbox):active {
           background-color: #ddd;
         }
         
-        kds-check-item::part(checkbox):focus {
+        kds-list-item::part(checkbox):focus {
           box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.5);
         }
         
-        /* this is not working, why?
-        kds-check-item::part(checkbox):checked {
+        /* this is not working, why? 
+        kds-list-item::part(checkbox):checked {
           background-size: cover;
         }
         */
-        kds-check-item[checked]::part(checkbox) {
+
+        kds-list-item[selected]::part(checkbox) {
           background-size: cover;
         }
-        
-        kds-check-item::part(checkbox):disabled {
+
+        kds-list-item::part(checkbox):disabled {
           border: 1px solid gray;
           background-color: lightgray;
         }
@@ -155,12 +155,12 @@ export default class DemoCheckList extends LitMvvmElement {
 
   render() {
     return html`
-      <kds-list .model=${this.model} ?checked-is-selected=${this.checkedIsSelected}>
+      <kds-list .model=${this.model}>
         ${repeat(this.model.filteredItems,
           entry => this.model.getItemId(entry.item),
-          entry => html`<kds-check-item tabindex="0"
+          entry => html`<kds-list-item tabindex="0"
             .model=${entry.item}
-            .dragDropProvider=${this.allowDragDrop ? new KdsDragDropProvider(getListItemId) : null}
+            .dragDropProvider=${this._dragDrop}
             ?checkbox=${this.checkboxes}
             ?arrows=${this.arrows}
             ?up=${!entry.isFirst}
@@ -170,7 +170,7 @@ export default class DemoCheckList extends LitMvvmElement {
             <span slot="up-arrow" class=${classMap(arrowClassList.upArrow)}></span>
             <span slot="down-arrow" class=${classMap(arrowClassList.downArrow)}></span>
             <span slot="item" class="my-auto">${entry.item.name}</span>              
-          </kds-check-item>`
+          </kds-list-item>`
         )}
       </kds-list>
     `;
