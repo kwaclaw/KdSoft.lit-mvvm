@@ -132,12 +132,12 @@ export default class KdsList extends LitMvvmElement {
   initView() {
     if (!this.model) return;
 
-    const firstSelEntry = this.model.selectedEntries.next().value;
+    const firstSelEntry = this.model.firstSelectedEntry;
     if (firstSelEntry) {
-      const firstSelected = this.renderRoot.querySelector(`.list-item[data-item-index="${firstSelEntry.index}"]`);
-      //firstSelected.scrollIntoView(true); --  does not work in ShadowDom
-      const op = firstSelected?.offsetParent;
-      if (op) op.scrollTop = firstSelected.offsetTop;
+      const slot = this.renderRoot.querySelector('slot');
+      const listItems = slot.assignedElements();
+      const firstSelected = listItems[firstSelEntry.index];
+      if (firstSelected) firstSelected.scrollIntoView(true);
     }
   }
 

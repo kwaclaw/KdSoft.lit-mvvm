@@ -67,6 +67,11 @@ export default class DemoCheckList extends LitMvvmElement {
     return !!this.model;
   }
 
+  initView() {
+    const list = this.renderRoot.querySelector('kds-list');
+    if (list) list.initView();
+  }
+
   /* https://philipwalton.com/articles/what-no-one-told-you-about-z-index/ */
   static get styles() {
     return [

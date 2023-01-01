@@ -47,10 +47,10 @@ class KdsDropdownChecklistConnector extends KdsDropdownConnector {
       const dropdown = this.getDropdown();
       const checklist = this.getChecklist();
 
-      // if (dropdown.model.dropped) {
-      //   // queue this at the end of updates to be rendered correctly
-      //   checklist.scheduler.add(() => checklist.initView());
-      // }
+      if (dropdown.model.dropped) {
+        // queue this at the end of updates to be rendered correctly
+        checklist.scheduler.add(() => checklist.initView());
+      }
     });
 
     this._checkListObservers = [selectObserver, searchObserver, droppedObserver];
