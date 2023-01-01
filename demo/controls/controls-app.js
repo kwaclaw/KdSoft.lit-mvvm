@@ -311,6 +311,7 @@ class ControlsApp extends LitMvvmElement {
 
         #ddown::part(container) {
           border: 1px solid;
+          padding: 2px;
         }
 
         #ddown::part(dropDownButton) {
@@ -321,6 +322,7 @@ class ControlsApp extends LitMvvmElement {
           padding-left: 0.25em;
           padding-right: 0.25em;
           background-color: lightgray;
+          border: 0;
         }
 
         #ddown::part(dropDownButton):hover {
@@ -442,7 +444,7 @@ class ControlsApp extends LitMvvmElement {
             placeholder="search unselected entries"
             class="my-auto p-1 flex-grow"
             @input="${this.searchTextChanged}" />
-          <demo-check-list
+          <demo-check-list class="border"
             .model=${this.checklistModel}
             checkboxes
             arrows
@@ -452,8 +454,8 @@ class ControlsApp extends LitMvvmElement {
 
         <div id="drop-down">
           <h1 class="font-bold text-xl mb-2 text-left">Checklist in Dropdown</h1>
-          <kds-dropdown id="ddown" class="py-0" .model=${this.dropDownModel}>
-            <demo-check-list id="clist" class="w-full"
+          <kds-dropdown id="ddown" .model=${this.dropDownModel}>
+            <demo-check-list id="clist" class="border"
               .model=${this.checklistModel} 
               .connector=${this.checklistConnector}
               checkboxes

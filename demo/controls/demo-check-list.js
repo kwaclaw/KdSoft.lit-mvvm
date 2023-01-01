@@ -79,9 +79,13 @@ export default class DemoCheckList extends LitMvvmElement {
       fontAwesomeStyles,
       checkboxStyles,
       css`
+        :host {
+          display: block;
+        }
+
         kds-list::part(ul) {
           list-style: none;
-          padding: 1px;
+          padding: 3px;
         }
 
         .kds-droppable {

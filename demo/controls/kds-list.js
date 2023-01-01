@@ -194,6 +194,8 @@ export default class KdsList extends LitMvvmElement {
           -webkit-overflow-scrolling: touch; /* Lets it scroll lazy */
           padding-top: 5px;
           padding-bottom: 5px;
+          margin-top: 0;
+          margin-bottom: 0;
           box-sizing: border-box;
           max-height: var(--max-scroll-height, 300px);
           min-width: 100%;
