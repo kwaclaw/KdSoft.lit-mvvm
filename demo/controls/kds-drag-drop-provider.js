@@ -16,12 +16,12 @@ function dragEnter(e) {
   e.preventDefault();
   e.dataTransfer.dropEffect = 'move';
 
-  const dragEnterCount = this._dragEnterCount || 0;
+  const dragEnterCount = e.currentTarget._kdsDragEnterCount || 0;
   if (dragEnterCount <= 0) {
-    this._dragEnterCount = 1;
+    e.currentTarget._kdsDragEnterCount = 1;
     e.currentTarget.classList.add('kds-droppable');
   } else {
-    this._dragEnterCount = dragEnterCount + 1;
+    e.currentTarget._kdsDragEnterCount = dragEnterCount + 1;
   }
 }
 
@@ -29,10 +29,10 @@ function dragLeave(e) {
   e.stopPropagation();
   e.preventDefault();
 
-  const dragEnterCount = this._dragEnterCount || 0;
-  this._dragEnterCount = dragEnterCount - 1;
+  const dragEnterCount = e.currentTarget._kdsDragEnterCount || 0;
+  e.currentTarget._kdsDragEnterCount = dragEnterCount - 1;
 
-  if (this._dragEnterCount <= 0) {
+  if (e.currentTarget._kdsDragEnterCount <= 0) {
     e.currentTarget.classList.remove('kds-droppable');
   }
 }
@@ -41,9 +41,8 @@ function drop(e) {
   e.stopPropagation();
   e.preventDefault();
 
-  this._dragEnterCount = 0;
-
   const item = e.currentTarget;
+  item._kdsDragEnterCount = 0;
   item.classList.remove('kds-droppable');
 
   const fromData = e.dataTransfer.getData('text/plain');
@@ -53,9 +52,9 @@ function drop(e) {
     bubbles: true,
     cancelable: true,
     composed: true,
-    detail: { fromId: fromData, toId: toData }
+    detail: { fromId: fromData, toId: toData, dropMode: item.dataset.dropMode }
   });
-  this._element.dispatchEvent(evt);
+  item.dispatchEvent(evt);
 }
 
 class KdsDragDropProvider {
@@ -70,26 +69,21 @@ class KdsDragDropProvider {
   }
 
   connect(element) {
-    this.disconnect();
+    if (!element) return;
+    this.disconnect(element);
 
     const h = element;
-    this._element = h;
-
     h.addEventListener('dragstart', this._dragStart);
     h.addEventListener('dragenter', this._dragEnter);
     h.addEventListener('dragover', this._dragOver);
     h.addEventListener('dragleave', this._dragLeave);
     h.addEventListener('drop', this._drop);
-
-    return this;
   }
 
-  disconnect() {
-    if (!this.element) return;
+  disconnect(element) {
+    if (!element) return;
 
-    const h = this._element;
-    this._element = null;
-
+    const h = element;
     h.removeEventListener('dragstart', this._dragStart);
     h.removeEventListener('dragenter', this._dragEnter);
     h.removeEventListener('dragover', this._dragOver);

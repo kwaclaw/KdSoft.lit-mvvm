@@ -1,6 +1,7 @@
 import { repeat } from 'lit-html/directives/repeat.js';
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
+import KdsDragDropProvider from './kds-drag-drop-provider.js';
 import './kds-tree-node.js';
 // since tailwind classes are generated only as used, we cannot import them
 // from a prebuilt library, but need to generate the ones we use locally
@@ -26,12 +27,30 @@ export default class DemoTreeView extends LitMvvmElement {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'allow-drag-drop') {
+      if (newValue === '' && !this._dragDrop) this._dragDrop = new KdsDragDropProvider(item => item.model.id);
+      else this._dragDrop = null;
+    }
     // trigger re-render
     super.attributeChangedCallback(name, oldValue, newValue);
   }
 
+  connectedCallback() {
+    this.addEventListener('kds-drop', this.moveNode);
+    super.connectedCallback();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('kds-drop', this.moveNode);
+  }
+
   shouldRender() {
     return !!this.model;
+  }
+
+  moveNode(e) {
+    this.model.moveNode(e.detail.fromId, e.detail.toId, e.detail.dropMode);
   }
 
   nodeEditLostFocus(e) {
@@ -81,7 +100,7 @@ export default class DemoTreeView extends LitMvvmElement {
     return html`
       <kds-tree-node
         .model=${nodeModel}
-        ?allow-drag-drop=${this.allowDragDrop}
+        .dragDropProvider=${this._dragDrop}
       >
         <span slot="content" class="node-content">
           <input type="text" placeholder="node text"

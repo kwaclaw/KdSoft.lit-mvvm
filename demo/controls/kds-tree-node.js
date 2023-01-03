@@ -2,7 +2,8 @@ import { LitMvvmElement, html, nothing, BatchScheduler, css } from '@kdsoft/lit-
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import './kds-expander.js';
 import './kds-drop-target.js';
-import KdsDragDropProvider from './kds-drag-drop-provider.js';
+
+const _dragDrop = new WeakMap();
 
 export default class KdsTreeNode extends LitMvvmElement {
   constructor() {
@@ -11,10 +12,18 @@ export default class KdsTreeNode extends LitMvvmElement {
     //this.scheduler = new BatchScheduler(0);
   }
 
-  get allowDragDrop() { return this.hasAttribute('allow-drag-drop'); }
-  set allowDragDrop(val) {
-    if (val) this.setAttribute('allow-drag-drop', '');
-    else this.removeAttribute('allow-drag-drop');
+  get dragDropProvider() { return _dragDrop.get(this); }
+  set dragDropProvider(val) {
+    const currentVal = _dragDrop.get(this);
+    if (currentVal) {
+      currentVal.disconnect(this);
+    }
+    if (val) {
+      _dragDrop.set(this, val);
+      val.connect(this);
+    } else {
+      _dragDrop.delete(this);
+    }
   }
 
   // Observed attributes will trigger an attributeChangedCallback, which in turn will cause a re-render to be scheduled!
@@ -27,22 +36,23 @@ export default class KdsTreeNode extends LitMvvmElement {
     super.attributeChangedCallback(name, oldValue, newValue);
   }
 
-  _moveNode(e) {
-    const eventNode = e.composedPath()[0];
-    const dropMode = eventNode.dataset.dropMode;
-    this.model.moveNode(e.detail.fromId, e.detail.toId, dropMode);
-  }
-
   /* eslint-disable indent, no-else-return */
 
   connectedCallback() {
-    this.addEventListener('kds-node-move', this._moveNode);
     super.connectedCallback();
+    this.renderRoot.host.dataset.dropMode = 'inside';
+    const dragDrop = this.dragDropProvider;
+    if (dragDrop) {
+      dragDrop.connect(this);
+    }
   }
 
   disconnectedCallback() {
+    const dragDrop = this.dragDropProvider;
+    if (dragDrop) {
+      dragDrop.disconnect(this);
+    }
     super.disconnectedCallback();
-    this.removeEventListener('kds-node-move', this._moveNode);
   }
 
   shouldRender() {
@@ -65,7 +75,7 @@ export default class KdsTreeNode extends LitMvvmElement {
           cursor: grab;
         }
 
-        [data-drop-mode].droppable {
+        [data-drop-mode].kds-droppable {
           outline: 2px solid lightblue;
           outline-offset: -2px;
         }
@@ -83,23 +93,23 @@ export default class KdsTreeNode extends LitMvvmElement {
 
   // the kdsoft-drop-target components have the same id as the tree node!
   render() {
-    const draggable = this.allowDragDrop ? 'true' : 'false';
+    const draggable = this.dragDropProvider ? 'true' : 'false';
+    this.renderRoot.host.setAttribute('draggable', draggable);
+
     const isRoot = !(this.model.parent != null);
     const siblings = isRoot ? [] : this.model.parent.children; // should never be empty
     const isLast = this.model.id === siblings[siblings.length - 1]?.id;
     return html`
-      ${isRoot || !this.allowDragDrop
+      ${isRoot || !this.dragDropProvider
         ? nothing
-        : html`<div is="kds-drop-target" id=${this.model.id} data-drop-mode="before"></div>`
+        : html`<div is="kds-drop-target" data-drop-id=${this.model.id} data-drop-mode="before"></div>`
       }
       <kds-expander
         id=${this.model.id}
         class="${this.model.children.length ? 'kds-node has-children' : 'kds-node'}"
-        draggable=${draggable}
-        data-drop-mode="inside"
       >
         <div slot="expander">
-          ${this.allowDragDrop ? html`<slot name="expander-grip"></slot>` : nothing}
+          ${this.dragDropProvider ? html`<slot name="expander-grip"></slot>` : nothing}
           <slot name="expander-icon"></slot>
         </div>
         <div slot="header">
@@ -109,30 +119,11 @@ export default class KdsTreeNode extends LitMvvmElement {
           <slot name="children"></slot>
         </div>
       </kds-expander>
-      ${isLast && !isRoot && this.allowDragDrop
-        ? html`<div is="kds-drop-target" id=${this.model.id} data-drop-mode="after"></div>`
+      ${isLast && !isRoot && this.dragDropProvider
+        ? html`<div is="kds-drop-target" data-drop-id=${this.model.id} data-drop-mode="after"></div>`
         : nothing
       }
     `;
-  }
-
-  rendered() {
-    // DOM nodes may have been added/replaced so we need to refresh drag-drop providers
-    const draggables = this.renderRoot.querySelectorAll('kds-expander');
-    if (this.allowDragDrop) {
-      for (const dr of draggables) {
-        if (!dr._dragdrop) {
-          dr._dragdrop = new KdsDragDropProvider(item => item.id).connect(dr);
-        }
-      }
-    } else {
-      for (const dr of draggables) {
-        if (dr._dragdrop) {
-          dr._dragdrop.disconnect();
-          dr._dragdrop = null;
-        }
-      }
-    }
   }
 }
 

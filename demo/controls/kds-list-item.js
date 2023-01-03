@@ -97,7 +97,7 @@ export default class KdsListItem extends LitMvvmElement {
   set dragDropProvider(val) {
     const currentVal = _dragDrop.get(this);
     if (currentVal) {
-      currentVal.disconnect();
+      currentVal.disconnect(this);
     }
     if (val) {
       _dragDrop.set(this, val);
@@ -138,7 +138,7 @@ export default class KdsListItem extends LitMvvmElement {
   disconnectedCallback() {
     const dragDrop = this.dragDropProvider;
     if (dragDrop) {
-      dragDrop.disconnect();
+      dragDrop.disconnect(this);
     }
     super.disconnectedCallback();
   }

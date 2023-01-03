@@ -55,8 +55,7 @@ export default class DemoCheckList extends LitMvvmElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'allow-drag-drop') {
-      this._dragDrop?.disconnect();
-      if (newValue === '') this._dragDrop = new KdsDragDropProvider(getListItemId);
+      if (newValue === '' && !this._dragDrop) this._dragDrop = new KdsDragDropProvider(getListItemId);
       else this._dragDrop = null;
     }
     // trigger re-render

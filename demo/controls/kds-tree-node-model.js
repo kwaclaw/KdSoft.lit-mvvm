@@ -116,7 +116,9 @@ class KdsTreeNodeModel {
   moveNode(fromId, toId, dropMode) {
     let fromEntry; let toEntry;
 
-    console.log(`Move node ${fromId} -> ${toId}`);
+    console.log(`Move node ${fromId} -> ${toId} ${dropMode}`);
+
+    if (!dropMode) return;
 
     for (const entry of treeNodeEntries(this, null)) {
       if (entry.node.id === fromId) {
