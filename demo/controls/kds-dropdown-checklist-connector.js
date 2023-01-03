@@ -39,7 +39,7 @@ class KdsDropdownChecklistConnector extends KdsDropdownConnector {
       const checklist = this.getChecklist();
 
       const regex = new RegExp(dropdown.model.searchText, 'i');
-      checklist.model.filter = item => regex.test(item.name);
+      checklist.model.filter = item => checklist.model.isItemSelected(item) || regex.test(item.name);
     });
 
     // react to dropping down event
