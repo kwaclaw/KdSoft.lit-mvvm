@@ -309,9 +309,15 @@ class ControlsApp extends LitMvvmElement {
           width: 100%;
         }
 
-        #ddown::part(container) {
+        #ddown::part(seltext) {
           border: 1px solid;
-          padding: 2px;
+          padding-left: 5px;
+          padding: 1px 5px;
+        }
+
+        #ddown::part(searchbox) {
+          border: 1px solid;
+          padding: 0.25rem;
         }
 
         #ddown::part(dropDownButton) {
@@ -455,7 +461,7 @@ class ControlsApp extends LitMvvmElement {
         <div id="drop-down">
           <h1 class="font-bold text-xl mb-2 text-left">Checklist in Dropdown</h1>
           <kds-dropdown id="ddown" .model=${this.dropDownModel}>
-            <demo-check-list id="clist" class="border"
+            <demo-check-list id="clist" class="border border-t-0"
               .model=${this.checklistModel} 
               .connector=${this.checklistConnector}
               checkboxes
