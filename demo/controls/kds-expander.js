@@ -20,7 +20,7 @@ function updateExpansion(element, doExpand) {
   // on the next frame (as soon as the previous style change has taken effect), explicitly set
   // the element's height to its current pixel height, so we aren't transitioning out of 'auto'
   requestAnimationFrame(() => {
-    style.transition = 'height var(--trans-time, 300ms) ease';
+    style.transition = 'var(--content-height-transition)';
 
     element.addEventListener('transitionend', function resetHeight() {
       element.removeEventListener('transitionend', resetHeight);
@@ -54,9 +54,20 @@ export default class KdsExpander extends LitMvvmElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === 'aria-expanded') {
+      const expanded = newValue !== null;
+
       const children = this.renderRoot.getElementById('content-slot');
-      if (!children) return;
-      updateExpansion(children, newValue !== null);
+      if (children) {
+        updateExpansion(children, expanded);
+      }
+
+      const evt = new CustomEvent('kds-expand', {
+        bubbles: true,
+        cancelable: true,
+        composed: true,
+        detail: { expanded }
+      });
+      this.dispatchEvent(evt);
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }
@@ -80,7 +91,7 @@ export default class KdsExpander extends LitMvvmElement {
           padding: var(--content-padding, 5px);
         }
 
-        #expander, #expander::slotted(div) {
+        #expander {
           display: flex;
           align-items: center;
           justify-content: space-evenly;
@@ -92,21 +103,14 @@ export default class KdsExpander extends LitMvvmElement {
           outline: none;
         }
 
-        #expander-icon {
-          transition: transform var(--trans-time, 300ms) ease;
-        }
-
-        :host([aria-expanded]) #expander-icon {
-          transform: rotate(90deg);
-        }
-
-        #content-slot {
+        #content {
           overflow: hidden;
           height: 0;
+          /* transition: var(--content-height-transition); */
         }
 
-        :host([aria-expanded]) #content-slot {
-          height: unset;
+        :host([aria-expanded]) #content {
+          height: 100%;
         }
       `,
     ];
@@ -115,15 +119,15 @@ export default class KdsExpander extends LitMvvmElement {
   render() {
     const result = html`
       <div id="container">
-        <slot name="expander" id="expander" tabindex="1" @click=${this._expanderClicked}>
-          No expander content provided.
-        </slot>
-        <div id="header-slot">
-          <slot name="header" tabindex="2">No header provided.</slot>
+        <div id="expander" part="expander" tabindex="1" @click=${this._expanderClicked}>
+          <slot name="expander">No expander content provided.</slot>
+        </div>
+        <div id="header" part="header" tabindex="2">
+          <slot name="header">No header provided.</slot>
         </div>
         <div id="leftbar"></div>
-        <div id="content-slot">
-          <slot name="content" tabindex="3">No content provided.</slot>
+        <div id="content" part="content" tabindex="3">
+          <slot name="content">No content provided.</slot>
         </div>
       </div>
     `;

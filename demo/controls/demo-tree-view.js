@@ -53,6 +53,13 @@ export default class DemoTreeView extends LitMvvmElement {
     this.model.moveNode(e.detail.fromId, e.detail.toId, e.detail.dropMode);
   }
 
+  expand(e) {
+    const treeNode = e.path.find(el => el.nodeName === 'KDS-TREE-NODE');
+    if (treeNode) {
+      treeNode.model._expanded = e.detail.expanded;
+    }
+  }
+
   nodeEditLostFocus(e) {
     e.preventDefault();
     const seltext = e.currentTarget.nextElementSibling;
@@ -70,13 +77,38 @@ export default class DemoTreeView extends LitMvvmElement {
       tailwindStyles,
       fontAwesomeStyles,
       css`
+        :host {
+          --trans-time: 300ms;
+        }
+
         .node-edit:focus {
           border-color: lightgrey;
+        }
+
+        .expander-grip {
+          vertical-align: middle;
         }
 
         .expander-grip:hover {
           cursor: grab;
         }
+
+        .expander-icon {
+          vertical-align: middle;
+        }
+
+        .expander-icon i {
+          transition: transform var(--trans-time) ease;
+        }
+
+        .expander-icon.rotated i {
+          transform: rotate(90deg);
+        }
+
+        kds-tree-node::part(expander-content) {
+          transition: height var(--trans-time) ease;
+        }
+
       `,
     ];
   }
@@ -101,6 +133,7 @@ export default class DemoTreeView extends LitMvvmElement {
       <kds-tree-node
         .model=${nodeModel}
         .dragDropProvider=${this._dragDrop}
+        @kds-expand=${e => this.expand(e)}
       >
         <span slot="content" class="node-content">
           <input type="text" placeholder="node text"
@@ -121,9 +154,12 @@ export default class DemoTreeView extends LitMvvmElement {
           )}
         </div>
 
-        <span slot="expander-grip" class="expander-grip fas fa-xs fa-ellipsis-v text-gray-400"></span>
-        <span slot="expander-icon" class="expander-icon fa-solid fa-lg fa-caret-right
-          ${nodeModel.children.length ? 'text-blue-600' : 'text-blue-200'}"></span>
+        <span slot="expander-grip" class="expander-grip">
+          <i class="fas fa-xs fa-ellipsis-v text-gray-400"></i>
+        </span>
+        <span slot="expander-icon" class="expander-icon ${nodeModel._expanded ? 'rotated' : ''}">
+          <i class="fa-solid fa-lg fa-caret-right ${nodeModel.children.length ? 'text-blue-600' : 'text-blue-200'}"></i>
+        </span>
       </kds-tree-node>
     `;
   }

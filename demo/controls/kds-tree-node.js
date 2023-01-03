@@ -63,18 +63,6 @@ export default class KdsTreeNode extends LitMvvmElement {
   static get styles() {
     return [
       css`
-        .expander-icon {
-          transition: transform var(--trans-time, 300ms) ease;
-        }
-
-        kds-expander[aria-expanded].has-children>[slot="expander"]>.expander-icon {
-          transform: rotate(90deg);
-        }
-
-        .expander-grip:hover {
-          cursor: grab;
-        }
-
         [data-drop-mode].kds-droppable {
           outline: 2px solid lightblue;
           outline-offset: -2px;
@@ -104,8 +92,7 @@ export default class KdsTreeNode extends LitMvvmElement {
         ? nothing
         : html`<div is="kds-drop-target" data-drop-id=${this.model.id} data-drop-mode="before"></div>`
       }
-      <kds-expander
-        id=${this.model.id}
+      <kds-expander part="expander" exportparts="content: expander-content, expander: expander-expander"
         class="${this.model.children.length ? 'kds-node has-children' : 'kds-node'}"
       >
         <div slot="expander">
