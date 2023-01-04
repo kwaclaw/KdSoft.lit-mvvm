@@ -29,12 +29,7 @@ function getClosestTreeNode(path) {
 }
 
 function editNode(treeNode) {
-  const nodeEditSlot = treeNode.querySelector('slot[name="content"]');
-  let nodeEdit = null;
-  for (const an of nodeEditSlot.assignedNodes()) {
-    nodeEdit = an.querySelector('.node-edit');
-    if (nodeEdit) break;
-  }
+  const nodeEdit = treeNode.querySelector('span.node-content .node-edit');
   if (nodeEdit) {
     nodeEdit.removeAttribute('hidden');
     nodeEdit.nextElementSibling.setAttribute('hidden', '');
@@ -153,7 +148,7 @@ class ControlsApp extends LitMvvmElement {
     const menu = e.currentTarget;
     const treeView = menu.actionTarget;
     const treeNode = getClosestTreeNode(menu.actionPath);
-    const nodeModelEntry = treeView.model.getNodeEntry(treeNode.id);
+    const nodeModelEntry = treeView.model.getNodeEntry(treeNode.model.id);
     const nodeModel = nodeModelEntry.node;
 
     const menuItem = (menu.getNodeEntry(e) || {}).node;
@@ -165,8 +160,8 @@ class ControlsApp extends LitMvvmElement {
         break;
       case 'remove':
         // the menu is associated with the tree view as a whole, not an individual node
-        treeView.model.removeNode(treeNode.id);
-        console.log(`Removed node: ${treeNode.id}`);
+        treeView.model.removeNode(treeNode.model.id);
+        console.log(`Removed node: ${treeNode.model.id}`);
         break;
       case 'before':
       case 'after':
@@ -176,7 +171,7 @@ class ControlsApp extends LitMvvmElement {
             [],
             { type: nodeModel.type, text: `New node ${this.newNodeId}` }
           );
-          treeView.model.addNode(treeNode.id, menuItem.id, newNodeModel);
+          treeView.model.addNode(treeNode.model.id, menuItem.id, newNodeModel);
           // the scheduler must allow scheduling after all currently scheduled renderings are done,
           // in case of @nx-js/queue-util this means using priorities.LOW; otherwise use window.setTimeout()
           this.schedule(() => {
@@ -220,7 +215,7 @@ class ControlsApp extends LitMvvmElement {
           //   const newNode = treeView.renderRoot.querySelector(`#${newNodeModel.id}.kds-node`);
           //   if (newNode) editNode(newNode);
           // }, 0);
-          nodeModel.addNode(treeNode.id, menuItem.id, newNodeModel);
+          nodeModel.addNode(treeNode.model.id, menuItem.id, newNodeModel);
         }
         break;
       default:
