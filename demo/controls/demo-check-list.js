@@ -87,12 +87,12 @@ export default class DemoCheckList extends LitMvvmElement {
           padding: 3px;
         }
 
-        .kds-droppable {
-          outline: 2px solid darkgray;
-        }
-
         kds-list-item {
           padding: 2px;
+        }
+
+        kds-list-item.kds-droppable {
+          outline: 2px solid lightcoral;
         }
 
         kds-list-item[selected] {

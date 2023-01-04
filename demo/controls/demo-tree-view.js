@@ -109,6 +109,17 @@ export default class DemoTreeView extends LitMvvmElement {
           transition: height var(--trans-time) ease;
         }
 
+        kds-tree-node.kds-droppable::part(expander) {
+          outline: 2px solid lightblue;
+          outline-offset: -2px;
+        }
+
+        kds-tree-node.kds-droppable-before::part(drop-before-target),
+        kds-tree-node.kds-droppable-after::part(drop-after-target) {
+          outline: 2px solid lightblue;
+          outline-offset: -2px;
+        }
+
       `,
     ];
   }

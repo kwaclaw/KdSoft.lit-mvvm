@@ -131,7 +131,10 @@ export default class KdsListItem extends LitMvvmElement {
     super.connectedCallback();
     const dragDrop = this.dragDropProvider;
     if (dragDrop) {
+      this.renderRoot.host.setAttribute('data-drop-mode', 'over');
       dragDrop.connect(this);
+    } else {
+      this.renderRoot.host.removeAttribute('data-drop-mode');
     }
   }
 
@@ -187,12 +190,10 @@ export default class KdsListItem extends LitMvvmElement {
     const draggable = this.dragDropProvider ? 'true' : 'false';
     const upVisible = this.up ? 'visible' : 'hidden';
     const downVisible = this.down ? 'visible' : 'hidden';
+    this.renderRoot.host.setAttribute('draggable', draggable);
 
     const result = html`
-      <li part="li"
-          draggable=${draggable}
-          @click=${this._itemClick}
-      >
+      <li part="li" @click=${this._itemClick}>
         <div part="item">
           ${this.arrows
             ? html`
