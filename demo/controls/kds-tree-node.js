@@ -1,7 +1,6 @@
 import { LitMvvmElement, html, nothing, BatchScheduler, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import './kds-expander.js';
-import './kds-drop-target.js';
 
 const _dragDrop = new WeakMap();
 
@@ -15,6 +14,10 @@ export default class KdsTreeNode extends LitMvvmElement {
   get dragDropProvider() { return _dragDrop.get(this); }
   set dragDropProvider(val) {
     const currentVal = _dragDrop.get(this);
+    if (currentVal === val) {
+      return;
+    }
+
     if (currentVal) {
       currentVal.disconnect(this);
     }
@@ -24,23 +27,16 @@ export default class KdsTreeNode extends LitMvvmElement {
     } else {
       _dragDrop.delete(this);
     }
-  }
 
-  // Observed attributes will trigger an attributeChangedCallback, which in turn will cause a re-render to be scheduled!
-  static get observedAttributes() {
-    return [...super.observedAttributes, 'allow-drag-drop'];
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
     // trigger re-render
-    super.attributeChangedCallback(name, oldValue, newValue);
+    this.model.__changeCount += 1;
   }
 
   /* eslint-disable indent, no-else-return */
 
   connectedCallback() {
     super.connectedCallback();
-    this.renderRoot.host.dataset.dropMode = 'inside';
+    this.renderRoot.host.classList.add('kds-node');
     const dragDrop = this.dragDropProvider;
     if (dragDrop) {
       dragDrop.connect(this);
@@ -63,11 +59,6 @@ export default class KdsTreeNode extends LitMvvmElement {
   static get styles() {
     return [
       css`
-        [data-drop-mode].kds-droppable {
-          outline: 2px solid lightblue;
-          outline-offset: -2px;
-        }
-
         div[data-drop-mode] {
           height: 1em;
           margin: -0.5em 0 -0.5em 0;
@@ -90,10 +81,11 @@ export default class KdsTreeNode extends LitMvvmElement {
     return html`
       ${isRoot || !this.dragDropProvider
         ? nothing
-        : html`<div is="kds-drop-target" data-drop-id=${this.model.id} data-drop-mode="before"></div>`
+        : html`<div part="drop-before-target" data-drop-mode="before"></div>`
       }
       <kds-expander part="expander" exportparts="content: expander-content, expander: expander-expander"
-        class="${this.model.children.length ? 'kds-node has-children' : 'kds-node'}"
+        class="${this.model.children.length ? 'has-children' : ''}"
+        data-drop-mode="inside"
       >
         <div slot="expander">
           ${this.dragDropProvider ? html`<slot name="expander-grip"></slot>` : nothing}
@@ -107,7 +99,7 @@ export default class KdsTreeNode extends LitMvvmElement {
         </div>
       </kds-expander>
       ${isLast && !isRoot && this.dragDropProvider
-        ? html`<div is="kds-drop-target" data-drop-id=${this.model.id} data-drop-mode="after"></div>`
+        ? html`<div part="drop-after-target" data-drop-mode="after"></div>`
         : nothing
       }
     `;
