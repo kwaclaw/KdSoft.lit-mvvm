@@ -124,6 +124,8 @@ export default class DemoTreeView extends LitMvvmElement {
     ];
   }
 
+  // We need to build the final tree structure here because we need to expose all slots,
+  // including nested slots, at the same time so that we can style them together.
   createTreeView(nodeModel) {
     let cls = '';
     switch (nodeModel.type) {

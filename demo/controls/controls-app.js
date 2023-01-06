@@ -17,6 +17,8 @@ import './tab-container.js';
 import './demo-tree-view.js';
 import './demo-check-list.js';
 import './kds-dropdown.js';
+import './kds-context-menu.js';
+import './demo-context-menu.js';
 
 function getClosestTreeNode(path) {
   for (let indx = 0; indx < path.length; indx += 1) {
@@ -92,7 +94,10 @@ class ControlsApp extends LitMvvmElement {
     const menuGrandChildren = [];
     menuChildren.push(new KdsTreeNodeModel(`edit`, [], { text: `Edit Node`, disabled: false }));
     menuGrandChildren.push(new KdsTreeNodeModel(`before`, [], { text: `Before`, disabled: false }));
-    menuGrandChildren.push(new KdsTreeNodeModel(`after`, [], { text: `After`, disabled: false }));
+    menuGrandChildren.push(new KdsTreeNodeModel(`after`, [
+      new KdsTreeNodeModel(`after-1`, [], { text: `After-1`, disabled: false }),
+      new KdsTreeNodeModel(`after-2`, [], { text: `After-2`, disabled: false })
+    ], { text: `After`, disabled: false }));
     menuGrandChildren.push(new KdsTreeNodeModel(`inside`, [], { text: `Inside`, disabled: false }));
     menuChildren.push(new KdsTreeNodeModel(`add`, menuGrandChildren, { text: `Add Node`, disabled: false }));
     menuChildren.push(new KdsTreeNodeModel(`remove`, [], { text: `Remove Node`, disabled: false }));
@@ -428,11 +433,10 @@ class ControlsApp extends LitMvvmElement {
 
   render() {
     return html`
-      <kdsoft-context-menu id="tv-context"
+      <demo-context-menu id="tv-context"
         .model=${this.tvMenu}
-        .getItemTemplate=${this._getMenuItemTemplate}
         @click=${this.tvMenuItemClicked}
-      ></kdsoft-context-menu>
+      ></demo-context-menu>
 
       <div id="container">
 
