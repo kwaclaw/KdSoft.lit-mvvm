@@ -1,5 +1,6 @@
 ﻿import { repeat } from 'lit-html/directives/repeat.js';
-import { LitMvvmElement, html, nothing, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import './kds-menu-item.js';
 
 function showContextMenu(menu, target, path, pageX, pageY) {
   menu.actionTarget = target;
@@ -32,7 +33,8 @@ function showContextMenu(menu, target, path, pageX, pageY) {
   menu.dispatchEvent(new CustomEvent('before-context-menu-show',
     { bubbles: true, composed: true, detail: { pageX, pageY } }));
 
-  menu.focus();
+  const firstItem = menu.renderRoot.querySelector('kds-menu-item');
+  if (firstItem) firstItem.focus();
 }
 
 function executeActive(renderRoot, options) {
@@ -83,7 +85,7 @@ function moveNext(menu, options) {
     }
   }
 
-  next.focus();
+  if (next) next.focus();
 }
 
 function movePrevious(menu, options) {
@@ -109,30 +111,33 @@ function movePrevious(menu, options) {
     }
   }
 
-  previous.focus();
+  if (previous) previous.focus();
 }
 
 function moveRight(menu, options) {
   const fi = getActiveIndex(menu.renderRoot, options);
   if (fi == null) return;
 
-  const subitem = options[fi].querySelector('.menu-option');
-  if (subitem) subitem.focus();
+  const childSlot = options[fi].renderRoot.querySelector('slot[name="child-menu"]');
+  if (childSlot) {
+    const subitem = childSlot.assignedElements()[0];
+    if (subitem) subitem.focus();
+  }
 }
 
 function moveLeft(menu, options) {
   const fi = getActiveIndex(menu.renderRoot, options);
   if (fi == null) return;
 
-  const parentOption = options[fi].parentElement.closest('.submenu');
+  const parentOption = options[fi].parentElement.closest('kds-menu-item');
   if (parentOption) parentOption.focus();
 }
 
 function setup(menu) {
   menu.tabIndex = 0;
 
-  menu.addEventListener('keyup', (e) => {
-    const options = menu.renderRoot.querySelectorAll('.menu-option');
+  menu.addEventListener('keyup', e => {
+    const options = menu.renderRoot.querySelectorAll('kds-menu-item');
     switch (e.code) {
       case 'Enter':
         executeActive(menu.renderRoot, options);
@@ -158,22 +163,23 @@ function setup(menu) {
     menu.style.display = 'none';
   }, true);
 
-  window.addEventListener('keyup', (e) => {
+  window.addEventListener('keyup', e => {
     if (e.code === 'Escape') {
       menu.style.display = 'none';
     }
   }, true);
 
-  window.addEventListener('contextmenu', (e) => {
+  window.addEventListener('contextmenu', e => {
     menu.style.display = 'none';
   }, true);
 }
 
-export default class KdsContextMenu extends LitMvvmElement {
+export default class StylableContextMenu extends LitMvvmElement {
   constructor() {
     super();
     this._touchTimer = null;
     this.getItemTemplate = item => html`${item}`;
+    this.getStyles = () => [css``.styleSheet];
     setup(this);
   }
 
@@ -255,8 +261,8 @@ export default class KdsContextMenu extends LitMvvmElement {
   // returns node entry = { node, parent, nodeIndex }
   getNodeEntry(mouseEvent) {
     for (const tgt of mouseEvent.composedPath()) {
-      if (tgt.tagName === 'LI' && tgt.classList.contains('menu-option')) {
-        return this.model.getNodeEntry(tgt.id);
+      if (tgt.tagName === 'KDS-MENU-ITEM') {
+        return this.model.getNodeEntry(tgt.model.id);
       }
     }
     return undefined;
@@ -271,10 +277,24 @@ export default class KdsContextMenu extends LitMvvmElement {
     element.addEventListener('touchmove', this._touchMoveListener.bind(this), options);
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    this._itemStyles = this.getStyles();
+    const adopted = this.renderRoot.adoptedStyleSheets;
+    this.renderRoot.adoptedStyleSheets = [...adopted, ...this._itemStyles];
+  }
+
+  disconnectedCallback() {
+    const adopted = this.renderRoot.adoptedStyleSheets;
+    const indx = adopted.indexOf(this._itemStyles);
+    if (indx >= 0) {
+      this.renderRoot.adoptedStyleSheets = adopted.splice(indx, 1);
+    }
+    super.disconnectedCallback();
+  }
+
   static get styles() {
     return [
-      tailwindStyles,
-      fontAwesomeStyles,
       css`
         :host {
             z-index: 100;
@@ -283,135 +303,57 @@ export default class KdsContextMenu extends LitMvvmElement {
             outline: none;
         }
         
-        .simple-context-menu {
-            transition: 0.2s display ease-in;
+        nav {
+          transition: 0.2s display ease-in;
+          list-style: none;
         }
 
-        .simple-context-menu:focus {
-            outline: none;
+        nav:focus {
+          outline: none;
         }
 
-        .simple-context-menu .menu-options {
-            width: auto;
-            min-width: 10em;
-            height: auto;
-            box-shadow: 0 0.4em 0.5em 0.3em rgba(0, 0, 0, 0.2);
-            list-style: none;
-            padding: 0.3em;
-            margin: 0;
-            background-color: white;
-            color: rgb(51, 51, 51);
-            margin-bottom: 0;
-            border: 1px solid rgb(200, 200, 200);
+        /*
+        .menu-separator {
+          display: block;
+          margin: 0.5em 0.7em;
+          height: 1px;
+          border-bottom: 1px solid #aaa;
+          background-color: #fff;
         }
-
-        .simple-context-menu .menu-option {
-            padding: 0;
-            cursor: pointer;
-        }
-
-        .simple-context-menu .menu-option:hover {
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .simple-context-menu .menu-option:focus {
-            outline: none;
-            background: rgba(0, 100, 255, 0.2);
-        }
-
-        .simple-context-menu .menu-separator {
-            display: block;
-            margin: 0.5em 0.7em;
-            height: 1px;
-            border-bottom: 1px solid #aaa;
-            background-color: #fff;
-        }
-
-        .simple-context-menu .menu-option.submenu {
-            position: relative;
-        }
-
-        .simple-context-menu .menu-option.submenu .menu-options {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: calc(100% - 0.6em);
-        }
-
-        .simple-context-menu .menu-option.submenu:hover > .menu-options {
-            display: block;
-        }
-
-        .simple-context-menu .menu-option.submenu:focus-within > .menu-options {
-            display: block;
-        }
-
-        .simple-context-menu .menu-option.submenu:focus > .menu-options {
-            display: block;
-        }
-
-        /* triangle */
-        .simple-context-menu .menu-option.submenu::after {
-            content: "";
-            position: absolute;
-            right: 0.3em;
-            top: 50%;
-            -webkit-transform: translateY(-50%);
-            transform: translateY(-50%);
-            border: 0.5em solid transparent;
-            border-left-color: #808080;
-        }
-
-        .simple-context-menu .menu-option.submenu:hover::after {
-            border-left-color: #fff;
-        }
+        */
       `
     ];
   }
 
-  createMenu(nodeModel, isRoot, tabIndex) {
-    if (isRoot && nodeModel.children && nodeModel.children.length) {
-      return html`
-        <ul class="menu-options">
-          ${repeat(
-            nodeModel.children,
-            childModel => childModel.id,
-            (childModel, index) => this.createMenu(childModel, false, tabIndex)
-          )}
-        </ul>
-      `;
-    }
-    if (isRoot) {
-      return nothing;
-    }
-    const hasChildren = nodeModel.children && nodeModel.children.length;
-    tabIndex += 1;
+  // We need to build the final tree structure here because we need to expose all slots,
+  // including nested slots, at the same time so that we can style them together.
+  createMenuItem(nodeModel, slot) {
+    const tabIndex = this._menuTabIndex + 1;
+    this._menuTabIndex = tabIndex;
     return html`
-      <li id=${nodeModel.id} class="menu-option ${hasChildren ? 'submenu' : ''}" tabindex=${tabIndex}>
-        ${this.getItemTemplate(nodeModel)}
-        ${!hasChildren
-          ? nothing
-          : html`
-            <ul class="menu-options">
-              ${repeat(
-                nodeModel.children,
-                childModel => childModel.id,
-                (childModel, index) => this.createMenu(childModel, false, tabIndex)
-              )}
-            </ul>
-          `
-        }
-      </li>
+      <kds-menu-item slot=${slot} .model=${nodeModel} tabindex=${tabIndex}>
+        <span slot="menu-item">${nodeModel.text}</span>
+        ${repeat(
+          nodeModel.children,
+          childModel => childModel.id,
+          (childModel, index) => this.createMenuItem(childModel, 'child-menu')
+        )}
+      </kds-menu-item>
     `;
   }
 
   render() {
+    this._menuTabIndex = 0;
     return html`
-      <nav id=${this.model.id} class="simple-context-menu ${this.model.children.length ? 'has-children' : ''}">
-        ${this.createMenu(this.model, true, 0)}
+      <nav id=${this.model.id}  part="nav" tabindex="-1">
+        ${repeat(
+          this.model.children,
+          childModel => childModel.id,
+          (childModel, index) => this.createMenuItem(childModel, '')
+        )}
       </nav>
     `;
   }
 }
 
-window.customElements.define('kds-context-menu', KdsContextMenu);
+window.customElements.define('stylable-context-menu', StylableContextMenu);

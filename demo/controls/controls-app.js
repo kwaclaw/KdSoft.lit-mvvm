@@ -19,6 +19,7 @@ import './demo-check-list.js';
 import './kds-dropdown.js';
 import './kds-context-menu.js';
 import './demo-context-menu.js';
+import './stylable-context-menu.js';
 
 function getClosestTreeNode(path) {
   for (let indx = 0; indx < path.length; indx += 1) {
@@ -57,6 +58,52 @@ const verticalImageModels = [
   { href: 'images/933-300x600.jpg' },
   { href: 'images/424-300x600.jpg' }
 ];
+
+const menuItemStyleSheet = css`
+  kds-menu-item::part(menu) {
+    min-width: 10em;
+    box-shadow: 0 0.4em 0.5em 0.3em rgba(0, 0, 0, 0.2);
+    padding: 0.3em;
+    margin: 0;
+    background-color: white;
+    color: rgb(51, 51, 51);
+    border: 1px solid rgb(200, 200, 200);
+  }
+
+  kds-menu-item:hover::part(menu) {
+    background: lightgrey; /*rgba(0, 0, 0, 0.3);*/
+  }
+
+  kds-menu-item:focus-within::part(menu) {
+    outline: none;
+    background: rgba(0, 100, 255, 0.2);
+  }
+
+  /* triangle */
+  kds-menu-item.submenu::part(menu)::after {
+    content: "";
+    position: absolute;
+    right: 0.3em;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    border: 0.5em solid transparent;
+    border-left-color: #808080;
+  }
+
+  /* trianghle off */
+  kds-menu-item.submenu:hover::part(menu)::after,
+  kds-menu-item.submenu:focus-within::part(menu)::after {
+    content: none;
+    border-left-color: #fff;
+  }
+
+  kds-menu-item::part(child-menu) {
+    list-style: none;
+    padding-inline-start: 0;
+    left: calc(100% - 1.6em);
+  }
+`.styleSheet;
 
 class ControlsApp extends LitMvvmElement {
   constructor() {
@@ -402,8 +449,12 @@ class ControlsApp extends LitMvvmElement {
     ];
   }
 
-  _getMenuItemTemplate(item) {
-    return html`<span>${item.text}</span>`;
+  _getMenuItemTemplate(itemModel) {
+    return html`<span>${itemModel.text}</span>`;
+  }
+
+  _getMenuStyles() {
+    return [menuItemStyleSheet];
   }
 
   _getOrientationHeader(vertical, caption, changeHandler) {
@@ -433,10 +484,12 @@ class ControlsApp extends LitMvvmElement {
 
   render() {
     return html`
-      <demo-context-menu id="tv-context"
+      <stylable-context-menu id="tv-context" tabindex="-1"
         .model=${this.tvMenu}
+        .getItemTemplate=${this._getMenuItemTemplate}
+        .getStyles=${this._getMenuStyles}
         @click=${this.tvMenuItemClicked}
-      ></demo-context-menu>
+      ></stylable-context-menu>
 
       <div id="container">
 
