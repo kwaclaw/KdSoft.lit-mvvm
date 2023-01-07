@@ -304,17 +304,13 @@ export default class DemoContextMenu extends LitMvvmElement {
           border: 1px solid rgb(200, 200, 200);
         }
 
-        kds-menu-item::part(menu):hover {
+        kds-menu-item:hover::part(menu) {
           background: lightgrey; /*rgba(0, 0, 0, 0.3);*/
         }
 
-        kds-menu-item::part(menu):focus {
+        kds-menu-item:focus-within::part(menu) {
           outline: none;
           background: rgba(0, 100, 255, 0.2);
-        }
-
-        kds-menu-item.submenu:hover::part(menu)::after {
-          border-left-color: #fff;
         }
 
         /* triangle */
@@ -330,8 +326,10 @@ export default class DemoContextMenu extends LitMvvmElement {
         }
 
         /* trianghle off */
-        kds-menu-item.submenu:hover::part(menu)::after {
+        kds-menu-item.submenu:hover::part(menu)::after,
+        kds-menu-item.submenu:focus-within::part(menu)::after {
           content: none;
+          border-left-color: #fff;
         }
 
         kds-menu-item::part(child-menu) {
@@ -373,7 +371,7 @@ export default class DemoContextMenu extends LitMvvmElement {
   render() {
     this._tabIndex = 0;
     return html`
-      <nav id=${this.model.id}>
+      <nav id=${this.model.id} part="nav" tabindex="-1">
         ${repeat(
           this.model.children,
           childModel => childModel.id,
