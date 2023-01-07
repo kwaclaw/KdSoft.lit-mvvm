@@ -157,3 +157,24 @@ class MyCheckList extends LitMvvmElement {
 
 window.customElements.define('my-checklist', MyCheckList);
 ```
+
+## Styling component externally 
+There are several ways of styling a component from the outside
+
+1. Use <slot> elements. 
+   * The slotted components are already styled when assigned to the slot.
+   * That styling is based on where these components are placed in the light DOM.
+
+2. Use ::part() selectors.
+   * A Shadow Dom node can be identified with a "part" attribute and referenced from the outside using a ::part() selector.
+   * There are limitations: children of the part cannot be selected/styled that way, only the part itself.
+   * Nested parts need to be exported explicitly using the "exportedparts" attribute.
+
+3. Inject a stylesheet into the component
+   * A stylesheet can be added like this
+   `this.renderRoot.adoptedStyleSheets = [...this.renderRoot.adoptedStyleSheets, newStyleSeeet];`
+
+4. Note: <slot> vs callbacks
+   * In a hierarchical structure like a tree view it is hard to syntactially add slotted components especially when the tree view is dynamically constructed based on a recursive hierarchical model.
+     * One can either delay construction of the structure to the point where slots are filled. See `demo-context-menu.js` in the `demo/controls` directory.
+     * Or one can use a callbackk function to inject a template instead of populating a slot. See `stylable-context-menu.js` in the `demo/controls` directory. In this case it is advised to also inject the associated style sheets.
