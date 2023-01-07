@@ -33,21 +33,143 @@ function showContextMenu(menu, target, path, pageX, pageY) {
   menu.dispatchEvent(new CustomEvent('before-context-menu-show',
     { bubbles: true, composed: true, detail: { pageX, pageY } }));
 
-  menu.focus();
+  const firstItem = menu.renderRoot.querySelector('kds-menu-item');
+  if (firstItem) firstItem.focus();
+}
+
+function executeActive(renderRoot, options) {
+  let activeOption = null;
+  for (let i = 0; i < options.length; i += 1) {
+    if (options[i] === renderRoot.activeElement) {
+      activeOption = options[i];
+    }
+  }
+
+  if (activeOption) {
+    activeOption.click();
+  }
+}
+
+function getActiveIndex(renderRoot, options) {
+  let result = null;
+  for (let i = 0; i < options.length; i += 1) {
+    if (options[i] === renderRoot.activeElement) {
+      result = i;
+      break;
+    }
+  }
+
+  return result;
+}
+
+function moveNext(menu, options) {
+  let fi = getActiveIndex(menu.renderRoot, options);
+  fi = fi || 0;
+
+  const parent = options[fi].parentNode;
+  let next = null;
+  for (let i = fi + 1; i < options.length; i += 1) {
+    const node = options[i];
+    if (node.parentNode === parent) {
+      next = node;
+      break;
+    }
+  }
+  if (next == null) {
+    for (let i = 0; i < fi; i += 1) {
+      const node = options[i];
+      if (node.parentNode === parent) {
+        next = node;
+        break;
+      }
+    }
+  }
+
+  if (next) next.focus();
+}
+
+function movePrevious(menu, options) {
+  let fi = getActiveIndex(menu.renderRoot, options);
+  fi = fi || options.length - 1;
+
+  const parent = options[fi].parentNode;
+  let previous = null;
+  for (let i = fi - 1; i >= 0; i -= 1) {
+    const node = options[i];
+    if (node.parentNode === parent) {
+      previous = node;
+      break;
+    }
+  }
+  if (previous == null) {
+    for (let i = options.length - 1; i > fi; i -= 1) {
+      const node = options[i];
+      if (node.parentNode === parent) {
+        previous = node;
+        break;
+      }
+    }
+  }
+
+  if (previous) previous.focus();
+}
+
+function moveRight(menu, options) {
+  const fi = getActiveIndex(menu.renderRoot, options);
+  if (fi == null) return;
+
+  const childSlot = options[fi].renderRoot.querySelector('slot[name="child-menu"]');
+  if (childSlot) {
+    const subitem = childSlot.assignedElements()[0];
+    if (subitem) subitem.focus();
+  }
+}
+
+function moveLeft(menu, options) {
+  const fi = getActiveIndex(menu.renderRoot, options);
+  if (fi == null) return;
+
+  const parentOption = options[fi].parentElement.closest('kds-menu-item');
+  if (parentOption) parentOption.focus();
 }
 
 function setup(menu) {
+  menu.tabIndex = 0;
+
+  menu.addEventListener('keyup', e => {
+    const options = menu.renderRoot.querySelectorAll('kds-menu-item');
+    switch (e.code) {
+      case 'Enter':
+        executeActive(menu.renderRoot, options);
+        break;
+      case 'ArrowLeft':
+        moveLeft(menu, options);
+        break;
+      case 'ArrowUp':
+        movePrevious(menu, options);
+        break;
+      case 'ArrowRight':
+        moveRight(menu, options);
+        break;
+      case 'ArrowDown':
+        moveNext(menu, options);
+        break;
+      default:
+        break;
+    }
+  });
+
   window.addEventListener('mouseup', () => {
     menu.style.display = 'none';
   }, true);
 
-  window.addEventListener('keyup', (e) => {
+  window.addEventListener('keyup', e => {
     if (e.code === 'Escape') {
       menu.style.display = 'none';
     }
   }, true);
 
-  window.addEventListener('contextmenu', (e) => {
+  window.addEventListener('contextmenu', e => {
     menu.style.display = 'none';
   }, true);
 }
