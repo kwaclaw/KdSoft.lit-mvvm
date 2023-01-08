@@ -23,7 +23,7 @@ function getListItemId(item) {
   return Number(item._kdsIndex);
 }
 
-export default class DemoCheckList extends LitMvvmElement {
+export default class StyledCheckList extends LitMvvmElement {
   constructor() {
     super();
     this.scheduler = new Queue(priorities.HIGH);
@@ -185,4 +185,4 @@ export default class DemoCheckList extends LitMvvmElement {
   }
 }
 
-window.customElements.define('demo-check-list', DemoCheckList);
+window.customElements.define('styled-check-list', StyledCheckList);

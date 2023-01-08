@@ -15,9 +15,9 @@ import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 import tailwindStyles from './styles/tailwind-styles.js';
 import './kds-carousel.js';
 import './tab-container.js';
-import './demo-check-list.js';
 import './kds-tree-view.js';
 import './styled-tree-view.js';
+import './styled-check-list.js';
 import './kds-dropdown.js';
 import './kds-context-menu.js';
 
@@ -607,23 +607,23 @@ class ControlsApp extends LitMvvmElement {
             placeholder="search unselected entries"
             class="my-auto p-1 flex-grow"
             @input="${this.searchTextChanged}" />
-          <demo-check-list class="border"
+          <styled-check-list class="border"
             .model=${this.checklistModel}
             checkboxes
             arrows
             allow-drag-drop>
-          </demo-check-list>
+          </styled-check-list>
         </div>
 
         <div id="drop-down">
           <h1 class="font-bold text-xl mb-2 text-left">Checklist in Dropdown</h1>
           <kds-dropdown id="ddown" .model=${this.dropDownModel}>
-            <demo-check-list id="clist" class="border border-t-0"
+            <styled-check-list id="clist" class="border border-t-0"
               .model=${this.checklistModel} 
               .connector=${this.checklistConnector}
               checkboxes
               allow-drag-drop>
-            </demo-check-list>
+            </styled-check-list>
             <span slot="dropDownButtonIcon" class="fa-solid fa-lg fa-caret-down"></span>
           </kds-dropdown>
         </div>
