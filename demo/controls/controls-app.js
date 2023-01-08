@@ -1,25 +1,24 @@
 import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
-import { classMap } from 'lit-html/directives/class-map.js';
-import { } from '@kdsoft/lit-mvvm-components';
-import checkboxStyles from './styles/kds-checkbox-styles.js';
-import KdsTreeNodeModel from './kds-tree-node-model';
-import KdsListModel from './kds-list-model.js';
-import KdsDropdownModel from './kds-dropdown-model.js';
-import KdsActiveItemModel from './kds-active-item-model.js';
-import KdsDropdownChecklistConnector from './kds-dropdown-checklist-connector.js';
-import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
-// since tailwind classes are generated only as used, we cannot import them
-// from a prebuilt library, but need to generate the ones we use locally
-import tailwindStyles from './styles/tailwind-styles.js';
-import './kds-carousel.js';
-import './kds-tree-view.js';
-import './kds-tab-container.js';
+
+// this import will also register web components in '@kdsoft/lit-mvvm-components'
+import
+{
+  KdsActiveItemModel,
+  KdsDropdownChecklistConnector,
+  KdsDropdownModel,
+  KdsListModel,
+  KdsTreeNodeModel
+} from '@kdsoft/lit-mvvm-components';
 import './styled-tree-view.js';
 import './styled-check-list.js';
-import './kds-dropdown.js';
-import './kds-context-menu.js';
+
+import checkboxStyles from './styles/kds-checkbox-styles.js';
+import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
+// since tailwind classes are generated only as used, we cannot import them
+// from a prebuilt library, but need to generate the ones we use locally (npm run build)
+import tailwindStyles from './styles/tailwind-styles.js';
 
 function getClosestTreeNode(path) {
   for (let indx = 0; indx < path.length; indx += 1) {

@@ -2,7 +2,7 @@
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
 import './kds-nav-container.js';
 
-class KdsCarousel extends LitMvvmElement {
+export default class KdsCarousel extends LitMvvmElement {
   constructor() {
     super();
     // LOW priority means proper queueing for scroll actions

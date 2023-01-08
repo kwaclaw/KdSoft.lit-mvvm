@@ -1,10 +1,7 @@
 import { repeat } from 'lit-html/directives/repeat.js';
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import KdsDragDropProvider from './kds-drag-drop-provider.js';
-import './kds-tree-node.js';
-// since tailwind classes are generated only as used, we cannot import them
-// from a prebuilt library, but need to generate the ones we use locally
+import { KdsDragDropProvider } from '@kdsoft/lit-mvvm-components';
 import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 import tailwindStyles from './styles/tailwind-styles.js';
 

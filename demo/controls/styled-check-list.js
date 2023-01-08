@@ -2,14 +2,10 @@ import { repeat } from 'lit-html/directives/repeat.js';
 import { classMap } from 'lit-html/directives/class-map.js';
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
+import { KdsDragDropProvider } from '@kdsoft/lit-mvvm-components';
 import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
-// since tailwind classes are generated only as used, we cannot import them
-// from a prebuilt library, but need to generate the ones we use locally
 import tailwindStyles from './styles/tailwind-styles.js';
 import checkboxStyles from './styles/kds-checkbox-styles.js';
-import KdsDragDropProvider from './kds-drag-drop-provider.js';
-import './kds-list.js';
-import './kds-list-item.js';
 
 const arrowBase = { 'fa-solid': true, 'fa-lg': true, 'text-gray-500': true };
 

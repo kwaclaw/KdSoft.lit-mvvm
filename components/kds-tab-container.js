@@ -1,7 +1,7 @@
 ﻿import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
 
-class KdsTabContainer extends LitMvvmElement {
+export default class KdsTabContainer extends LitMvvmElement {
   constructor() {
     super();
     // LOW priority means proper queueing for scroll actions
