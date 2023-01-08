@@ -174,11 +174,11 @@ function setup(menu) {
   }, true);
 }
 
-export default class StylableContextMenu extends LitMvvmElement {
+export default class KdsContextMenu extends LitMvvmElement {
   constructor() {
     super();
     this._touchTimer = null;
-    this.getItemTemplate = item => html`${item}`;
+    this.getItemTemplate = () => html``;
     this.getStyles = () => [css``.styleSheet];
     setup(this);
   }
@@ -277,20 +277,9 @@ export default class StylableContextMenu extends LitMvvmElement {
     element.addEventListener('touchmove', this._touchMoveListener.bind(this), options);
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    this._itemStyles = this.getStyles();
+  beforeFirstRender() {
     const adopted = this.renderRoot.adoptedStyleSheets;
-    this.renderRoot.adoptedStyleSheets = [...adopted, ...this._itemStyles];
-  }
-
-  disconnectedCallback() {
-    const adopted = this.renderRoot.adoptedStyleSheets;
-    const indx = adopted.indexOf(this._itemStyles);
-    if (indx >= 0) {
-      this.renderRoot.adoptedStyleSheets = adopted.splice(indx, 1);
-    }
-    super.disconnectedCallback();
+    this.renderRoot.adoptedStyleSheets = [...adopted, ...this.getStyles()];
   }
 
   static get styles() {
@@ -356,4 +345,4 @@ export default class StylableContextMenu extends LitMvvmElement {
   }
 }
 
-window.customElements.define('stylable-context-menu', StylableContextMenu);
+window.customElements.define('kds-context-menu', KdsContextMenu);

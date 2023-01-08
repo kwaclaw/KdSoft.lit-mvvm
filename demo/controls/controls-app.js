@@ -18,8 +18,6 @@ import './demo-tree-view.js';
 import './demo-check-list.js';
 import './kds-dropdown.js';
 import './kds-context-menu.js';
-import './demo-context-menu.js';
-import './stylable-context-menu.js';
 
 function getClosestTreeNode(path) {
   for (let indx = 0; indx < path.length; indx += 1) {
@@ -59,7 +57,7 @@ const verticalImageModels = [
   { href: 'images/424-300x600.jpg' }
 ];
 
-const menuItemStyleSheet = css`
+const menuStyleSheet = css`
   kds-menu-item::part(menu) {
     min-width: 10em;
     box-shadow: 0 0.4em 0.5em 0.3em rgba(0, 0, 0, 0.2);
@@ -76,7 +74,7 @@ const menuItemStyleSheet = css`
 
   kds-menu-item:focus-within::part(menu) {
     outline: none;
-    background: rgba(0, 100, 255, 0.2);
+    background: rgba(0, 100, 255, 0.7);
   }
 
   /* triangle */
@@ -191,6 +189,18 @@ class ControlsApp extends LitMvvmElement {
     items.push({ id: ix, name: `Item_${ix}` });
   }
 
+
+  //#region context menu
+
+  _getMenuItemTemplate(itemModel) {
+    return html`<span>${itemModel.text}</span>`;
+  }
+
+  _getMenuStyles() {
+    return [menuStyleSheet];
+  }
+
+  //#endregion context menu
   tvDragDropChanged(e) {
     const checked = e.currentTarget.checked;
     this.model.dragDropEnabled = checked;
@@ -449,14 +459,6 @@ class ControlsApp extends LitMvvmElement {
     ];
   }
 
-  _getMenuItemTemplate(itemModel) {
-    return html`<span>${itemModel.text}</span>`;
-  }
-
-  _getMenuStyles() {
-    return [menuItemStyleSheet];
-  }
-
   _getOrientationHeader(vertical, caption, changeHandler) {
     return html`
       <h1 class="flex font-bold text-xl mb-2 text-left items-center">${caption}
@@ -484,12 +486,12 @@ class ControlsApp extends LitMvvmElement {
 
   render() {
     return html`
-      <stylable-context-menu id="tv-context" tabindex="-1"
+      <kds-context-menu id="tv-context" tabindex="-1"
         .model=${this.tvMenu}
         .getItemTemplate=${this._getMenuItemTemplate}
         .getStyles=${this._getMenuStyles}
         @click=${this.tvMenuItemClicked}
-      ></stylable-context-menu>
+      ></kds-context-menu>
 
       <div id="container">
 
