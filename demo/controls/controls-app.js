@@ -75,8 +75,7 @@ const menuStyleSheet = css`
   }
 
   kds-menu-item:focus-within::part(menu) {
-    outline: none;
-    background: rgba(0, 100, 255, 0.7);
+    outline: solid 2px rgb(50, 150, 255);
   }
 
   /* triangle */
@@ -95,7 +94,6 @@ const menuStyleSheet = css`
   kds-menu-item.submenu:hover::part(menu)::after,
   kds-menu-item.submenu:focus-within::part(menu)::after {
     content: none;
-    border-left-color: #fff;
   }
 
   kds-menu-item::part(child-menu) {
