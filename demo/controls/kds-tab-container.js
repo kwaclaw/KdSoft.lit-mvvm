@@ -1,9 +1,7 @@
 ﻿import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
-import tailwindStyles from './styles/tailwind-styles.js';
-import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 
-class TabContainer extends LitMvvmElement {
+class KdsTabContainer extends LitMvvmElement {
   constructor() {
     super();
     // LOW priority means proper queueing for scroll actions
@@ -17,8 +15,6 @@ class TabContainer extends LitMvvmElement {
 
   static get styles() {
     return [
-      tailwindStyles,
-      fontAwesomeStyles,
       css`
         :host {
           display: block;
@@ -41,7 +37,7 @@ class TabContainer extends LitMvvmElement {
     const tabSlot = sm.vertical ? 'left-bar' : 'header';
     const tabClass = sm.vertical ? 'vertical-tabs' : 'horizontal-tabs';
     return html`
-      <kds-nav-container .model=${sm} class="p-0" orientation="${sm.vertical ? 'vertical' : 'horizontal'}">
+      <kds-nav-container part="container" .model=${sm} orientation="${sm.vertical ? 'vertical' : 'horizontal'}">
         <div slot="${tabSlot}" class="${tabClass}">
           ${sm.items.map((item, itemIndex) => html`<slot name="tab_${itemIndex}"></slot>`)}
         </div>
@@ -52,4 +48,4 @@ class TabContainer extends LitMvvmElement {
   }
 }
 
-window.customElements.define('tab-container', TabContainer);
+window.customElements.define('kds-tab-container', KdsTabContainer);

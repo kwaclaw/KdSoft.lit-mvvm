@@ -14,8 +14,8 @@ import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 // from a prebuilt library, but need to generate the ones we use locally
 import tailwindStyles from './styles/tailwind-styles.js';
 import './kds-carousel.js';
-import './tab-container.js';
 import './kds-tree-view.js';
+import './kds-tab-container.js';
 import './styled-tree-view.js';
 import './styled-check-list.js';
 import './kds-dropdown.js';
@@ -206,6 +206,33 @@ class ControlsApp extends LitMvvmElement {
     this.newNodeId = 0;
   }
 
+  // model may still be undefined
+  connectedCallback() {
+    super.connectedCallback();
+  }
+
+  disconnectedCallback() {
+    //if (this._selectObserver) unobserve(this._selectObserver);
+    super.disconnectedCallback();
+  }
+
+  // only called when model is defined, due to the shouldRender() override
+  beforeFirstRender() {
+    // this._selectObserver = observe(() => {
+    //   const entries = Array.from(this.checklistModel.selectedEntries, entry => {
+    //     console.log(entry.item.name);
+    //     return entry.item.name;
+    //   });
+    //   this._selectedItemsText = entries.join(', ');
+    // });
+  }
+
+  firstRendered() {
+    //
+  }
+
+  //#region check list
+
   searchTextChanged(e) {
     const searchText = e.currentTarget.value;
     const regex = new RegExp(searchText, 'i');
@@ -232,6 +259,7 @@ class ControlsApp extends LitMvvmElement {
     items.push({ id: ix, name: `Item_${ix}` });
   }
 
+  //#endregion check list
 
   //#region context menu
 
@@ -388,6 +416,21 @@ class ControlsApp extends LitMvvmElement {
   }
 
   //#endregion tree view
+
+  //#region carousel and switcher
+
+  _getOrientationHeader(vertical, caption, changeHandler) {
+    return html`
+      <h1 class="flex font-bold text-xl mb-2 text-left items-center">${caption}
+        <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
+          .checked=${vertical}
+          @change=${changeHandler}>
+          Orientation Vertical
+        </input>
+      </h1>
+    `;
+  }
+
   sliderVerticalChanged(e) {
     this.carouselModel.vertical = !this.carouselModel.vertical;
     this.carouselModel.items = this.carouselModel.vertical ? verticalImageModels : horizontalImageModels;
@@ -398,30 +441,7 @@ class ControlsApp extends LitMvvmElement {
     this.switcherModel.items = this.switcherModel.vertical ? verticalImageModels : horizontalImageModels;
   }
 
-  // model may still be undefined
-  connectedCallback() {
-    super.connectedCallback();
-  }
-
-  disconnectedCallback() {
-    //if (this._selectObserver) unobserve(this._selectObserver);
-    super.disconnectedCallback();
-  }
-
-  // only called when model is defined, due to the shouldRender() override
-  beforeFirstRender() {
-    // this._selectObserver = observe(() => {
-    //   const entries = Array.from(this.checklistModel.selectedEntries, entry => {
-    //     console.log(entry.item.name);
-    //     return entry.item.name;
-    //   });
-    //   this._selectedItemsText = entries.join(', ');
-    // });
-  }
-
-  firstRendered() {
-    //
-  }
+  //#endregion carousel and switcher
 
   static get styles() {
     return [
@@ -533,13 +553,13 @@ class ControlsApp extends LitMvvmElement {
           flex-direction: column;
         }
 
-        #switcher tab-container {
+        #switcher kds-tab-container {
           margin: auto;
           overflow-x: clip;
           overflow-y: visible;
         }
 
-        #switcher tab-container.vertical {
+        #switcher kds-tab-container.vertical {
           overflow-x: visible;
           overflow-y: clip;
         }
@@ -560,31 +580,6 @@ class ControlsApp extends LitMvvmElement {
         /* #rendegion Switcher */
       `
     ];
-  }
-
-  _getOrientationHeader(vertical, caption, changeHandler) {
-    return html`
-      <h1 class="flex font-bold text-xl mb-2 text-left items-center">${caption}
-        <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
-          .checked=${vertical}
-          @change=${changeHandler}>
-          Orientation Vertical
-        </input>
-      </h1>
-    `;
-  }
-
-  // Note: we also need to copy in our custom CSS in a style element,
-  //       we can only assume that the component has tailwind styles
-  _getTabTemplate (model, item, index) {
-    const activeClass = model.activeIndex === index ? 'active' : '';
-    const verticalClass = model.vertical ? 'vertical' : '';
-    return html`
-      <button type="button" slot="tab_${index}"
-        @click=${() => { model.activeIndex = index; }}
-        class="tab px-2 py-1 bg-gray-300 ${activeClass} ${verticalClass}"
-      >Image ${index}</button>
-    `;
   }
 
   render() {
@@ -651,10 +646,19 @@ class ControlsApp extends LitMvvmElement {
 
         <div id="switcher">
           ${this._getOrientationHeader(this.switcherModel.vertical, 'Tab Container', this.switcherVerticalChanged)}
-          <tab-container .model=${this.switcherModel} class="${this.switcherModel.vertical ? 'vertical' : ''}">
-            ${this.switcherModel.items.map((item, index) => this._getTabTemplate(this.switcherModel, item, index))}
+          <kds-tab-container .model=${this.switcherModel} class="${this.switcherModel.vertical ? 'vertical' : ''}">
+            ${this.switcherModel.items.map((item, index) => {
+              const activeClass = this.switcherModel.activeIndex === index ? 'active' : '';
+              const verticalClass = this.switcherModel.vertical ? 'vertical' : '';
+              return html`
+                <button type="button" slot="tab_${index}"
+                  @click=${() => { this.switcherModel.activeIndex = index; }}
+                  class="tab px-2 py-1 bg-gray-300 ${activeClass} ${verticalClass}"
+                >Image ${index}</button>
+              `;
+            })}
             <img slot="item" src=${this.switcherModel.activeItem.href}></img>
-          </tab-container>
+          </kds-tab-container>
         </div>
       </div>
     `;
