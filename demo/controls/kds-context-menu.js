@@ -42,6 +42,7 @@ function executeActive(renderRoot, options) {
   for (let i = 0; i < options.length; i += 1) {
     if (options[i] === renderRoot.activeElement) {
       activeOption = options[i];
+      break;
     }
   }
 
@@ -138,7 +139,7 @@ function setup(menu) {
 
   menu.addEventListener('keyup', e => {
     const options = menu.renderRoot.querySelectorAll('kds-menu-item');
-    switch (e.code) {
+    switch (e.key) {
       case 'Enter':
         executeActive(menu.renderRoot, options);
         break;
@@ -164,7 +165,7 @@ function setup(menu) {
   }, true);
 
   window.addEventListener('keyup', e => {
-    if (e.code === 'Escape') {
+    if (e.key === 'Escape' || e.key === 'Enter') {
       menu.style.display = 'none';
     }
   }, true);
