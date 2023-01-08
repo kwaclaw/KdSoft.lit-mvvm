@@ -1,6 +1,7 @@
 import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import { classMap } from 'lit-html/directives/class-map.js';
 import { } from '@kdsoft/lit-mvvm-components';
 import checkboxStyles from './styles/kds-checkbox-styles.js';
 import KdsTreeNodeModel from './kds-tree-node-model';
@@ -14,8 +15,9 @@ import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 import tailwindStyles from './styles/tailwind-styles.js';
 import './kds-carousel.js';
 import './tab-container.js';
-import './demo-tree-view.js';
 import './demo-check-list.js';
+import './kds-tree-view.js';
+import './styled-tree-view.js';
 import './kds-dropdown.js';
 import './kds-context-menu.js';
 
@@ -100,6 +102,47 @@ const menuStyleSheet = css`
     list-style: none;
     padding-inline-start: 0;
     left: calc(100% - 1.6em);
+  }
+`.styleSheet;
+
+const treeViewStyleSheet = css`
+  .node-edit:focus {
+    border-color: lightgrey;
+  }
+
+  .expander-grip {
+    vertical-align: middle;
+  }
+
+  .expander-grip:hover {
+    cursor: grab;
+  }
+
+  .expander-icon {
+    vertical-align: middle;
+  }
+
+  .expander-icon i {
+    transition: transform var(--trans-time) ease;
+  }
+
+  .expander-icon.rotated i {
+    transform: rotate(90deg);
+  }
+
+  kds-tree-node::part(expander-content) {
+    transition: height var(--trans-time) ease;
+  }
+
+  kds-tree-node.kds-droppable::part(expander) {
+    outline: 2px solid lightblue;
+    outline-offset: -2px;
+  }
+
+  kds-tree-node.kds-droppable-before::part(drop-before-target),
+  kds-tree-node.kds-droppable-after::part(drop-after-target) {
+    outline: 2px solid lightblue;
+    outline-offset: -2px;
   }
 `.styleSheet;
 
@@ -201,6 +244,65 @@ class ControlsApp extends LitMvvmElement {
   }
 
   //#endregion context menu
+
+  //#region tree view
+
+  _treeNodeEditLostFocus(e) {
+    e.preventDefault();
+    const seltext = e.currentTarget.nextElementSibling;
+    seltext.removeAttribute('hidden');
+    e.currentTarget.setAttribute('hidden', '');
+  }
+
+  _treeNodeEditTextChanged(e, nodeModel) {
+    nodeModel.text = e.currentTarget.value;
+  }
+
+  // this needs to be bound to the controls-app instance because of the reference to
+  // local eve3nt han dlers _treeNodeEditLostFocus and _treeNodeEditTextChanged
+  _getTreeviewItemTemplate(nodeModel) {
+    let cls = '';
+    switch (nodeModel.type) {
+      case 'gc':
+        cls += 'text-red-600';
+        break;
+      case 'c':
+        cls += 'text-blue-600';
+        break;
+      case 'r':
+        cls += 'text-black-600';
+        break;
+      default:
+        break;
+    }
+
+    return html`
+      <span slot="content" class="node-content">
+        <input type="text" placeholder="node text"
+          class="my-auto p-1 flex-grow node-edit"
+          tabindex="1"
+          @blur="${e => this._treeNodeEditLostFocus(e, nodeModel)}"
+          @input="${e => this._treeNodeEditTextChanged(e, nodeModel)}"
+          hidden />
+        <span class=${cls}>${nodeModel.text}</span>
+      </span>
+      <span slot="expander-grip" class="expander-grip">
+        <i class="fas fa-xs fa-ellipsis-v text-gray-400"></i>
+      </span>
+      <span slot="expander-icon" class="expander-icon ${nodeModel._expanded ? 'rotated' : ''}">
+        <i class="fa-solid fa-lg fa-caret-right ${nodeModel.children.length ? 'text-blue-600' : 'text-blue-200'}"></i>
+      </span>
+    `;
+  }
+
+  _getTreeviewStyles() {
+    return [
+      tailwindStyles.styleSheet,
+      fontAwesomeStyles.styleSheet,
+      treeViewStyleSheet
+    ];
+  }
+
   tvDragDropChanged(e) {
     const checked = e.currentTarget.checked;
     this.model.dragDropEnabled = checked;
@@ -285,6 +387,7 @@ class ControlsApp extends LitMvvmElement {
     }
   }
 
+  //#endregion tree view
   sliderVerticalChanged(e) {
     this.carouselModel.vertical = !this.carouselModel.vertical;
     this.carouselModel.items = this.carouselModel.vertical ? verticalImageModels : horizontalImageModels;
@@ -531,10 +634,12 @@ class ControlsApp extends LitMvvmElement {
             with context menu${this.model.dragDropEnabled ? ' and with' : ', but without'} drag and drop
           </h1>
           <!-- invoke getContentTemplate as lambda, to force this component to be "this" in the method -->
-          <demo-tree-view id="tv" class="py-0"
-            ?allow-drag-drop=${this.model.dragDropEnabled}
+          <kds-tree-view id="tv" class="py-0"
             .model=${this.tvRoot}
-          ></demo-tree-view>
+            .getItemTemplate=${this._getTreeviewItemTemplate.bind(this)}
+            .getStyles=${this._getTreeviewStyles}
+            ?allow-drag-drop=${this.model.dragDropEnabled}
+          ></kds-tree-view>
         </div>
 
         <div id="carousel">

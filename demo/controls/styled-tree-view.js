@@ -8,7 +8,7 @@ import './kds-tree-node.js';
 import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 import tailwindStyles from './styles/tailwind-styles.js';
 
-export default class DemoTreeView extends LitMvvmElement {
+export default class StyledTreeView extends LitMvvmElement {
   constructor() {
     super();
     this.scheduler = new Queue(priorities.HIGH);
@@ -182,4 +182,4 @@ export default class DemoTreeView extends LitMvvmElement {
   }
 }
 
-window.customElements.define('demo-tree-view', DemoTreeView);
+window.customElements.define('styled-tree-view', StyledTreeView);
