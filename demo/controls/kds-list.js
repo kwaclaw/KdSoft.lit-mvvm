@@ -69,7 +69,7 @@ function onItemListKeydown(e) {
     }
     case ' ': {
       const itemNode = e.target;
-      itemNode.checked = !itemNode.checked;
+      this.model.toggleSelectedIndex(itemNode._kdsIndex);
       break;
     }
     default:
@@ -115,16 +115,6 @@ export default class KdsList extends LitMvvmElement {
 
   checkValidity() { return this._internals.checkValidity(); }
   reportValidity() { return this._internals.reportValidity(); }
-
-  // Observed attributes will trigger an attributeChangedCallback, which in turn will cause a re-render to be scheduled!
-  static get observedAttributes() {
-    return [...super.observedAttributes, 'checked-is-selected'];
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    // trigger re-render
-    super.attributeChangedCallback(name, oldValue, newValue);
-  }
 
   /* eslint-disable indent, no-else-return */
 

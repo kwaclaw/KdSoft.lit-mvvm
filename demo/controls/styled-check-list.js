@@ -7,7 +7,6 @@ import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
 // from a prebuilt library, but need to generate the ones we use locally
 import tailwindStyles from './styles/tailwind-styles.js';
 import checkboxStyles from './styles/kds-checkbox-styles.js';
-//import '@kdsoft/lit-mvvm-components';
 import KdsDragDropProvider from './kds-drag-drop-provider.js';
 import './kds-list.js';
 import './kds-list-item.js';
@@ -92,19 +91,16 @@ export default class StyledCheckList extends LitMvvmElement {
         }
 
         kds-list-item.kds-droppable {
-          outline: 2px solid lightcoral;
-        }
-
-        kds-list-item[selected] {
-          background-color: lightgray
+          outline: 2px solid lightblue;
+          outline-offset: -1px;
         }
 
         kds-list-item:hover {
-          background-color: lightblue;
+          background-color: lightgrey;
         }
 
         kds-list-item:focus {
-          outline: 1px grey solid;
+          outline: solid 2px rgb(50, 150, 255);
         }
 
         /* #region styling default checkbox */
