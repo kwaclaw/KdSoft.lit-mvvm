@@ -15,40 +15,41 @@
     "last 1 Safari versions"
   ],
   "devDependencies": {
-    "vite": "^4.0.2",
-    "eslint": "^8.30.0",
+    "@fortawesome/fontawesome-free": "^6.2.1",
     "autoprefixer": "^10.4.13",
+    "cpy-cli": "^4.2.0",
+    "eslint": "^8.31.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "postcss": "^8.4.20",
+    "glob": "^8.0.3",
+    "postcss": "^8.4.21",
     "postcss-cli": "^10.1.0",
-    "postcss-copy": "^7.1.0",
     "postcss-import": "^15.1.0",
+    "postcss-url": "^10.1.3",
     "rimraf": "^3.0.2",
     "tailwindcss": "^3.2.4",
-    "@fortawesome/fontawesome-free": "^6.2.1"
+    "vite": "^4.0.4"
   },
   "scripts": {
     "start": "vite",
-    "postcss-fontawesome": "postcss node_modules/@fortawesome/fontawesome-free/css/all.css -o _tmp/fontawesome/css/all.css",
+    "postcss-fontawesome": "postcss node_modules/@fortawesome/fontawesome-free/css/all.css --dir _tmp/fontawesome/css/",
     "postcss-css": "postcss css/**/*.css --dir _tmp",
     "wrap-css": "node scripts/wrap-css.mjs _tmp/**/*.css styles _tmp",
+    "copy-webfonts": "cpy _tmp/fontawesome/webfonts/** styles/fontawesome/webfonts",
     "prebuild": "rimraf _tmp/**/*",
-    "build": "npm run postcss-fontawesome && npm run postcss-css && npm run wrap-css",
+    "build": "npm run postcss-fontawesome && npm run postcss-css && npm run wrap-css && npm run copy-webfonts",
     "prepare": "npm run build"
   },
   "postcss": {
     "plugins": {
       "postcss-import": {},
-      "postcss-copy": {
-        "basePath": [
-          "node_modules"
-        ],
-        "template": "[path]/[name].[ext][query]",
-        "dest": "styles/assets"
+      "postcss-url": {
+        "url": "copy"
       },
       "tailwindcss": {
-        "content": ["./*.{html,js}"],
+        "content": [
+          "./*.{html,js}"
+        ],
         "theme": {
           "extend": {}
         },
