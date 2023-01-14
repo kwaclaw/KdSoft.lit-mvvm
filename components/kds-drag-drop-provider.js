@@ -25,7 +25,7 @@ function dragStart(e) {
 
 function dragOver(e) {
   e.stopPropagation(); // dont want the same event further up
-  const dropElement = getDropElement(e.path);
+  const dropElement = getDropElement(e.composedPath());
   if (dropElement) {
     e.preventDefault();
   }
@@ -43,7 +43,7 @@ function dragEnter(e) {
     e.currentTarget._kdsDragEnterCount = dragEnterCount + 1;
   }
 
-  const dropElement = getDropElement(e.path);
+  const dropElement = getDropElement(e.composedPath());
   if (dropElement) {
     e.preventDefault();
 

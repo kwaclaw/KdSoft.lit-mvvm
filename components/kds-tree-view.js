@@ -57,9 +57,8 @@ export default class KdsTreeView extends LitMvvmElement {
   }
 
   expand(e) {
-    const treeNode = e.path.find(el => el.nodeName === 'KDS-TREE-NODE');
-    if (treeNode) {
-      treeNode.model._expanded = e.detail.expanded;
+    if (e.target.tagName === 'KDS-TREE-NODE') {
+      e.target.model._expanded = e.detail.expanded;
     }
   }
 
