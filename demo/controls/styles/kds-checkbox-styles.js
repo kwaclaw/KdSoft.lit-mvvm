@@ -11,6 +11,7 @@ export default css`
 .kds-checkbox {
   width: 1.2rem;
   height: 1.2rem;
+  -webkit-appearance: none;
   appearance: none;
   -webkit-print-color-adjust: exact;
   color-adjust: exact;
