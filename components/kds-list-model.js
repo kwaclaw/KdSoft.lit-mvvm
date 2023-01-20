@@ -178,7 +178,7 @@ class KdsListModel {
     } else if (isSelected) {
       this._selectedItems = new WeakSet();
     } else {
-      this._selectedItems = new WeakSet(rawItem);
+      this._selectedItems = new WeakSet([rawItem]);
     }
     return !isSelected;
   }
