@@ -31,7 +31,7 @@
     "wrap-css-styles": "npm run wrap-css css/**/*.css styles css",
     "wrap-fontawesome": "npm run wrap-css node_modules/@fortawesome/fontawesome-free/css/all.css styles/fontawesome node_modules/@fortawesome/fontawesome-free",
     "copy-webfonts": "cpy node_modules/@fortawesome/fontawesome-free/webfonts/** styles/fontawesome/webfonts",
-    "prebuild": "rimraf styles && npx tailwindcss -i ./css/tailwind.pre -o ./css/tailwind.css",
+    "prebuild": "rimraf styles && npx tailwindcss -i ./css/tailwind.tcss -o ./css/tailwind.css",
     "build": "npm run wrap-css-styles && npm run wrap-fontawesome && npm run copy-webfonts",
     "prepare": "npm run build"
   }
