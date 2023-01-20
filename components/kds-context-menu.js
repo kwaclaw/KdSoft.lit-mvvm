@@ -322,7 +322,7 @@ export default class KdsContextMenu extends LitMvvmElement {
     this._menuTabIndex = tabIndex;
     return html`
       <kds-menu-item slot=${slot} .model=${nodeModel} tabindex=${tabIndex}>
-        <span slot="menu-item">${nodeModel.text}</span>
+        <span slot="menu-item">${this.getItemTemplate(nodeModel)}</span>
         ${repeat(
           nodeModel.children,
           childModel => childModel.id,
