@@ -11,7 +11,7 @@ import
   KdsListModel,
   KdsTreeNodeModel
 } from '@kdsoft/lit-mvvm-components';
-import './styled-tree-view.js';
+//import './styled-tree-view.js';
 import './styled-check-list.js';
 
 import checkboxStyles from './styles/kds-checkbox-styles.js';
