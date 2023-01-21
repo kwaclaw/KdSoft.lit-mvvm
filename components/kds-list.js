@@ -29,7 +29,11 @@ function onItemDrop(e) {
 }
 
 function onItemClick(e) {
-  this.model.toggleSelectedIndex(e.detail.item._kdsIndex);
+  if (this.model.multiSelect) {
+    this.model.toggleSelectedIndex(e.detail.item._kdsIndex);
+  } else {
+    this.model.selectIndex(e.detail.item._kdsIndex, true);
+  }
 }
 
 // do we want to have a checkbox click mean the same as an item click?
