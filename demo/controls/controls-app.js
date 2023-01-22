@@ -157,7 +157,7 @@ class ControlsApp extends LitMvvmElement {
     this.dropDownModel = observable(new KdsDropdownModel());
     this.checklistConnector = new KdsDropdownChecklistConnector(
       () => this.renderRoot.getElementById('ddown'),
-      () => this.renderRoot.getElementById('clist'),
+      () => this.renderRoot.getElementById('clist').list,
       () => this.getChecklistText()
     );
 

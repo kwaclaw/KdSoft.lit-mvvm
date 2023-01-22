@@ -98,7 +98,7 @@ class KdsListModel {
   get filteredItems() { return iterateFilter(this.items, this.filter); }
 
   selectIndex(index, select) {
-    if (index < 0 || index >= this.items.length) {
+    if (index == null || index < 0 || index >= this.items.length) {
       return;
     }
 
@@ -166,7 +166,7 @@ class KdsListModel {
   }
 
   toggleSelectedIndex(index) {
-    if (index < 0 || index >= this.items.length) {
+    if (index == null || index < 0 || index >= this.items.length) {
       return undefined;
     }
 
