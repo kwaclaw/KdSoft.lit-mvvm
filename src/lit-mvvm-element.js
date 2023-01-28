@@ -26,14 +26,15 @@ export class LitMvvmElement extends LitBaseElement {
   }
   set scheduler(value) {
     if (value) _scheduler.set(this, value);
-    else _scheduler.set(this, r => r());
+    else _scheduler.set(this, (window._kd_soft.scheduler) || (r => r()));
   }
 
   constructor() {
     super();
     this.renderOptions = { host: this };
     this.__childPart = undefined;
-    _scheduler.set(this, r => r());
+    // we can use a global scheduler if it is named _kds.scheduler
+    _scheduler.set(this, (window._kd_soft.scheduler) || (r => r()));
   }
 
   createRenderRoot() {

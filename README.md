@@ -17,6 +17,9 @@ import { LitMvvmElement, css } from '@kdsoft/lit-mvvm';
 class MyCheckList extends LitMvvmElement {
   constructor() {
     super();
+    // One can also set the global window._kd_soft.scheduler and leave this.scheduler unassigned,
+    // a shared scheduler allows us to have more control over render scheduling compared to
+    // each control having an independent scheduler.
     this.scheduler = new Queue(priorities.HIGH);
     this.getItemTemplate = item => html`${item}`;
   }
@@ -172,9 +175,9 @@ There are several ways of styling a component from the outside
 
 3. Inject a stylesheet into the component
    * A stylesheet can be added like this
-   `this.renderRoot.adoptedStyleSheets = [...this.renderRoot.adoptedStyleSheets, newStyleSeeet];`
+   `this.renderRoot.adoptedStyleSheets = [...this.renderRoot.adoptedStyleSheets, newStyleSheet];`
 
 4. Note: <slot> vs callbacks
-   * In a hierarchical structure like a tree view it is hard to syntactially add slotted components especially when the tree view is dynamically constructed based on a recursive hierarchical model.
+   * In a hierarchical structure like a tree view it is hard to syntactically add slotted components especially when the tree view is dynamically constructed based on a recursive hierarchical model.
      * One can either delay construction of the structure to the point where slots are filled. See `demo-context-menu.js` in the `demo/controls` directory.
-     * Or one can use a callbackk function to inject a template instead of populating a slot. See `stylable-context-menu.js` in the `demo/controls` directory. In this case it is advised to also inject the associated style sheets.
+     * Or one can use a callback function to inject a template instead of populating a slot. See `stylable-context-menu.js` in the `demo/controls` directory. In this case it is advised to also inject the associated style sheets.
