@@ -55,7 +55,7 @@ const _dragDrop = new WeakMap();
 export default class KdsListItem extends LitMvvmElement {
   constructor() {
     super();
-    this.scheduler = new Queue(priorities.HIGH);
+    // this.scheduler = new Queue(priorities.HIGH);
     //this.scheduler = new BatchScheduler(0);
     this._itemClick = itemClick.bind(this);
     this._checkboxClick = checkboxClick.bind(this);

@@ -94,8 +94,8 @@ export default class KdsList extends LitMvvmElement {
   constructor() {
     super();
     this._internals = this.attachInternals ? this.attachInternals() : null;
-    this.scheduler = new Queue(priorities.HIGH);
-    //this.scheduler = new BatchScheduler(0);
+    // this.scheduler = new Queue(priorities.HIGH);
+    // this.scheduler = new BatchScheduler(0);
 
     // use fixed reference to be able to add *and* remove as event listener
     this._onItemDrop = onItemDrop.bind(this);

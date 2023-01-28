@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-constructor */
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 
@@ -39,7 +40,7 @@ function updateExpansion(element, doExpand) {
 export default class KdsExpander extends LitMvvmElement {
   constructor() {
     super();
-    this.scheduler = new Queue(priorities.HIGH);
+    // this.scheduler = new Queue(priorities.HIGH);
   }
 
   get ariaExpanded() { return this.hasAttribute('aria-expanded'); }

@@ -7,8 +7,8 @@ import './kds-tree-node.js';
 export default class KdsTreeView extends LitMvvmElement {
   constructor() {
     super();
-    this.scheduler = new Queue(priorities.HIGH);
-    //this.scheduler = new BatchScheduler(0);
+    // this.scheduler = new Queue(priorities.HIGH);
+    // this.scheduler = new BatchScheduler(0);
     this.getItemTemplate = () => html``;
     this.getStyles = () => [css``.styleSheet];
   }

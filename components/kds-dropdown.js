@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-constructor */
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 
@@ -18,7 +19,7 @@ function isChildOf(parent, child) {
 export default class KdsDropdown extends LitMvvmElement {
   constructor() {
     super();
-    this.scheduler = new Queue(priorities.HIGH);
+    // this.scheduler = new Queue(priorities.HIGH);
   }
 
   get connector() { return this._connector; }
@@ -188,7 +189,7 @@ export default class KdsDropdown extends LitMvvmElement {
     // it may be necessary to reconnect the drop down connector;
     // we use setTimeout() because at this point children are not necesarily rendered
     const connector = this.connector; // save local reference
-    if (connector) setTimeout(() => connector.reconnectDropdownSlot(), 0);
+    if (connector) connector.reconnectDropdownSlot();
   }
 }
 
