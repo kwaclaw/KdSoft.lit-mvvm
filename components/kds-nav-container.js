@@ -1,6 +1,4 @@
-﻿/* eslint-disable no-useless-constructor */
-import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { LitMvvmElement, html, css, BatchScheduler } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+﻿import { LitMvvmElement, html, css, BatchScheduler } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 
 const orientationClasses = {
   horizontal: {
@@ -22,13 +20,6 @@ const orientationClasses = {
 };
 
 export default class KdsNavContainer extends LitMvvmElement {
-  constructor() {
-    super();
-    // LOW priority means proper queueing for scroll actions
-    // this.scheduler = new Queue(priorities.LOW);
-    // this.scheduler = new BatchScheduler(300);
-  }
-
   get orientation() { return this.getAttribute('orientation') || 'horizontal'; }
   set orientation(val) {
     if (val === 'horizontal' || val === 'vertical') this.setAttribute('orientation', val);

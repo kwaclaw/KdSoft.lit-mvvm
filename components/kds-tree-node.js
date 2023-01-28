@@ -1,17 +1,9 @@
-/* eslint-disable no-useless-constructor */
 import { LitMvvmElement, html, nothing, BatchScheduler, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
-import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import './kds-expander.js';
 
 const _dragDrop = new WeakMap();
 
 export default class KdsTreeNode extends LitMvvmElement {
-  constructor() {
-    super();
-    // this.scheduler = new Queue(priorities.HIGH);
-    // this.scheduler = new BatchScheduler(0);
-  }
-
   get dragDropProvider() { return _dragDrop.get(this); }
   set dragDropProvider(val) {
     const currentVal = _dragDrop.get(this);

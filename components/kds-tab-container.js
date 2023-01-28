@@ -1,15 +1,6 @@
-﻿/* eslint-disable no-useless-constructor */
-import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
+﻿import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
 
 export default class KdsTabContainer extends LitMvvmElement {
-  constructor() {
-    super();
-    // LOW priority means proper queueing for scroll actions
-    // this.scheduler = new Queue(priorities.LOW);
-    // this.scheduler = new BatchScheduler(300);
-  }
-
   shouldRender() {
     return !!this.model;
   }

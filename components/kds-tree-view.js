@@ -1,14 +1,11 @@
 import { repeat } from 'lit-html/directives/repeat.js';
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
-import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 import KdsDragDropProvider from './kds-drag-drop-provider.js';
 import './kds-tree-node.js';
 
 export default class KdsTreeView extends LitMvvmElement {
   constructor() {
     super();
-    // this.scheduler = new Queue(priorities.HIGH);
-    // this.scheduler = new BatchScheduler(0);
     this.getItemTemplate = () => html``;
     this.getStyles = () => [css``.styleSheet];
   }

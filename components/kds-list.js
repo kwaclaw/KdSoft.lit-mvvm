@@ -1,6 +1,5 @@
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
 import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
-import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 
 //#region click and key events
 
@@ -94,8 +93,6 @@ export default class KdsList extends LitMvvmElement {
   constructor() {
     super();
     this._internals = this.attachInternals ? this.attachInternals() : null;
-    // this.scheduler = new Queue(priorities.HIGH);
-    // this.scheduler = new BatchScheduler(0);
 
     // use fixed reference to be able to add *and* remove as event listener
     this._onItemDrop = onItemDrop.bind(this);

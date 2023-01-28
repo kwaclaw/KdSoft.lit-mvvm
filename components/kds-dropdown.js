@@ -1,6 +1,5 @@
 /* eslint-disable no-useless-constructor */
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
-import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 
 function isChildOf(parent, child) {
   if (!child) {
@@ -17,11 +16,6 @@ function isChildOf(parent, child) {
 }
 
 export default class KdsDropdown extends LitMvvmElement {
-  constructor() {
-    super();
-    // this.scheduler = new Queue(priorities.HIGH);
-  }
-
   get connector() { return this._connector; }
   set connector(value) { this._connector = value; }
 

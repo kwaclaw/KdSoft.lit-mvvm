@@ -1,5 +1,4 @@
 import { LitMvvmElement, html, nothing, css } from '@kdsoft/lit-mvvm';
-import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
 
 //#region click and key events
 
@@ -55,8 +54,6 @@ const _dragDrop = new WeakMap();
 export default class KdsListItem extends LitMvvmElement {
   constructor() {
     super();
-    // this.scheduler = new Queue(priorities.HIGH);
-    //this.scheduler = new BatchScheduler(0);
     this._itemClick = itemClick.bind(this);
     this._checkboxClick = checkboxClick.bind(this);
     this._upClick = upClick.bind(this);
