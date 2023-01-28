@@ -88,19 +88,18 @@ export default class KdsDropdown extends LitMvvmElement {
 
   /* eslint-disable indent, no-else-return */
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.renderRoot.host.addEventListener('focusout', this._hostLostFocus);
+    this.renderRoot.host.addEventListener('focusin', this._hostFocused);
+  }
+
   disconnectedCallback() {
     super.disconnectedCallback();
     // necessary?
-    //this.shadowRoot.host.removeEventListener('focusout', this._hostLostFocus);
-    //this.shadowRoot.host.removeEventListener('focusin', this._hostFocused);
+    this.renderRoot.host.removeEventListener('focusout', this._hostLostFocus);
+    this.renderRoot.host.removeEventListener('focusin', this._hostFocused);
     if (this.connector) this.connector.disconnectDropdownSlot();
-  }
-
-  beforeFirstRender() {
-    super.beforeFirstRender();
-    if (this.connector) this.connector.connectDropdownSlot();
-    this.shadowRoot.host.addEventListener('focusout', this._hostLostFocus);
-    this.shadowRoot.host.addEventListener('focusin', this._hostFocused);
   }
 
   static get styles() {
@@ -183,6 +182,13 @@ export default class KdsDropdown extends LitMvvmElement {
       </div>
     `;
     return result;
+  }
+
+  rendered() {
+    // it may be necessary to reconnect the drop down connector;
+    // we use setTimeout() because at this point children are not necesarily rendered
+    const connector = this.connector; // save local reference
+    if (connector) setTimeout(() => connector.reconnectDropdownSlot(), 0);
   }
 }
 
