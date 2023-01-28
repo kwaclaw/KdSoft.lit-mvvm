@@ -146,7 +146,8 @@ const treeViewStyleSheet = css`
 class ControlsApp extends LitMvvmElement {
   constructor() {
     super();
-    this.scheduler = new Queue(priorities.LOW);
+    // share this across components
+    window._kd_soft.scheduler = new Queue(priorities.LOW);
     this.checklistModel = observable(new KdsListModel(
       [{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }, { id: 3, name: 'Gamma' }],
       [1],
