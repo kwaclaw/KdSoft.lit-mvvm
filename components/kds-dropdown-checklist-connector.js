@@ -49,7 +49,7 @@ class KdsDropdownChecklistConnector extends KdsDropdownConnector {
 
       if (dropdown.model.dropped) {
         // queue this at the end of updates to be rendered correctly
-        checklist.scheduler.add(() => checklist.initView());
+        checklist.schedule(() => checklist.initView());
       }
     });
 

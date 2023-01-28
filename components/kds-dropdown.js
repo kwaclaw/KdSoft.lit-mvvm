@@ -186,10 +186,9 @@ export default class KdsDropdown extends LitMvvmElement {
   }
 
   rendered() {
-    // it may be necessary to reconnect the drop down connector;
-    // we use setTimeout() because at this point children are not necesarily rendered
+    // it may be necessary to reconnect the drop down connector
     const connector = this.connector; // save local reference
-    if (connector) connector.reconnectDropdownSlot();
+    if (connector) this.schedule(() => connector.reconnectDropdownSlot());
   }
 }
 
