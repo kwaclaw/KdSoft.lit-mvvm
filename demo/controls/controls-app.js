@@ -488,30 +488,36 @@ class ControlsApp extends LitMvvmElement {
           width: 100%;
         }
 
-        #ddown::part(seltext) {
+        #ddown::part(container) {
           border: 1px solid;
+          padding: 1px 0 1px 0;
+          line-height: 1.5em;
+        }
+
+        #ddown::part(seltext) {
           padding-left: 5px;
-          padding: 1px 5px;
+          line-height: inherit;
         }
 
         #ddown::part(searchbox) {
-          border: 1px solid;
-          padding: 0.25rem;
+          padding-left: 5px;
+          line-height: inherit;
         }
 
         #ddown::part(dropDownButton) {
-          margin-top: auto;
-          margin-bottom: auto;
-          padding-top: 0.15em;
-          padding-bottom: 0.15em;
-          padding-left: 0.25em;
-          padding-right: 0.25em;
           background-color: lightgray;
           border: 0;
+          margin: auto;
+          line-height: inherit;
         }
 
         #ddown::part(dropDownButton):hover {
           background-color: darkgray;
+        }
+
+        #clist {
+          background-color: lightsteelblue;
+          width: 100%;
         }
 
         /* #rendegion Dropdown Checklist */
@@ -617,7 +623,7 @@ class ControlsApp extends LitMvvmElement {
               checkboxes
               allow-drag-drop>
             </styled-check-list>
-            <span slot="dropDownButtonIcon" class="fa-solid fa-lg fa-caret-down"></span>
+            <span slot="dropDownButtonIcon" class="fa-solid fa-xl fa-caret-down"></span>
           </kds-dropdown>
         </div>
 
