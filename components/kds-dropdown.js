@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-constructor */
 import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 
 function isChildOf(parent, child) {
@@ -20,14 +19,10 @@ export default class KdsDropdown extends LitMvvmElement {
   set connector(value) { this._connector = value; }
 
   _hostLostFocus(e) {
-    if (e.currentTarget === e.relatedTarget || isChildOf(e.currentTarget, e.relatedTarget)) {
-      return;
-    }
+    // we use this flag to handle intermediate lost focus events when clicking
+    // the dropdown button that should not close the dropdown up
+    if (this._controlActive) return;
     this.model.dropped = false;
-  }
-
-  _hostFocused(e) {
-    this.model.dropped = true;
   }
 
   _seltextFocused(e) {
@@ -61,15 +56,24 @@ export default class KdsDropdown extends LitMvvmElement {
     this.model.searchText = e.currentTarget.value;
   }
 
-  _dropdownButtonFocused(e) {
-    // need to exclude this button from the host's focus handler, because its click handler
-    // performs the drop-down toggle function which would be in conflict
-    e.preventDefault();
-    e.stopImmediatePropagation();
+  _dropdownButtonDown(e) {
+    this._controlActive = true;
   }
 
-  _dropdownButtonClicked(e) {
+  _dropdownButtonUp(e) {
+    this._controlActive = false;
+    // in case the button does not become focused focused because the slot contains a non-focusable node
+    e.currentTarget.focus();
     this.model.dropped = !this.model.dropped;
+  }
+
+  _dropdownButtonCancel(e) {
+    this._controlActive = false;
+  }
+
+  _dropDownFocused(e) {
+    // prevent the _hostLostFocus() event from closing up the drop down
+    this.model.dropped = true;
   }
 
   _slotKeydown(e) {
@@ -86,14 +90,12 @@ export default class KdsDropdown extends LitMvvmElement {
   connectedCallback() {
     super.connectedCallback();
     this.renderRoot.host.addEventListener('focusout', this._hostLostFocus);
-    this.renderRoot.host.addEventListener('focusin', this._hostFocused);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     // necessary?
     this.renderRoot.host.removeEventListener('focusout', this._hostLostFocus);
-    this.renderRoot.host.removeEventListener('focusin', this._hostFocused);
     if (this.connector) this.connector.disconnectDropdownSlot();
   }
 
@@ -117,7 +119,7 @@ export default class KdsDropdown extends LitMvvmElement {
           /* height: 0; */
         }
 
-        #dropdown > slot {
+        #mainslot::slotted(*) {
           position: absolute;
           left: 0;
           top: 0;
@@ -164,16 +166,20 @@ export default class KdsDropdown extends LitMvvmElement {
         <button id="dropDownButton" part="dropDownButton"
           type="button"
           tabindex="3"
-          @focusin="${this._dropdownButtonFocused}"
-          @click="${this._dropdownButtonClicked}"
+          @pointerdown="${this._dropdownButtonDown}"
+          @pointerup="${this._dropdownButtonUp}"
+          @pointercancel="${this._dropdownButtonCancel}"
         >
           <slot name="dropDownButtonIcon">
             <span>V</span>
           </slot>
         </button>
       </div>
-      <div id="dropdown" ?hidden=${!this.model.dropped}>
-        <slot tabindex="2" @keydown=${this._slotKeydown}>No dropdown content provided.</slot>
+      <div id="dropdown"
+        @focusin="${this._dropDownFocused}"
+        ?hidden=${!this.model.dropped}
+      >
+        <slot id="mainslot" tabindex="2" @keydown=${this._slotKeydown}>No dropdown content provided.</slot>
       </div>
     `;
     return result;
