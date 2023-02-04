@@ -617,7 +617,11 @@ class ControlsApp extends LitMvvmElement {
 
         <div id="drop-down">
           <h1 class="font-bold text-xl mb-2 text-left">Checklist in Dropdown</h1>
-          <kds-dropdown id="ddown" .model=${this.dropDownModel} .connector=${this.checklistConnector}>
+          <kds-dropdown id="ddown"
+            .model=${this.dropDownModel}
+            .connector=${this.checklistConnector}
+            searchbox
+          >
             <styled-check-list id="clist" class="border border-t-0"
               .model=${this.checklistModel} 
               checkboxes

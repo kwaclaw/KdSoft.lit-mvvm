@@ -1,4 +1,4 @@
-import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement, html, nothing, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 
 function isChildOf(parent, child) {
   if (!child) {
@@ -18,6 +18,18 @@ export default class KdsDropdown extends LitMvvmElement {
   get connector() { return this._connector; }
   set connector(value) { this._connector = value; }
 
+  get searchbox() { return this.hasAttribute('searchbox'); }
+  set searchbox(val) {
+    if (val) this.setAttribute('searchbox', '');
+    else this.removeAttribute('searchbox');
+  }
+
+  // Observed attributes will trigger an attributeChangedCallback, which in turn will cause a re-render to be scheduled!
+  static get observedAttributes() {
+    return [...super.observedAttributes, 'searchbox'];
+  }
+
+
   _hostLostFocus(e) {
     // we use this flag to handle intermediate lost focus events when clicking
     // the dropdown button that should not close the dropdown up
@@ -27,13 +39,17 @@ export default class KdsDropdown extends LitMvvmElement {
 
   _seltextFocused(e) {
     e.preventDefault();
-    const seltext = e.currentTarget;
-    const searchbox = e.currentTarget.nextElementSibling;
+    if (this.searchbox) {
+      const seltext = e.currentTarget;
+      const searchbox = e.currentTarget.nextElementSibling;
 
-    // because of this, seltext will not receive the click and mouseup events
-    seltext.setAttribute('hidden', '');
-    searchbox.removeAttribute('hidden');
-    searchbox.focus();
+      // because of this, seltext will not receive the click and mouseup events
+      seltext.setAttribute('hidden', '');
+      searchbox.removeAttribute('hidden');
+      searchbox.focus();
+    } else {
+      this.model.dropped = true;
+    }
   }
 
   _seltextLostFocus(e) {
@@ -155,14 +171,19 @@ export default class KdsDropdown extends LitMvvmElement {
         >
           ${selText}
         </span>
-        <input id="searchbox" part="searchbox"
-          type="text"
-          tabindex="1"
-          placeholder="search unselected entries"
-          @focus="${this._searchboxFocused}"
-          @blur="${this._searchboxLostFocus}"
-          @input="${this._searchTextChanged}"
-          hidden />
+        ${this.searchbox
+          ? html`
+            <input id="searchbox" part="searchbox"
+              type="text"
+              tabindex="1"
+              placeholder="search unselected entries"
+              @focus="${this._searchboxFocused}"
+              @blur="${this._searchboxLostFocus}"
+              @input="${this._searchTextChanged}"
+              hidden />
+            `
+          : nothing
+        }
         <button id="dropDownButton" part="dropDownButton"
           type="button"
           tabindex="3"
