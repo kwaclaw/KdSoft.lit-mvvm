@@ -418,15 +418,13 @@ class ControlsApp extends LitMvvmElement {
 
   //#region carousel and switcher
 
-  _getOrientationHeader(vertical, caption, changeHandler) {
+  _getOrientationHeader(vertical, changeHandler) {
     return html`
-      <h1 class="flex font-bold text-xl mb-2 text-left items-center">${caption}
-        <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
-          .checked=${vertical}
-          @change=${changeHandler}>
-          Orientation Vertical
-        </input>
-      </h1>
+      <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
+        .checked=${vertical}
+        @change=${changeHandler}>
+        Orientation Vertical
+      </input>
     `;
   }
 
@@ -575,11 +573,11 @@ class ControlsApp extends LitMvvmElement {
 
         #switcher .tab.active {
           background-color: darkgrey;
-          transform: scale(1.1) translate(0, -4%);
+          transform: scale(1.1) translate(0, var(--active-translate));
         }
 
         #switcher .tab.active.vertical {
-          transform: scale(1.1) translate(-4%, 0);
+          transform: scale(1.1) translate(var(--active-translate), 0);
         }
 
         /* #rendegion Switcher */
@@ -646,15 +644,31 @@ class ControlsApp extends LitMvvmElement {
         </div>
 
         <div id="carousel">
-          ${this._getOrientationHeader(this.carouselModel.vertical, 'Carousel', this.sliderVerticalChanged)}
+          <h1 class="flex font-bold text-xl mb-2 text-left items-center">Carousel
+            ${this._getOrientationHeader(this.carouselModel.vertical, this.sliderVerticalChanged)}
+          </h1>
           <kds-carousel .model=${this.carouselModel}>
             ${this.carouselModel.items.map((item, index) => html`<img slot="item_${index}" src=${item.href}></img>`)}
           </kds-carousel>
         </div>
 
         <div id="switcher">
-          ${this._getOrientationHeader(this.switcherModel.vertical, 'Tab Container', this.switcherVerticalChanged)}
-          <kds-tab-container .model=${this.switcherModel} class="${this.switcherModel.vertical ? 'vertical' : ''}">
+          <h1 class="flex font-bold text-xl mb-2 text-left items-center">Tab Container
+            <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
+              .checked=${this.switcherModel.reverse}
+              @change=${() => {this.switcherModel.reverse = !this.switcherModel.reverse; }}>
+              Position Reverse
+            </input>
+            ${this._getOrientationHeader(this.switcherModel.vertical, this.switcherVerticalChanged)}
+          </h1>
+          <kds-tab-container
+            .model=${this.switcherModel}
+            class="${this.switcherModel.vertical ? 'vertical' : ''}">
+            <style>
+              button {
+                --active-translate: ${this.switcherModel.reverse ? '4%' : '-4%'};
+              }
+            </style>
             ${this.switcherModel.items.map((item, index) => {
               const activeClass = this.switcherModel.activeIndex === index ? 'active' : '';
               const verticalClass = this.switcherModel.vertical ? 'vertical' : '';

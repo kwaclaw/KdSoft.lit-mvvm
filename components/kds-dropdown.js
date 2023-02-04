@@ -29,7 +29,6 @@ export default class KdsDropdown extends LitMvvmElement {
     return [...super.observedAttributes, 'searchbox'];
   }
 
-
   _hostLostFocus(e) {
     // we use this flag to handle intermediate lost focus events when clicking
     // the dropdown button that should not close the dropdown up
