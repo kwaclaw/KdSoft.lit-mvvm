@@ -160,7 +160,7 @@ export default class StyledCheckList extends LitMvvmElement {
 
   render() {
     return html`
-      <kds-list .model=${this.model}>
+      <kds-list .model=${this.model} exportparts="ul:list">
         ${repeat(this.model.filteredItems,
           entry => this.model.getItemId(entry.item),
           entry => html`<kds-list-item tabindex="0"

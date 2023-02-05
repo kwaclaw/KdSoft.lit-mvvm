@@ -518,6 +518,11 @@ class ControlsApp extends LitMvvmElement {
           width: 100%;
         }
 
+        #clist::part(list) {
+          height: 20ex; /* roughly 4ex per line */
+          overflow-y: auto;
+        }
+
         /* #rendegion Dropdown Checklist */
 
         /* #region Treeview */
