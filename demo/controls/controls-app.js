@@ -1,6 +1,6 @@
 import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement, html, css, nothing } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 
 // this import will also register web components in '@kdsoft/lit-mvvm-components'
 import
@@ -199,7 +199,7 @@ class ControlsApp extends LitMvvmElement {
 
     this.carouselModel.items = this.model.sliderVertical ? verticalImageModels : horizontalImageModels;
     this.carouselModel.activeIndex = 0;
-    this.switcherModel.items = this.model.sliderVertical ? verticalImageModels : horizontalImageModels;
+    this.switcherModel.items = this.model.switcherVertical ? verticalImageModels : horizontalImageModels;
     this.switcherModel.activeIndex = 0;
 
     this.newNodeId = 0;
@@ -429,13 +429,13 @@ class ControlsApp extends LitMvvmElement {
   }
 
   sliderVerticalChanged(e) {
-    this.carouselModel.vertical = !this.carouselModel.vertical;
-    this.carouselModel.items = this.carouselModel.vertical ? verticalImageModels : horizontalImageModels;
+    this.model.sliderVertical = !this.model.sliderVertical;
+    this.carouselModel.items = this.model.sliderVertical ? verticalImageModels : horizontalImageModels;
   }
 
   switcherVerticalChanged(e) {
-    this.switcherModel.vertical = !this.switcherModel.vertical;
-    this.switcherModel.items = this.switcherModel.vertical ? verticalImageModels : horizontalImageModels;
+    this.model.switcherVertical = !this.model.switcherVertical;
+    this.switcherModel.items = this.model.switcherVertical ? verticalImageModels : horizontalImageModels;
   }
 
   //#endregion carousel and switcher
@@ -562,7 +562,7 @@ class ControlsApp extends LitMvvmElement {
           overflow-y: visible;
         }
 
-        #switcher kds-tab-container.vertical {
+        #switcher kds-tab-container[vertical] {
           overflow-x: visible;
           overflow-y: clip;
         }
@@ -576,7 +576,7 @@ class ControlsApp extends LitMvvmElement {
           transform: scale(1.1) translate(0, var(--active-translate));
         }
 
-        #switcher .tab.active.vertical {
+        #switcher kds-tab-container[vertical] .tab.active {
           transform: scale(1.1) translate(var(--active-translate), 0);
         }
 
@@ -645,9 +645,9 @@ class ControlsApp extends LitMvvmElement {
 
         <div id="carousel">
           <h1 class="flex font-bold text-xl mb-2 text-left items-center">Carousel
-            ${this._getOrientationHeader(this.carouselModel.vertical, this.sliderVerticalChanged)}
+            ${this._getOrientationHeader(this.model.sliderVertical, this.sliderVerticalChanged)}
           </h1>
-          <kds-carousel .model=${this.carouselModel}>
+          <kds-carousel .model=${this.carouselModel} ?vertical=${this.model.sliderVertical}>
             ${this.carouselModel.items.map((item, index) => html`<img slot="item_${index}" src=${item.href}></img>`)}
           </kds-carousel>
         </div>
@@ -655,23 +655,25 @@ class ControlsApp extends LitMvvmElement {
         <div id="switcher">
           <h1 class="flex font-bold text-xl mb-2 text-left items-center">Tab Container
             <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
-              .checked=${this.switcherModel.reverse}
-              @change=${() => {this.switcherModel.reverse = !this.switcherModel.reverse; }}>
-              Position Reverse
+              .checked=${this.model.switcherReverse}
+              @change=${() => { this.model.switcherReverse = !this.model.switcherReverse; }}>
+              Position Opposite
             </input>
-            ${this._getOrientationHeader(this.switcherModel.vertical, this.switcherVerticalChanged)}
+            ${this._getOrientationHeader(this.model.switcherVertical, this.switcherVerticalChanged)}
           </h1>
-          <kds-tab-container
+          <kds-tab-container 
             .model=${this.switcherModel}
-            class="${this.switcherModel.vertical ? 'vertical' : ''}">
+            ?vertical=${this.model.switcherVertical}
+            ?reverse=${this.model.switcherReverse}
+          >
             <style>
               button {
-                --active-translate: ${this.switcherModel.reverse ? '4%' : '-4%'};
+                --active-translate: ${this.model.switcherReverse ? '4%' : '-4%'};
               }
             </style>
             ${this.switcherModel.items.map((item, index) => {
               const activeClass = this.switcherModel.activeIndex === index ? 'active' : '';
-              const verticalClass = this.switcherModel.vertical ? 'vertical' : '';
+              const verticalClass = this.model.switcherVertical ? 'vertical' : '';
               return html`
                 <button type="button" slot="tab_${index}"
                   @click=${() => { this.switcherModel.activeIndex = index; }}

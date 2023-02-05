@@ -20,18 +20,18 @@ const orientationClasses = {
 };
 
 export default class KdsNavContainer extends LitMvvmElement {
-  get orientation() { return this.getAttribute('orientation') || 'horizontal'; }
-  set orientation(val) {
-    if (val === 'horizontal' || val === 'vertical') this.setAttribute('orientation', val);
-    else this.removeAttribute('orientation');
+  get vertical() { return this.hasAttribute('vertical'); }
+  set vertical(val) {
+    if (val) this.setAttribute('vertical', '');
+    else this.removeAttribute('vertical');
   }
 
   static get observedAttributes() {
-    return [...super.observedAttributes, 'orientation'];
+    return [...super.observedAttributes, 'vertical'];
   }
 
   _scrollToActiveItem(itemsControl, activeIndex) {
-    if (this.orientation === 'vertical') {
+    if (this.vertical) {
       const scrollPoint = itemsControl.clientHeight * activeIndex;
       itemsControl.scroll({ top: scrollPoint, behavior: 'smooth' });
     } else {
@@ -176,7 +176,7 @@ export default class KdsNavContainer extends LitMvvmElement {
   }
 
   render() {
-    const classes = this.orientation === 'vertical' ? orientationClasses.vertical : orientationClasses.horizontal;
+    const classes = this.vertical ? orientationClasses.vertical : orientationClasses.horizontal;
     return html`
       <div id="container" @keydown=${this._itemsKeyDown}>
         <div class="${classes.header}">

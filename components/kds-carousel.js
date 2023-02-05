@@ -2,6 +2,16 @@
 import './kds-nav-container.js';
 
 export default class KdsCarousel extends LitMvvmElement {
+  get vertical() { return this.hasAttribute('vertical'); }
+  set vertical(val) {
+    if (val) this.setAttribute('vertical', '');
+    else this.removeAttribute('vertical');
+  }
+
+  static get observedAttributes() {
+    return [...super.observedAttributes, 'vertical'];
+  }
+
   carouselClickDown(e) {
     e.preventDefault();
     e.stopImmediatePropagation();
@@ -112,8 +122,8 @@ export default class KdsCarousel extends LitMvvmElement {
     return html`
       <style>
         :host {
-          --height: ${cm.vertical ? 'var(--itemWidth, 600px)' : 'var(--itemHeight, 300px)'};
-          --width: ${cm.vertical ? 'var(--itemHeight, 300px)' : 'var(--itemWidth, 600px)'};
+          --height: ${this.vertical ? 'var(--itemWidth, 600px)' : 'var(--itemHeight, 300px)'};
+          --width: ${this.vertical ? 'var(--itemHeight, 300px)' : 'var(--itemWidth, 600px)'};
         }
       </style>
       <svg style="display:none" version="1.1"
@@ -158,10 +168,10 @@ export default class KdsCarousel extends LitMvvmElement {
       </svg>
 
       <kds-nav-container class="carousel"
-        orientation=${cm.vertical ? 'vertical' : 'horizontal'}
+        ?vertical=${this.vertical}
         .model=${cm}
       >
-        ${cm.vertical
+        ${this.vertical
           ? this._getVerticalAngles(firstAngleClass, lastAngleClass)
           : this._getHorizontalAngles(firstAngleClass, lastAngleClass)
         }

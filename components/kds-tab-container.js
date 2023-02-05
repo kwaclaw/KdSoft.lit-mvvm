@@ -1,6 +1,22 @@
 ﻿import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
 
 export default class KdsTabContainer extends LitMvvmElement {
+  get vertical() { return this.hasAttribute('vertical'); }
+  set vertical(val) {
+    if (val) this.setAttribute('vertical', '');
+    else this.removeAttribute('vertical');
+  }
+
+  get reverse() { return this.hasAttribute('reverse'); }
+  set reverse(val) {
+    if (val) this.setAttribute('reverse', '');
+    else this.removeAttribute('reverse');
+  }
+
+  static get observedAttributes() {
+    return [...super.observedAttributes, 'vertical', 'reverse'];
+  }
+
   shouldRender() {
     return !!this.model;
   }
@@ -26,12 +42,12 @@ export default class KdsTabContainer extends LitMvvmElement {
 
   render() {
     const sm = this.model;
-    const tabSlot = sm.vertical
-      ? (sm.reverse ? 'right-bar' : 'left-bar')
-      : (sm.reverse ? 'footer' : 'header');
-    const tabClass = sm.vertical ? 'vertical-tabs' : 'horizontal-tabs';
+    const tabSlot = this.vertical
+      ? (this.reverse ? 'right-bar' : 'left-bar')
+      : (this.reverse ? 'footer' : 'header');
+    const tabClass = this.vertical ? 'vertical-tabs' : 'horizontal-tabs';
     return html`
-      <kds-nav-container part="container" .model=${sm} orientation="${sm.vertical ? 'vertical' : 'horizontal'}">
+      <kds-nav-container part="container" .model=${sm} ?vertical=${this.vertical}>
         <div slot="${tabSlot}" class="${tabClass}">
           ${sm.items.map((item, itemIndex) => html`<slot name="tab_${itemIndex}"></slot>`)}
         </div>
