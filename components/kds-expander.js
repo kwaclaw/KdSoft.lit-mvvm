@@ -1,4 +1,4 @@
-import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
 
 function updateExpansion(element, doExpand) {
   // get the height of the element's inner content, regardless of its actual size

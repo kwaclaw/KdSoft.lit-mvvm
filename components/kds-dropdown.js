@@ -1,4 +1,4 @@
-import { LitMvvmElement, html, nothing, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement, html, nothing, css } from '@kdsoft/lit-mvvm';
 
 function isChildOf(parent, child) {
   if (!child) {

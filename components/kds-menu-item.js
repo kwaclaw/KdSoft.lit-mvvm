@@ -1,5 +1,5 @@
 ﻿/* eslint-disable indent */
-import { LitMvvmElement, html, css, nothing } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement, html, css, nothing } from '@kdsoft/lit-mvvm';
 
 export default class KdsMenuItem extends LitMvvmElement {
   static get styles() {

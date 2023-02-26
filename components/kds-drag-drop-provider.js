@@ -69,7 +69,7 @@ function dragEnter(e) {
         break;
     }
 
-    console.log('Enter: ', element);
+    //console.log('Enter: ', element);
   }
 }
 
@@ -82,7 +82,7 @@ function checkLeave(element) {
 
   const newDragEnterCount = dragEnterCount - 1;
   if (newDragEnterCount < 1) {
-    console.log('Leave: ', element);
+    //console.log('Leave: ', element);
     element._kdsDragEnterCount = 0;
     return true;
   }

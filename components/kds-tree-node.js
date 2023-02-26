@@ -1,4 +1,4 @@
-import { LitMvvmElement, html, nothing, BatchScheduler, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement, html, nothing, BatchScheduler, css } from '@kdsoft/lit-mvvm';
 import './kds-expander.js';
 
 const _dragDrop = new WeakMap();

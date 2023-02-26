@@ -33,7 +33,7 @@ export class LitMvvmElement extends LitBaseElement {
     super();
     this.renderOptions = { host: this };
     this.__childPart = undefined;
-    // we can use a global scheduler if it is named _kds.scheduler
+    // we can use a global scheduler if it is named _kd_soft.scheduler
     _scheduler.set(this, (window._kd_soft.scheduler) || (r => r()));
   }
 
