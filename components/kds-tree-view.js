@@ -1,15 +1,8 @@
 import { repeat } from 'lit-html/directives/repeat.js';
-import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement, html, css, nothing } from '@kdsoft/lit-mvvm';
 import KdsDragDropProvider from './kds-drag-drop-provider.js';
-import './kds-tree-node.js';
 
 export default class KdsTreeView extends LitMvvmElement {
-  constructor() {
-    super();
-    this.getItemTemplate = () => html``;
-    this.getStyles = () => [css``.styleSheet];
-  }
-
   get allowDragDrop() { return this.hasAttribute('allow-drag-drop'); }
   set allowDragDrop(val) {
     if (val) this.setAttribute('allow-drag-drop', '');
@@ -42,11 +35,6 @@ export default class KdsTreeView extends LitMvvmElement {
 
   shouldRender() {
     return !!this.model;
-  }
-
-  beforeFirstRender() {
-    const adopted = this.renderRoot.adoptedStyleSheets;
-    this.renderRoot.adoptedStyleSheets = [...adopted, ...this.getStyles()];
   }
 
   moveNode(e) {
@@ -82,6 +70,10 @@ export default class KdsTreeView extends LitMvvmElement {
     ];
   }
 
+  renderNode(nodeModel) {
+    return nothing;
+  }
+
   // We need to build the final tree structure here because we need to expose all slots,
   // including nested slots, at the same time so that we can style them together.
   createTreeView(nodeModel) {
@@ -91,7 +83,7 @@ export default class KdsTreeView extends LitMvvmElement {
         .dragDropProvider=${this._dragDrop}
         @kds-expand=${e => this.expand(e)}
       >
-        ${this.getItemTemplate(nodeModel)}
+        ${this.renderNode(nodeModel)}
         <div slot="children">
           ${repeat(
             nodeModel.children,

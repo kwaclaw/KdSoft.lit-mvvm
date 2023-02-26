@@ -11,8 +11,8 @@ import
   KdsListModel,
   KdsTreeNodeModel
 } from '@kdsoft/lit-mvvm-components';
-//import './styled-tree-view.js';
 import './styled-check-list.js';
+import './demo-tree-view.js';
 import './demo-tree-view-menu.js';
 
 import checkboxStyles from './styles/kds-checkbox-styles.js';
@@ -58,47 +58,6 @@ const verticalImageModels = [
   { href: 'images/933-300x600.jpg' },
   { href: 'images/424-300x600.jpg' }
 ];
-
-const treeViewStyleSheet = css`
-  .node-edit:focus {
-    border-color: lightgrey;
-  }
-
-  .expander-grip {
-    vertical-align: middle;
-  }
-
-  .expander-grip:hover {
-    cursor: grab;
-  }
-
-  .expander-icon {
-    vertical-align: middle;
-  }
-
-  .expander-icon i {
-    transition: transform var(--trans-time) ease;
-  }
-
-  .expander-icon.rotated i {
-    transform: rotate(90deg);
-  }
-
-  kds-tree-node::part(expander-content) {
-    transition: height var(--trans-time) ease;
-  }
-
-  kds-tree-node.kds-droppable::part(expander) {
-    outline: 2px solid lightblue;
-    outline-offset: -2px;
-  }
-
-  kds-tree-node.kds-droppable-before::part(drop-before-target),
-  kds-tree-node.kds-droppable-after::part(drop-after-target) {
-    outline: 2px solid lightblue;
-    outline-offset: -2px;
-  }
-`.styleSheet;
 
 class ControlsApp extends LitMvvmElement {
   constructor() {
@@ -228,51 +187,6 @@ class ControlsApp extends LitMvvmElement {
 
   _treeNodeEditTextChanged(e, nodeModel) {
     nodeModel.text = e.currentTarget.value;
-  }
-
-  // this needs to be bound to the controls-app instance because of the reference to
-  // local eve3nt han dlers _treeNodeEditLostFocus and _treeNodeEditTextChanged
-  _getTreeviewItemTemplate(nodeModel) {
-    let cls = '';
-    switch (nodeModel.type) {
-      case 'gc':
-        cls += 'text-red-600';
-        break;
-      case 'c':
-        cls += 'text-blue-600';
-        break;
-      case 'r':
-        cls += 'text-black-600';
-        break;
-      default:
-        break;
-    }
-
-    return html`
-      <span slot="content" class="node-content">
-        <input type="text" placeholder="node text"
-          class="my-auto p-1 flex-grow node-edit"
-          tabindex="1"
-          @blur="${e => this._treeNodeEditLostFocus(e, nodeModel)}"
-          @input="${e => this._treeNodeEditTextChanged(e, nodeModel)}"
-          hidden />
-        <span class=${cls}>${nodeModel.text}</span>
-      </span>
-      <span slot="expander-grip" class="expander-grip">
-        <i class="fas fa-xs fa-ellipsis-v text-gray-400"></i>
-      </span>
-      <span slot="expander-icon" class="expander-icon ${nodeModel._expanded ? 'rotated' : ''}">
-        <i class="fa-solid fa-lg fa-caret-right ${nodeModel.children.length ? 'text-blue-600' : 'text-blue-200'}"></i>
-      </span>
-    `;
-  }
-
-  _getTreeviewStyles() {
-    return [
-      tailwindStyles.styleSheet,
-      fontAwesomeStyles.styleSheet,
-      treeViewStyleSheet
-    ];
   }
 
   tvDragDropChanged(e) {
@@ -578,13 +492,10 @@ class ControlsApp extends LitMvvmElement {
             <input type="checkbox" class="kds-checkbox align-text-bottom" @change=${this.tvDragDropChanged}/>
             with context menu${this.model.dragDropEnabled ? ' and with' : ', but without'} drag and drop
           </h1>
-          <!-- invoke getContentTemplate as lambda, to force this component to be "this" in the method -->
-          <kds-tree-view id="tv" class="py-0"
+          <demo-tree-view id="tv" class="py-0"
             .model=${this.tvRoot}
-            .getItemTemplate=${this._getTreeviewItemTemplate.bind(this)}
-            .getStyles=${this._getTreeviewStyles}
             ?allow-drag-drop=${this.model.dragDropEnabled}
-          ></kds-tree-view>
+          ></demo-tree-view>
         </div>
 
         <div id="carousel">
