@@ -16,11 +16,7 @@ import './demo-check-list.js';
 import './demo-tree-view.js';
 import './demo-tree-view-menu.js';
 
-import checkboxStyles from './styles/kds-checkbox-styles.js';
-import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
-// since tailwind classes are generated only as used, we cannot import them
-// from a prebuilt library, but need to generate the ones we use locally (npm run build)
-import tailwindStyles from './styles/tailwind-styles.js';
+import sharedStyles from './shared-styles.js';
 
 function getClosestTreeNode(path) {
   for (let indx = 0; indx < path.length; indx += 1) {
@@ -302,9 +298,7 @@ class ControlsApp extends LitMvvmElement {
 
   static get styles() {
     return [
-      tailwindStyles,
-      checkboxStyles,
-      fontAwesomeStyles,
+      ...sharedStyles,
       css`
         :host {
           display: block;

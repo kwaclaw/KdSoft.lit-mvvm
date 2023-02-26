@@ -1,15 +1,12 @@
 import { html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import { KdsContextMenu } from '@kdsoft/lit-mvvm-components';
-import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
-import tailwindStyles from './styles/tailwind-styles.js';
-
+import sharedStyles from './shared-styles.js';
 
 export default class DemoTreeViewMenu extends KdsContextMenu {
   static get styles() {
     return [
       ...super.styles,
-      tailwindStyles,
-      fontAwesomeStyles,
+      ...sharedStyles,
       css`
         kds-menu-item::part(menu) {
           min-width: 10em;

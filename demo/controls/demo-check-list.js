@@ -1,9 +1,7 @@
 import { classMap } from 'lit-html/directives/class-map.js';
 import { html, nothing, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import { KdsDragDropProvider, KdsList } from '@kdsoft/lit-mvvm-components';
-import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
-import tailwindStyles from './styles/tailwind-styles.js';
-import checkboxStyles from './styles/kds-checkbox-styles.js';
+import sharedStyles from './shared-styles.js';
 
 const arrowBase = { 'fa-solid': true, 'fa-lg': true, 'text-gray-500': true };
 
@@ -94,9 +92,7 @@ export default class DemoCheckList extends KdsList {
   static get styles() {
     return [
       ...super.styles,
-      tailwindStyles,
-      fontAwesomeStyles,
-      checkboxStyles,
+      ...sharedStyles,
       css`
         :host {
           display: block;

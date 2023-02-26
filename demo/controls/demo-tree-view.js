@@ -1,8 +1,6 @@
 import { html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 import { KdsTreeView } from '@kdsoft/lit-mvvm-components';
-import fontAwesomeStyles from './styles/fontawesome/css/all-styles.js';
-import tailwindStyles from './styles/tailwind-styles.js';
-
+import sharedStyles from './shared-styles.js';
 
 export default class DemoTreeView extends KdsTreeView {
   nodeEditLostFocus(e) {
@@ -20,8 +18,7 @@ export default class DemoTreeView extends KdsTreeView {
   static get styles() {
     return [
       ...super.styles,
-      tailwindStyles,
-      fontAwesomeStyles,
+      ...sharedStyles,
       css`
         :host {
           --trans-time: 300ms;
@@ -96,7 +93,6 @@ export default class DemoTreeView extends KdsTreeView {
           hidden />
         <span class=${cls}>${nodeModel.text}</span>
       </span>
-
       <span slot="expander-grip" class="expander-grip">
         <i class="fas fa-xs fa-ellipsis-v text-gray-400"></i>
       </span>
