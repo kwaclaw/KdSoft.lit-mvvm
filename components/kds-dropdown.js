@@ -117,46 +117,51 @@ export default class KdsDropdown extends LitMvvmElement {
   static get styles() {
     return [
       css`
-        :host {
-          display: inline-block;
-          line-height: 1.25em;
-        }
+      :host {
+        display: inline-block;
+        line-height: 1.25em;
+      }
 
-        #container {
-          display: flex;
-          align-items: baseline;
-          justify-items: flex-end;
-        }
+      #container {
+        display: flex;
+        align-items: baseline;
+        justify-items: flex-end;
+      }
 
-        #dropdown {
-          position: relative;
-          z-index: 50;
-          /* height: 0; */
-        }
+      #dropdown {
+        position: relative;
+        z-index: 50;
+        /* height: 0; */
+      }
 
-        #mainslot::slotted(*) {
-          position: absolute;
-          left: 0;
-          top: 0;
-        }
+      #mainslot::slotted(*) {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
 
-        #seltext {
-          pointer-events: auto;
-          margin-top: auto;
-          margin-bottom: auto;
-          flex-grow: 1;
-          white-space: nowrap;
-          overflow-x: hidden;
-        }
+      #seltext {
+        pointer-events: auto;
+        margin-top: auto;
+        margin-bottom: auto;
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow-x: hidden;
+      }
 
-        #searchbox {
-          margin-top: auto;
-          margin-bottom: auto;
-          flex-grow: 1;
-        }
-      `,
-    ];
-  }
+      /* empty span should have a non-zero height */
+      #seltext::before {
+        content: '\u200b'; /* unicode zero width space character */
+      }
+      
+      #searchbox {
+        margin-top: auto;
+        margin-bottom: auto;
+        flex-grow: 1;
+      }
+    `
+  ];
+}
 
   render() {
     const selText = this.model.selectedText;
