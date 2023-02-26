@@ -174,10 +174,10 @@ There are several ways of styling a component from the outside
    * Nested parts need to be exported explicitly using the "exportedparts" attribute.
 
 3. Inject a stylesheet into the component
-   * A stylesheet can be added like this
+   * A stylesheet can be added like this, in the beforeFirstRender() override:
    `this.renderRoot.adoptedStyleSheets = [...this.renderRoot.adoptedStyleSheets, newStyleSheet];`
 
 4. Note: <slot> vs callbacks
    * In a hierarchical structure like a tree view it is hard to syntactically add slotted components especially when the tree view is dynamically constructed based on a recursive hierarchical model.
-     * One can either delay construction of the structure to the point where slots are filled. See `demo-context-menu.js` in the `demo/controls` directory.
-     * Or one can use a callback function to inject a template instead of populating a slot. See `stylable-context-menu.js` in the `demo/controls` directory. In this case it is advised to also inject the associated style sheets.
+     * One can use inheritance and specify a "renderNode(nodeModel)" method to override in a derived class. See `demo-tree-view-menu.js` in the `demo/controls` directory.
+     * Or one can use a callback function - passed as a property - to inject a template instead of populating a slot. In this case it is advised to also inject the associated style sheets, if applicable (see above).
