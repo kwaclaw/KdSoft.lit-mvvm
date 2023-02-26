@@ -7,7 +7,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.3.0",
     "@kdsoft/lit-mvvm": "../..",
-    "@kdsoft/lit-mvvm-components": "file:../../components",
+    "@kdsoft/lit-mvvm-components": "../../components",
     "@nx-js/queue-util": "^1.1.1"
   },
   "browserslist": [

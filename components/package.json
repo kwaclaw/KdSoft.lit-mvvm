@@ -28,7 +28,7 @@
     "url": "https://github.com/kwaclaw/KdSoft.lit-mvvm.git"
   },
   "dependencies": {
-    "@kdsoft/lit-mvvm": "..",
+    "@kdsoft/lit-mvvm": "^2.1.4",
     "@nx-js/queue-util": "^1.1.1"
   },
   "browserslist": [
