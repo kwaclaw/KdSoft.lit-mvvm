@@ -280,7 +280,7 @@ class ControlsApp extends LitMvvmElement {
 
   _getOrientationHeader(vertical, changeHandler) {
     return html`
-      <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
+      <input type="checkbox" class="ml-auto mr-1 kds-checkbox align-text-bottom"
         .checked=${vertical}
         @change=${changeHandler}>
         Orientation Vertical
@@ -510,7 +510,7 @@ class ControlsApp extends LitMvvmElement {
 
         <div id="switcher">
           <h1 class="flex font-bold text-xl mb-2 text-left items-center">Tab Container
-            <input type="checkbox" class="ml-auto mr-1 kdsoft-checkbox align-text-bottom"
+            <input type="checkbox" class="ml-auto mr-1 kds-checkbox align-text-bottom"
               .checked=${this.model.switcherReverse}
               @change=${() => { this.model.switcherReverse = !this.model.switcherReverse; }}>
               Position Opposite
