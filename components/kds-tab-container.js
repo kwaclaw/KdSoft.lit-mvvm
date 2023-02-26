@@ -1,12 +1,7 @@
-﻿import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
+﻿import { html, nothing, css } from '@kdsoft/lit-mvvm';
+import KdsNavLayout from './kds-nav-layout.js';
 
-export default class KdsTabContainer extends LitMvvmElement {
-  get vertical() { return this.hasAttribute('vertical'); }
-  set vertical(val) {
-    if (val) this.setAttribute('vertical', '');
-    else this.removeAttribute('vertical');
-  }
-
+export default class KdsTabContainer extends KdsNavLayout {
   get reverse() { return this.hasAttribute('reverse'); }
   set reverse(val) {
     if (val) this.setAttribute('reverse', '');
@@ -14,15 +9,16 @@ export default class KdsTabContainer extends LitMvvmElement {
   }
 
   static get observedAttributes() {
-    return [...super.observedAttributes, 'vertical', 'reverse'];
+    return [...super.observedAttributes, 'reverse'];
   }
 
   shouldRender() {
-    return !!this.model;
+    return true;
   }
 
   static get styles() {
     return [
+      ...super.styles,
       css`
         :host {
           display: block;
@@ -40,21 +36,28 @@ export default class KdsTabContainer extends LitMvvmElement {
     ];
   }
 
-  render() {
-    const sm = this.model;
-    const tabSlot = this.vertical
-      ? (this.reverse ? 'right-bar' : 'left-bar')
-      : (this.reverse ? 'footer' : 'header');
-    const tabClass = this.vertical ? 'vertical-tabs' : 'horizontal-tabs';
-    return html`
-      <kds-nav-container part="container" .model=${sm} ?vertical=${this.vertical}>
-        <div slot="${tabSlot}" class="${tabClass}">
-          ${sm.items.map((item, itemIndex) => html`<slot name="tab_${itemIndex}"></slot>`)}
-        </div>
-        <!-- forwarding first item slot from grand-child to parent -->
-        <slot name="item" slot="item_0"></slot>
-      </kds-nav-container>
-    `;
+  get header() {
+    return this.vertical
+      ? nothing
+      : (this.reverse ? nothing : html`<slot class="horizontal-tabs" name="tabs"></slot>`);
+  }
+
+  get left() {
+    return this.vertical
+      ? (this.reverse ? nothing : html`<slot class="vertical-tabs" name="tabs"></slot>`)
+      : nothing;
+  }
+
+  get footer() {
+    return this.vertical
+      ? nothing
+      : (this.reverse ? html`<slot class="horizontal-tabs" name="tabs"></slot>` : nothing);
+  }
+
+  get right() {
+    return this.vertical
+      ? (this.reverse ? html`<slot class="vertical-tabs" name="tabs"></slot>` : nothing)
+      : nothing;
   }
 }
 

@@ -1,15 +1,34 @@
-﻿import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
-import './kds-nav-container.js';
+﻿import { html, css, nothing } from '@kdsoft/lit-mvvm';
+import KdsNavLayout from './kds-nav-layout.js';
 
-export default class KdsCarousel extends LitMvvmElement {
-  get vertical() { return this.hasAttribute('vertical'); }
-  set vertical(val) {
-    if (val) this.setAttribute('vertical', '');
-    else this.removeAttribute('vertical');
+export default class KdsCarousel extends KdsNavLayout {
+  _scrollToActiveItem(itemsControl, activeIndex) {
+    if (this.vertical) {
+      const scrollPoint = itemsControl.clientHeight * activeIndex;
+      itemsControl.scroll({ top: scrollPoint, behavior: 'smooth' });
+    } else {
+      const scrollPoint = itemsControl.clientWidth * activeIndex;
+      itemsControl.scroll({ left: scrollPoint, behavior: 'smooth' });
+    }
   }
 
-  static get observedAttributes() {
-    return [...super.observedAttributes, 'vertical'];
+  _itemsKeyDown(e) {
+    switch (e.key) {
+      case 'ArrowDown':
+      case 'ArrowRight': {
+        this.model.incrementActiveIndex();
+        break;
+      }
+      case 'ArrowUp':
+      case 'ArrowLeft': {
+        this.model.decrementActiveIndex();
+        break;
+      }
+      default:
+        // ignore, let bubble up
+        return;
+    }
+    e.preventDefault();
   }
 
   carouselClickDown(e) {
@@ -30,27 +49,39 @@ export default class KdsCarousel extends LitMvvmElement {
 
   static get styles() {
     return [
+      ...super.styles,
       css`
         :host {
-          display: block;
-        }
-
-        .carousel {
           height: var(--height);
           width: var(--width);
         }
 
-        .carousel > div[slot] {
+        #container > div {
+          position: relative;
           display: flex;
           align-items: center;
           justify-content: center;
           height: 100%;
           width: 3rem;
-          padding: 0.3rem;
+          padding: 0;
           /* opacity:0.3; */
         } 
 
-        .carousel > div[slot] > svg {
+        #container.vertical > div {
+          flex-direction: column;
+          width: 100%;
+          height: 3rem;
+        } 
+
+        #container .angle {
+          position: relative;
+          display: flex;
+          height: 100%;
+          width: 100%;
+          padding: 0.3rem;
+        }
+
+        #container .angle > svg {
           display: none;
           fill: gray;
           fill-opacity: 0.3;
@@ -58,67 +89,86 @@ export default class KdsCarousel extends LitMvvmElement {
           stroke: white;
           width: 100%;
           height: 50%;
-        } 
+          margin: auto;
+        }
 
-        .carousel > div[slot].vertical {
-          flex-direction: column;
-          width: 100%;
-          height: 3rem;
-        } 
-
-        .carousel > div[slot].vertical > svg {
+        #container.vertical .angle > svg {
           width: 50%;
           height: 100%;
         } 
 
-        .carousel > div[slot]:hover > svg {
+        #container > div:hover svg {
           display: unset;
         }
         
-        .carousel > div[slot].end-item {
+        #container div.end-item {
           display:none;
         }
       `,
     ];
   }
 
-  _getHorizontalAngles(firstAngleClass, lastAngleClass) {
-    return html`
-      <div slot="left" class="${firstAngleClass}">
-        <svg @click=${this.carouselClickDown}>
-          <use href="#angle-left"></use>
-        </svg>
-      </div>
-      <div slot="right" class="${lastAngleClass}">
-        <svg @click=${this.carouselClickUp}>
-          <use href="#angle-right"></use>
-        </svg>
-      </div>`;
-  }
-
-  _getVerticalAngles(firstAngleClass, lastAngleClass) {
-    return html`
-      <div slot="top" class="vertical ${firstAngleClass}">
-        <svg @click=${this.carouselClickDown}>
-          <use href="#angle-top"></use>
-        </svg>
-      </div>
-      <div slot="bottom" class="vertical ${lastAngleClass}">
-        <svg @click=${this.carouselClickUp}>
-          <use href="#angle-bottom"></use>
-        </svg>
-      </div>`;
-  }
-
   /* eslint-disable indent */
 
-  render() {
+  get header() {
+    const cm = this.model;
+    const indx = cm.activeIndex;
+    const firstAngleClass = indx <= 0 ? 'end-item' : '';
+    return this.vertical
+      ? html`
+        <div class="angle ${firstAngleClass}">
+          <svg @click=${this.carouselClickDown}>
+            <use href="#angle-top"></use>
+          </svg>
+        </div>`
+      : nothing;
+  }
+
+  get left() {
+    const cm = this.model;
+    const indx = cm.activeIndex;
+    const firstAngleClass = indx <= 0 ? 'end-item' : '';
+    return this.vertical
+      ? nothing
+      : html`
+        <div class="angle ${firstAngleClass}">
+          <svg @click=${this.carouselClickDown}>
+            <use href="#angle-left"></use>
+          </svg>
+        </div>`;
+  }
+
+  get footer() {
     const cm = this.model;
     const len = cm.items.length || 0;
     const indx = cm.activeIndex;
-    const firstAngleClass = indx <= 0 ? 'end-item' : '';
     const lastAngleClass = indx >= (len - 1) ? 'end-item' : '';
+    return this.vertical
+      ? html`
+        <div class="angle ${lastAngleClass}">
+          <svg @click=${this.carouselClickUp}>
+            <use href="#angle-bottom"></use>
+          </svg>
+        </div>`
+      : nothing;
+  }
 
+  get right() {
+    const cm = this.model;
+    const len = cm.items.length || 0;
+    const indx = cm.activeIndex;
+    const lastAngleClass = indx >= (len - 1) ? 'end-item' : '';
+    return this.vertical
+      ? nothing
+      : html`
+        <div class="angle ${lastAngleClass}">
+          <svg @click=${this.carouselClickUp}>
+            <use href="#angle-right"></use>
+          </svg>
+        </div>`;
+  }
+
+  render() {
     return html`
       <style>
         :host {
@@ -166,19 +216,37 @@ export default class KdsCarousel extends LitMvvmElement {
           </symbol>
         </defs>
       </svg>
-
-      <kds-nav-container class="carousel"
-        ?vertical=${this.vertical}
-        .model=${cm}
-      >
-        ${this.vertical
-          ? this._getVerticalAngles(firstAngleClass, lastAngleClass)
-          : this._getHorizontalAngles(firstAngleClass, lastAngleClass)
-        }
-        <!-- forwarding slots from grand-child to parent -->
-        ${cm.items.map((item, itemIndex) => html`<slot name="item_${itemIndex}" slot="item_${itemIndex}"></slot>`)}
-      </kds-nav-container>
+      ${super.render()}
     `;
+  }
+
+  rendered() {
+    // reading observable properties here will still register them for the next render()
+    const activeIndex = this.model.activeIndex;
+
+    window.setTimeout(() => {
+      const itemsControl = this.renderRoot.getElementById('items');
+      if (itemsControl) {
+        this._scrollToActiveItem(itemsControl, activeIndex);
+      }
+    }, 5);
+
+    // this.schedule(() => {
+    //   const itemsControl = this.renderRoot.getElementById('items');
+    //   if (itemsControl) {
+    //     this._scrollToActiveItem(itemsControl, activeIndex);
+    //   }
+    // });
+
+    // requestAnimationFrame(() => {
+    //   const itemsControl = this.renderRoot.getElementById('items');
+    //   if (itemsControl) {
+    //     this._scrollToActiveItem(itemsControl, activeIndex);
+    //   }
+    // });
+
+    // seems that setTimout with at least 5ms is more reliable when the debugger is running;
+    // looks like one of the reasons is that it does not use the microtask queue
   }
 }
 

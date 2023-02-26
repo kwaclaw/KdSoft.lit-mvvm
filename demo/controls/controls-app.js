@@ -544,11 +544,7 @@ class ControlsApp extends LitMvvmElement {
         #carousel kds-carousel {
           --itemHeight: 300px;
           --itemWidth: 600px;
-          margin: auto;
-        }
-
-        #carousel kds-carousel img[slot] {
-          max-width: unset;
+            margin: auto;
         }
 
         /* #rendegion Carousel */
@@ -653,7 +649,7 @@ class ControlsApp extends LitMvvmElement {
             ${this._getOrientationHeader(this.model.sliderVertical, this.sliderVerticalChanged)}
           </h1>
           <kds-carousel .model=${this.carouselModel} ?vertical=${this.model.sliderVertical}>
-            ${this.carouselModel.items.map((item, index) => html`<img slot="item_${index}" src=${item.href}></img>`)}
+            ${this.carouselModel.items.map((item, index) => html`<img src=${item.href}></img>`)}
           </kds-carousel>
         </div>
 
@@ -667,7 +663,6 @@ class ControlsApp extends LitMvvmElement {
             ${this._getOrientationHeader(this.model.switcherVertical, this.switcherVerticalChanged)}
           </h1>
           <kds-tab-container 
-            .model=${this.switcherModel}
             ?vertical=${this.model.switcherVertical}
             ?reverse=${this.model.switcherReverse}
           >
@@ -680,13 +675,13 @@ class ControlsApp extends LitMvvmElement {
               const activeClass = this.switcherModel.activeIndex === index ? 'active' : '';
               const verticalClass = this.model.switcherVertical ? 'vertical' : '';
               return html`
-                <button type="button" slot="tab_${index}"
+                <button type="button" slot="tabs"
                   @click=${() => { this.switcherModel.activeIndex = index; }}
                   class="tab px-2 py-1 bg-gray-300 ${activeClass} ${verticalClass}"
                 >Image ${index}</button>
               `;
             })}
-            <img slot="item" src=${this.switcherModel.activeItem.href}></img>
+            <img src=${this.switcherModel.activeItem.href}></img>
           </kds-tab-container>
         </div>
       </div>

@@ -6,7 +6,7 @@ import KdsExpander from './kds-expander.js';
 import KdsListItem from './kds-list-item.js';
 import KdsList from './kds-list.js';
 import KdsMenuItem from './kds-menu-item.js';
-import KdsNavContainer from './kds-nav-container.js';
+import KdsNavLayout from './kds-nav-layout.js';
 import KdsTabContainer from './kds-tab-container.js';
 import KdsTreeNode from './kds-tree-node.js';
 import KdsTreeView from './kds-tree-view.js';
@@ -20,7 +20,7 @@ export {
   KdsListItem,
   KdsList,
   KdsMenuItem,
-  KdsNavContainer,
+  KdsNavLayout,
   KdsTabContainer,
   KdsTreeNode,
   KdsTreeView,
