@@ -1,52 +1,37 @@
-import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm';
+import { repeat } from 'lit-html/directives/repeat.js';
+import { LitMvvmElement, html, css, nothing } from '@kdsoft/lit-mvvm';
 import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
+
+/* Assumptions: the model is an instance of KdsListModel, 
+   but the model's item type is opaque, requiring only that
+   getItemElementByIndex(index) and getItemElementByIndex(index)
+   are overridden appropriately.
+ */
 
 //#region click and key events
 
-// the slotted elements are supposed to be instances of <kds-list-item>;
-// we assign the _kdsIndex property for easier handling of list-related events
-function slotChange(e) {
-  const listItems = e.currentTarget.assignedElements();
-  for (let indx = 0; indx < listItems.length; indx += 1) {
-    listItems[indx]._kdsIndex = indx;
-  }
-}
-
-function onItemDrop(e) {
-  const fromIndex = Number(e.detail.fromId);
-  const toIndex = Number(e.detail.toId);
-  this.model.moveItem(fromIndex, toIndex);
-
-  // setting the focus on the dropped item should be done when when the data-item-index
-  // attributes are set, so we schedule it at the end of the next render cycle
-  this.schedule(() => {
-    const slot = this.renderRoot.querySelector('slot');
-    const listItems = slot.assignedElements();
-    const dropped = listItems[toIndex];
-    if (dropped) dropped.focus();
-  });
-}
-
 function onItemClick(e) {
+  const itemIndex = this.getItemIndexFromElement(e.detail.item);
   if (this.model.multiSelect) {
-    this.model.toggleSelectedIndex(e.detail.item._kdsIndex);
+    this.model.toggleSelectedIndex(itemIndex);
   } else {
-    this.model.selectIndex(e.detail.item._kdsIndex, true);
+    this.model.selectIndex(itemIndex, true);
   }
 }
 
 // do we want to have a checkbox click mean the same as an item click?
 function onItemCheckClick(e) {
-  this.model.toggleSelectedIndex(e.detail.item._kdsIndex);
+  const itemIndex = this.getItemIndexFromElement(e.detail.item);
+  this.model.toggleSelectedIndex(itemIndex);
 }
 
 function onItemUpClick(e) {
-  const itemIndex = e.detail.item._kdsIndex;
+  const itemIndex = this.getItemIndexFromElement(e.detail.item);
   this.model.moveItem(itemIndex, itemIndex - 1);
 }
 
 function onItemDownClick(e) {
-  const itemIndex = e.detail.item._kdsIndex;
+  const itemIndex = this.getItemIndexFromElement(e.detail.item);
   this.model.moveItem(itemIndex, itemIndex + 1);
 }
 
@@ -66,13 +51,13 @@ function onItemListKeydown(e) {
       break;
     }
     case 'Enter': {
-      const itemNode = e.target;
-      this.model.selectIndex(itemNode._kdsIndex, true);
+      const itemIndex = this.getItemIndexFromElement(e.target);
+      this.model.selectIndex(itemIndex, true);
       break;
     }
     case ' ': {
-      const itemNode = e.target;
-      this.model.toggleSelectedIndex(itemNode._kdsIndex);
+      const itemIndex = this.getItemIndexFromElement(e.target);
+      this.model.toggleSelectedIndex(itemIndex);
       break;
     }
     default:
@@ -95,13 +80,21 @@ export default class KdsList extends LitMvvmElement {
     this._internals = this.attachInternals ? this.attachInternals() : null;
 
     // use fixed reference to be able to add *and* remove as event listener
-    this._onItemDrop = onItemDrop.bind(this);
     this._onItemClick = onItemClick.bind(this);
     this._onItemCheckClick = onItemCheckClick.bind(this);
     this._onItemUpClick = onItemUpClick.bind(this);
     this._onItemDownClick = onItemDownClick.bind(this);
     this._onItemListKeydown = onItemListKeydown.bind(this);
-    this._slotChange = slotChange.bind(this);
+  }
+
+  // override to return the DOM element for the item's index
+  getItemElementByIndex(index) {
+    return null;
+  }
+
+  // override to return the item's index from the item's DOM element
+  getItemIndexFromElement(element) {
+    return 0;
   }
 
   // The following properties and methods aren't strictly required,  but native form controls provide them.
@@ -124,16 +117,13 @@ export default class KdsList extends LitMvvmElement {
 
     const firstSelEntry = this.model.firstSelectedEntry;
     if (firstSelEntry) {
-      const slot = this.renderRoot.querySelector('slot');
-      const listItems = slot.assignedElements();
-      const firstSelected = listItems[firstSelEntry.index];
+      const firstSelected = this.getItemElementByIndex(firstSelEntry.index);
       if (firstSelected) firstSelected.scrollIntoView(true);
     }
   }
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('kds-drop', this._onItemDrop);
     this.addEventListener('kds-item-click', this._onItemClick);
     this.addEventListener('kds-item-check-click', this._onItemCheckClick);
     this.addEventListener('kds-item-up-click', this._onItemUpClick);
@@ -141,7 +131,6 @@ export default class KdsList extends LitMvvmElement {
   }
 
   disconnectedCallback() {
-    this.removeEventListener('kds-drop', this._onItemDrop);
     this.removeEventListener('kds-item-click', this._onItemClick);
     this.removeEventListener('kds-item-check-click', this._onItemCheckClick);
     this.removeEventListener('kds-item-up-click', this._onItemUpClick);
@@ -195,6 +184,10 @@ export default class KdsList extends LitMvvmElement {
     ];
   }
 
+  renderItem(entry) {
+    return nothing;
+  }
+
   render() {
     const result = html`
       <div id="container">
@@ -202,7 +195,10 @@ export default class KdsList extends LitMvvmElement {
           part="ul"
           @keydown=${this._onItemListKeydown}
         >
-          <slot @slotchange=${this._slotChange}></slot>
+          ${repeat(this.model.filteredItems,
+            entry => this.model.getItemId(entry.item),
+            entry => this.renderItem(entry)
+          )}
         </ul>
       </div>
     `;

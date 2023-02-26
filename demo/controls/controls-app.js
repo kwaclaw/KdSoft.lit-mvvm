@@ -11,7 +11,8 @@ import
   KdsListModel,
   KdsTreeNodeModel
 } from '@kdsoft/lit-mvvm-components';
-import './styled-check-list.js';
+
+import './demo-check-list.js';
 import './demo-tree-view.js';
 import './demo-tree-view-menu.js';
 
@@ -75,7 +76,7 @@ class ControlsApp extends LitMvvmElement {
     this.dropDownModel = observable(new KdsDropdownModel());
     this.checklistConnector = new KdsDropdownChecklistConnector(
       () => this.renderRoot.getElementById('ddown'),
-      () => this.renderRoot.getElementById('clist').list,
+      () => this.renderRoot.getElementById('clist'),
       () => this.getChecklistText()
     );
 
@@ -463,12 +464,12 @@ class ControlsApp extends LitMvvmElement {
             placeholder="search unselected entries"
             class="my-auto p-1 flex-grow"
             @input="${this.searchTextChanged}" />
-          <styled-check-list class="border"
+          <demo-check-list class="border"
             .model=${this.checklistModel}
             checkboxes
             arrows
             allow-drag-drop>
-          </styled-check-list>
+          </demo-check-list>
         </div>
 
         <div id="drop-down">
@@ -478,11 +479,11 @@ class ControlsApp extends LitMvvmElement {
             .connector=${this.checklistConnector}
             searchbox
           >
-            <styled-check-list id="clist" class="border border-t-0"
+            <demo-check-list id="clist" class="border border-t-0"
               .model=${this.checklistModel} 
               checkboxes
               allow-drag-drop>
-            </styled-check-list>
+            </demo-check-list>
             <span slot="dropDownButtonIcon" class="fa-solid fa-xl fa-caret-down"></span>
           </kds-dropdown>
         </div>
