@@ -1,5 +1,5 @@
 ﻿import { repeat } from 'lit-html/directives/repeat.js';
-import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement, html, nothing, css } from '@kdsoft/lit-mvvm';
 import './kds-menu-item.js';
 
 function showContextMenu(menu, target, path, pageX, pageY) {
@@ -179,8 +179,6 @@ export default class KdsContextMenu extends LitMvvmElement {
   constructor() {
     super();
     this._touchTimer = null;
-    this.getItemTemplate = () => html``;
-    this.getStyles = () => [css``.styleSheet];
     setup(this);
   }
 
@@ -278,11 +276,6 @@ export default class KdsContextMenu extends LitMvvmElement {
     element.addEventListener('touchmove', this._touchMoveListener.bind(this), options);
   }
 
-  beforeFirstRender() {
-    const adopted = this.renderRoot.adoptedStyleSheets;
-    this.renderRoot.adoptedStyleSheets = [...adopted, ...this.getStyles()];
-  }
-
   static get styles() {
     return [
       css`
@@ -315,6 +308,10 @@ export default class KdsContextMenu extends LitMvvmElement {
     ];
   }
 
+  renderMenuItem(nodeModel) {
+    return nothing;
+  }
+
   // We need to build the final tree structure here because we need to expose all slots,
   // including nested slots, at the same time so that we can style them together.
   createMenuItem(nodeModel, slot) {
@@ -322,7 +319,7 @@ export default class KdsContextMenu extends LitMvvmElement {
     this._menuTabIndex = tabIndex;
     return html`
       <kds-menu-item slot=${slot} .model=${nodeModel} tabindex=${tabIndex}>
-        <span slot="menu-item">${this.getItemTemplate(nodeModel)}</span>
+        <span slot="menu-item">${this.renderMenuItem(nodeModel)}</span>
         ${repeat(
           nodeModel.children,
           childModel => childModel.id,
