@@ -38,8 +38,8 @@ export default class KdsNavLayout extends LitMvvmElement {
           position: relative;
           height: 100%;
           display: grid;
-          grid-template-columns: auto auto auto;
-          grid-template-rows: auto;
+          grid-template-columns: var(--left-col, auto) var(--main-col, auto) var(--right-col, auto);
+          grid-template-rows: var(--top-row, auto) var(--main-row, auto) var(--bottom-row, auto);
           grid-template-areas:
             "topleft    top    topright"
             "left       main   right"
@@ -141,19 +141,19 @@ export default class KdsNavLayout extends LitMvvmElement {
     if (this.vertical) {
       return html`
         <div id="container" class="vertical" @keydown=${this._itemsKeyDown}>
-          <div class="left-bar">
+          <div class="left-bar" part="left">
             <slot name="left-bar">${this.left}</slot>
           </div>
-          <div class="top">
+          <div class="top" part="header">
             <slot name="top">${this.header}</slot>
           </div>
-          <ul id="items" class="items-vertical">
+          <ul id="items" class="items-vertical" part="main">
             <slot @slotchange=${e => this.slotChange(e)}>${this.main}</slot>
           </ul>
-          <div class="bottom">
+          <div class="bottom" part="footer">
             <slot name="bottom">${this.footer}</slot>
           </div>
-          <div class="right-bar">
+          <div class="right-bar" part="right">
             <slot name="right-bar">${this.right}</slot>
           </div>
         </div>
@@ -161,19 +161,19 @@ export default class KdsNavLayout extends LitMvvmElement {
     } else {
       return html`
         <div id="container" @keydown=${this._itemsKeyDown}>
-          <div class="header">
+          <div class="header" part="header">
             <slot name="header">${this.header}</slot>
           </div>
-          <div class="left">
+          <div class="left" part="left">
             <slot name="left">${this.left}</slot>
           </div>
-          <ul id="items" class="items-horizontal">
+          <ul id="items" class="items-horizontal" part="main">
             <slot @slotchange=${e => this.slotChange(e)}>${this.main}</slot>
           </ul>
-          <div class="right">
+          <div  class="right" part="right">
             <slot name="right">${this.right}</slot>
           </div>
-          <div class="footer">
+          <div class="footer" part="footer">
             <slot name="footer">${this.footer}</slot>
           </div>
         </div>
