@@ -28,7 +28,7 @@ export {
 
 export { default as KdsActiveItemModel } from './kds-active-item-model.js';
 export { default as KdsDragDropProvider } from './kds-drag-drop-provider.js';
-export { default as KdsDropdownChecklistConnector } from './kds-dropdown-checklist-connector.js';
+export { default as KdsDropdownListConnector } from './kds-dropdown-list-connector.js';
 export { default as KdsDropdownConnector } from './kds-dropdown-connector.js';
 export { default as KdsDropdownModel } from './kds-dropdown-model.js';
 export { default as KdsListModel } from './kds-list-model.js';

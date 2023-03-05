@@ -1,12 +1,12 @@
 import { observable } from '@nx-js/observer-util/dist/es.es6.js';
 import { Queue, priorities } from '@nx-js/queue-util/dist/es.es6.js';
-import { LitMvvmElement, html, css, nothing } from '@kdsoft/lit-mvvm/lit-mvvm.js';
+import { LitMvvmElement, html, css } from '@kdsoft/lit-mvvm/lit-mvvm.js';
 
 // this import will also register web components in '@kdsoft/lit-mvvm-components'
 import
 {
   KdsActiveItemModel,
-  KdsDropdownChecklistConnector,
+  KdsDropdownListConnector,
   KdsDropdownModel,
   KdsListModel,
   KdsTreeNodeModel
@@ -70,7 +70,7 @@ class ControlsApp extends LitMvvmElement {
     ));
 
     this.dropDownModel = observable(new KdsDropdownModel());
-    this.checklistConnector = new KdsDropdownChecklistConnector(
+    this.checklistConnector = new KdsDropdownListConnector(
       () => this.renderRoot.getElementById('ddown'),
       () => this.renderRoot.getElementById('clist'),
       () => this.getChecklistText()
