@@ -196,6 +196,8 @@ class KdsListModel {
     }
   }
 
+  // to be observable we must use a method instead of a property that is a function:
+  // this.isItemSelected = function.bind(this) does not work!
   isItemSelected(item) {
     return this._selectedItems.has(raw(item));
   }
