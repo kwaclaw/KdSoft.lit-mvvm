@@ -6,8 +6,8 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.3.0",
-    "@kdsoft/lit-mvvm": "../..",
-    "@kdsoft/lit-mvvm-components": "../../components",
+    "@kdsoft/lit-mvvm": "file:../..",
+    "@kdsoft/lit-mvvm-components": "file:../../components",
     "@nx-js/queue-util": "^1.1.1"
   },
   "browserslist": [
