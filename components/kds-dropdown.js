@@ -15,9 +15,6 @@ function isChildOf(parent, child) {
 }
 
 export default class KdsDropdown extends LitMvvmElement {
-  get connector() { return this._connector; }
-  set connector(value) { this._connector = value; }
-
   get searchbox() { return this.hasAttribute('searchbox'); }
   set searchbox(val) {
     if (val) this.setAttribute('searchbox', '');
@@ -111,7 +108,6 @@ export default class KdsDropdown extends LitMvvmElement {
     super.disconnectedCallback();
     // necessary?
     this.renderRoot.host.removeEventListener('focusout', this._hostLostFocus);
-    if (this.connector) this.connector.disconnectDropdownSlot();
   }
 
   static get styles() {
@@ -208,12 +204,6 @@ export default class KdsDropdown extends LitMvvmElement {
       </div>
     `;
     return result;
-  }
-
-  rendered() {
-    // it may be necessary to reconnect the drop down connector
-    const connector = this.connector; // save local reference
-    if (connector) this.schedule(() => connector.reconnectDropdownSlot());
   }
 }
 
