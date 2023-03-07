@@ -88,6 +88,11 @@ export default class KdsDropdown extends LitMvvmElement {
     this.model.dropped = true;
   }
 
+  _dropDownDown(e) {
+    // prevent the _hostLostFocus() event from closing up the drop down
+    e.preventDefault();
+  }
+
   _slotKeydown(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -198,6 +203,7 @@ export default class KdsDropdown extends LitMvvmElement {
       </div>
       <div id="dropdown"
         @focusin="${this._dropDownFocused}"
+        @pointerdown="${this._dropDownDown}"
         ?hidden=${!this.model.dropped}
       >
         <slot id="mainslot" tabindex="2" @keydown=${this._slotKeydown}>No dropdown content provided.</slot>
