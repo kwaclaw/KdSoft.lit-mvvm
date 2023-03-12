@@ -4,7 +4,7 @@ import { observe, unobserve } from '@nx-js/observer-util/dist/es.es6.js';
 
 /* Assumptions: the model is an instance of KdsListModel, 
    but the model's item type is opaque, requiring only that
-   getItemElementByIndex(index) and getItemElementByIndex(index)
+   getItemElementByIndex(index) and getItemIndexFromElement(element)
    are overridden appropriately.
  */
 
@@ -162,14 +162,7 @@ export default class KdsList extends LitMvvmElement {
           display: block;
         }
 
-        #container {
-          position: relative;
-          width: 100%;
-          display: flex;
-        }
-
         #item-list {
-          display: inline-block;
           -webkit-overflow-scrolling: touch; /* Lets it scroll lazy */
           padding-top: 5px;
           padding-bottom: 5px;
@@ -177,7 +170,6 @@ export default class KdsList extends LitMvvmElement {
           margin-bottom: 0;
           box-sizing: border-box;
           max-height: var(--max-scroll-height, 300px);
-          min-width: 100%;
           overflow-y: auto;
         }
       `,
@@ -190,17 +182,15 @@ export default class KdsList extends LitMvvmElement {
 
   render() {
     const result = html`
-      <div id="container">
-        <ul id="item-list"
-          part="ul"
-          @keydown=${this._onItemListKeydown}
-        >
-          ${repeat(this.model.filteredItems,
-            entry => this.model.getItemId(entry.item),
-            entry => this.renderItem(entry)
-          )}
-        </ul>
-      </div>
+      <ul id="item-list"
+        part="ul"
+        @keydown=${this._onItemListKeydown}
+      >
+        ${repeat(this.model.filteredItems,
+          entry => this.model.getItemId(entry.item),
+          entry => this.renderItem(entry)
+        )}
+      </ul>
     `;
     return result;
   }
