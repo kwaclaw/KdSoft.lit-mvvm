@@ -65,12 +65,10 @@ const cssGlob = args[0];
 const targetDir = normalize(args[1] || '.');
 const cssRoot = normalize(args[2] || '.');
 
-glob(cssGlob, (err, files) => {
-  if (err) console.log(err);
-  files.forEach(cssFilePath => {
-    const jsRelativePath = makeJsFilePath(cssRoot, cssFilePath);
-    const jsFilePath = join(targetDir, jsRelativePath);
-    console.log(jsFilePath);
-    writeWrappedFile(cssFilePath, jsFilePath);
-  });
+const cssFiles = await glob(cssGlob);
+cssFiles.forEach(cssFilePath => {
+  const jsRelativePath = makeJsFilePath(cssRoot, cssFilePath);
+  const jsFilePath = join(targetDir, jsRelativePath);
+  console.log(jsFilePath);
+  writeWrappedFile(cssFilePath, jsFilePath);
 });
