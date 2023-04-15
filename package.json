@@ -29,12 +29,12 @@
   "dependencies": {
     "@lit/reactive-element": "^1.6.1",
     "@nx-js/observer-util": "^4.2.2",
-    "lit-html": "^2.7.0"
+    "lit-html": "^2.7.2"
   },
   "devDependencies": {
-    "eslint": "^8.36.0",
+    "eslint": "^8.38.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.4"
   }
 }

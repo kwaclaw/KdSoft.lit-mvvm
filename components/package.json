@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm-components",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0-beta.4",
   "description": "Webcomponents based on @kdsoft-lit-mvvm",
   "author": "Karl Waclawek",
   "email": "karl@waclawek.net",
@@ -38,9 +38,9 @@
   ],
   "devDependencies": {
     "autoprefixer": "^10.4.14",
-    "eslint": "^8.36.0",
+    "eslint": "^8.38.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5",
-    "glob": "^9.3.2"
+    "glob": "^10.1.0"
   }
 }
