@@ -8,7 +8,7 @@ Arguments:
 
 */
 import { readFile, writeFile, mkdirSync } from 'fs';
-import glob from 'glob';
+import { glob } from 'glob';
 import { basename, dirname, relative, sep, normalize, join } from 'path';
 
 function wrap(source) {
