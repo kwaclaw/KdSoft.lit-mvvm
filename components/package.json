@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm-components",
-  "version": "2.0.0-beta.4",
+  "version": "2.0.0-beta.5",
   "description": "Webcomponents based on @kdsoft-lit-mvvm",
   "author": "Karl Waclawek",
   "email": "karl@waclawek.net",
@@ -28,7 +28,7 @@
     "url": "https://github.com/kwaclaw/KdSoft.lit-mvvm.git"
   },
   "dependencies": {
-    "@kdsoft/lit-mvvm": "^2.1.4",
+    "@kdsoft/lit-mvvm": "^2.1.5",
     "@nx-js/queue-util": "^1.1.1"
   },
   "browserslist": [
@@ -37,10 +37,10 @@
     "last 1 Safari versions"
   ],
   "devDependencies": {
-    "autoprefixer": "^10.4.14",
-    "eslint": "^8.38.0",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.51.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.27.5",
-    "glob": "^10.1.0"
+    "eslint-plugin-import": "^2.28.1",
+    "glob": "^10.3.10"
   }
 }

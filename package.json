@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "MVVM based alternative to LitElement",
   "author": "Karl Waclawek",
   "email": "karl@waclawek.net",
@@ -27,14 +27,14 @@
     "url": "https://github.com/kwaclaw/KdSoft.lit-mvvm.git"
   },
   "dependencies": {
-    "@lit/reactive-element": "^1.6.1",
+    "@lit/reactive-element": "^1.6.3",
     "@nx-js/observer-util": "^4.2.2",
-    "lit-html": "^2.7.2"
+    "lit-html": "^2.8.0"
   },
   "devDependencies": {
-    "eslint": "^8.38.0",
+    "eslint": "^8.51.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.27.5",
-    "typescript": "^5.0.4"
+    "eslint-plugin-import": "^2.28.1",
+    "typescript": "^5.2.2"
   }
 }
