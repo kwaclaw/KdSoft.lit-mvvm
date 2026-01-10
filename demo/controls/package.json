@@ -5,10 +5,11 @@
   "author": "Karl Waclawek",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.5.1",
+    "@fortawesome/fontawesome-free": "^7.1.0",
     "@kdsoft/lit-mvvm": "file:../..",
     "@kdsoft/lit-mvvm-components": "file:../../components",
-    "@nx-js/queue-util": "^1.1.1"
+    "@nx-js/queue-util": "^1.1.1",
+    "@tailwindcss/vite": "^4.1.18"
   },
   "browserslist": [
     "last 2 Chrome versions",
@@ -16,14 +17,16 @@
     "last 1 Safari versions"
   ],
   "devDependencies": {
-    "autoprefixer": "^10.4.19",
-    "cpy-cli": "^5.0.0",
-    "eslint": "^8.57.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.29.1",
-    "rimraf": "^5.0.5",
-    "tailwindcss": "^3.4.3",
-    "vite": "^5.2.6"
+    "@eslint/css": "^0.14.1",
+    "@eslint/js": "^9.39.2",
+    "@eslint/json": "^0.14.0",
+    "autoprefixer": "^10.4.23",
+    "cpy-cli": "^6.0.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-import": "^2.32.0",
+    "rimraf": "^6.1.2",
+    "tailwindcss": "^4.1.18",
+    "vite": "^7.3.1"
   },
   "scripts": {
     "start": "vite",
@@ -31,7 +34,7 @@
     "wrap-css-styles": "npm run wrap-css css/**/*.css styles css",
     "wrap-fontawesome": "npm run wrap-css node_modules/@fortawesome/fontawesome-free/css/all.css styles/fontawesome node_modules/@fortawesome/fontawesome-free",
     "copy-webfonts": "cpy node_modules/@fortawesome/fontawesome-free/webfonts/** styles/fontawesome/webfonts",
-    "prebuild": "rimraf styles && npx tailwindcss -i ./css/tailwind.tcss -o ./css/tailwind.css",
+    "prebuild": "rimraf styles && npx @tailwindcss/cli -i ./css/tailwind.tcss -o ./css/tailwind.css",
     "build": "npm run wrap-css-styles && npm run wrap-fontawesome && npm run copy-webfonts",
     "prepare": "npm run build"
   }

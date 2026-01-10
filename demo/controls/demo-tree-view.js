@@ -29,7 +29,9 @@ export default class DemoTreeView extends KdsTreeView {
         }
 
         .expander-grip {
+          display: inline-block;
           vertical-align: middle;
+          margin-left: -12px;
         }
 
         .expander-grip:hover {
@@ -37,7 +39,9 @@ export default class DemoTreeView extends KdsTreeView {
         }
 
         .expander-icon {
+          display: inline-block;
           vertical-align: middle;
+          margin-left: -12px;
         }
 
         .expander-icon i {
@@ -94,10 +98,10 @@ export default class DemoTreeView extends KdsTreeView {
         <span class=${cls}>${nodeModel.text}</span>
       </span>
       <span slot="expander-grip" class="expander-grip">
-        <i class="fas fa-xs fa-ellipsis-v text-gray-400"></i>
+        <i class="fas fa-ellipsis-v text-gray-400"></i>
       </span>
       <span slot="expander-icon" class="expander-icon ${nodeModel._expanded ? 'rotated' : ''}">
-        <i class="fa-solid fa-lg fa-caret-right ${nodeModel.children.length ? 'text-blue-600' : 'text-blue-200'}"></i>
+        <i class="fas fa-lg fa-caret-right ${nodeModel.children.length ? 'text-blue-600' : 'text-blue-200'}"></i>
       </span>
     `;
   }
