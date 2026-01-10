@@ -1,6 +1,6 @@
 {
   "name": "@kdsoft/lit-mvvm",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "MVVM based alternative to LitElement",
   "author": "Karl Waclawek",
   "email": "karl@waclawek.net",
@@ -24,7 +24,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kwaclaw/KdSoft.lit-mvvm.git"
+    "url": "git+https://github.com/kwaclaw/KdSoft.lit-mvvm.git"
   },
   "dependencies": {
     "@lit/reactive-element": "^2.1.2",
