@@ -1,7 +1,6 @@
 import { css } from '@kdsoft/lit-mvvm';
 
 export default css`
-
 /*! tailwindcss v4.1.18 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer theme, base, components, utilities;

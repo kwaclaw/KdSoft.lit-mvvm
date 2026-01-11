@@ -1,7 +1,6 @@
 import { css } from '@kdsoft/lit-mvvm';
 
 export default css`
-
 /* Styled Checkbox */
 
 /* ReSharper disable CssNotResolved */
