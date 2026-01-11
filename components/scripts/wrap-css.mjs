@@ -10,13 +10,13 @@ Arguments:
 import { readFile, writeFile, mkdirSync } from 'fs';
 import { glob } from 'glob';
 import { basename, dirname, relative, sep, normalize, join } from 'path';
+import os from 'node:os';
 
 function wrap(source) {
-  return `import { css } from '@kdsoft/lit-mvvm';
-
-export default css\`
-
-${source.replace(/(`|\\|\${)/g, '\\$1')}\n\`;
+  const lb = os?.EOL || '\n';
+  return `import { css } from '@kdsoft/lit-mvvm';`
+    + lb + lb + 'export default css\`'
+    + lb + `${source.replace(/(`|\\|\${)/g, '\\$1')}${lb}\`;
 `;
 }
 
